@@ -13,6 +13,9 @@ https://drive.google.com/drive/folders/1EnFrgswgLTo8oYu-dqTAHeJjBsYdNWhj?usp=sha
 
 組員:
 10846023 林湋峻 負責後端開發及資料庫管理
+
 10846024 戴于鈞 負責前端開發
+
 10846026 王萱雯 負責美術及文件製作
+
 10846033 劉淨純 負責美術及文件製作
