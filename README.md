@@ -5,8 +5,9 @@
 系統簡介及系統手冊:
 https://drive.google.com/drive/folders/1EnFrgswgLTo8oYu-dqTAHeJjBsYdNWhj?usp=sharing
 
-參與人員
-共五名北商資管學生
+參與人員:
+
+共五名 臺北商業大學資訊管理系學生
 
 組長:
 
