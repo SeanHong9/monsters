@@ -1,11 +1,14 @@
 # mosteres
 北商專題「貘nsters」
+
+參與人員共五名，皆為臺北商業大學資訊管理系學生
+
 2022年2月開發至今
 
 系統簡介及系統手冊:
 https://drive.google.com/drive/folders/1EnFrgswgLTo8oYu-dqTAHeJjBsYdNWhj?usp=sharing
 
-參與人員共五名，皆為臺北商業大學資訊管理系學生
+
 
 
 組長:
