@@ -340,20 +340,22 @@ class _diaryChat extends State<diaryChat> with WidgetsBindingObserver {
                                 id: 0,
                                 account: userAccount, //"Lin"
                                 content: userAnswers[0], //"純文字不分享無多媒體"
-                                index: userAnswers[1], //3
-                                share: userAnswers[2], //0
+                                index: userAnswers[2], //3
+                                share: userAnswers[3], //0
                                 time: '',
-                                contentFile: null,
+                                contentFile: contentFile,
+                                moodFile: moodFile,
+                                monsterId: 1,
+                                mood: userAnswers[1], //"否"
                               ),
                             );
-                            log(userAnswers.toString());
 
-                            // Navigator.pushReplacement(
-                            //     //TODO: Level 2
-                            //     //ADD HERO https://youtu.be/1xipg02Wu8s?t=657
-                            //     context,
-                            //     MaterialPageRoute(
-                            //         builder: (context) => History()));
+                            Navigator.pushReplacement(
+                                //TODO: Level 2
+                                //ADD HERO https://youtu.be/1xipg02Wu8s?t=657
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => History()));
                           },
                         ),
                       ),
@@ -772,8 +774,12 @@ class _diaryChat extends State<diaryChat> with WidgetsBindingObserver {
           if (acceptDrawingMembers.contains(text)) {
             if (text == "是") {
               await _navigateAndDisplayPaint(context);
+              userAnswers.add("是");
+            } else if (text == "否") {
+              userAnswers.add("否");
+            } else {
+              cannotRead();
             }
-            // userAnswers.add(text);
           } else {
             cannotRead();
           }

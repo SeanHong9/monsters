@@ -358,12 +358,12 @@ class _AnnoyanceChat extends State<AnnoyanceChat> with WidgetsBindingObserver {
                             contentFile: contentFile, //null
                             moodFile: moodFile, //null)
                           ));
-                          // Navigator.pushReplacement(
-                          //     //TODO: Level 2
-                          //     //ADD HERO https://youtu.be/1xipg02Wu8s?t=657
-                          //     context,
-                          //     MaterialPageRoute(
-                          //         builder: (context) => History()));
+                          Navigator.pushReplacement(
+                              //TODO: Level 2
+                              //ADD HERO https://youtu.be/1xipg02Wu8s?t=657
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => History()));
                         },
                       ),
                     ),
