@@ -622,8 +622,10 @@ class _historyAnnoyanceChat extends State<historyAnnoyanceChat> {
         reply("早上好啊！\n發生甚麼事情都可以跟我說"); //5~12點
       } else if (hourNow < 14) {
         reply("中午好啊！\n午餐吃了嗎？發生任何事都可以找我聊聊"); //12~14點
-      } else {
-        reply("下午好，今天過得如何呀！正在煩惱什麼事情嗎?"); //14~24點
+      } else if (hourNow < 18){
+        reply("下午好，快下班了吧？正在煩惱什麼事情嗎?"); //14~18點
+      }else {
+        reply("晚上好，今天過得如何呀？希望你有愉快的一天！"); //18~24點
       }
       reply("什麼樣子的煩惱呢？");
     }

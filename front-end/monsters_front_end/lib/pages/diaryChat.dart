@@ -741,13 +741,15 @@ class _diaryChat extends State<diaryChat> with WidgetsBindingObserver {
     if (chatRound == 0) {
       int hourNow = DateTime.now().hour.toInt();
       if (hourNow < 5) {
-        reply("凌晨睡不好嗎？\n正在想甚麼呢？\n來寫個日記舒壓一下吧？"); //0~5點
+        reply("凌晨睡不好嗎？\n有甚麼煩惱都可以跟我說"); //0~5點
       } else if (hourNow < 12) {
-        reply("早上好啊！\n我願意當一個好聽眾！"); //5~12點
+        reply("早上好啊！\n發生甚麼事情都可以跟我說"); //5~12點
       } else if (hourNow < 14) {
-        reply("中午好啊！\n午餐吃了嗎？發生任何事都可以找我聊聊喔！"); //12~14點
-      } else {
-        reply("下午好～今天過得如何呀！有發生什麼事情嗎?"); //14~24點
+        reply("中午好啊！\n午餐吃了嗎？發生任何事都可以找我聊聊"); //12~14點
+      } else if (hourNow < 18){
+        reply("下午好，快下班了吧？正在煩惱什麼事情嗎?"); //14~18點
+      }else {
+        reply("晚上好，今天過得如何呀？希望你有愉快的一天！"); //18~24點
       }
     }
 
