@@ -34,7 +34,7 @@ public class DiaryController {
 
     @ResponseBody
     @PostMapping("/create")
-    public ResponseEntity createDiary(@ModelAttribute DiaryBean diarybean) {
+    public ResponseEntity createDiary(@RequestBody DiaryBean diarybean) {
         int index = 0;
         boolean isAddMonster = true;
         ObjectMapper mapper = new ObjectMapper();
@@ -55,9 +55,9 @@ public class DiaryController {
                         System.out.println(diarybean.getContent());
                     }
                     List<AllMonsterBean> allMonster = allMonsterService.searchAll();
-                    index = (int) (Math.random() * allMonster.size());
+                    index = (int) (Math.random() * 19);
                     while (allMonster.get(index).getMain() != 1) {
-                        index = (int) (Math.random() * allMonster.size());
+                        index = (int) (Math.random() * 19);
                     }
                     diarybean.setMonsterId(allMonster.get(index).getId());
                     diaryService.createAndReturnBean(diarybean);
@@ -98,7 +98,7 @@ public class DiaryController {
 
     @ResponseBody
     @PatchMapping("/modify/{id}")
-    public ResponseEntity modifyAnnoyance(@PathVariable(name = "id") int id, DiaryBean diaryBean){
+    public ResponseEntity modifyAnnoyance(@PathVariable(name = "id") int id,@RequestBody DiaryBean diaryBean){
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode result = mapper.createObjectNode();
         diaryService.update(id, diaryBean);
