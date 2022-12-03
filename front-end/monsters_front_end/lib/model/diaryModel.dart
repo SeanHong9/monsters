@@ -39,39 +39,51 @@ class Data {
 class Diary {
   int? id;
   String? account;
+  int? monsterId;
+  String? mood;
   String? content;
   int? index;
   String? time;
   int? share;
   File? contentFile;
+  File? moodFile;
   Diary({
     this.id,
     this.account,
     this.content,
+    this.monsterId,
+    this.mood,
     this.index,
     this.time,
     this.share,
     this.contentFile,
+    this.moodFile,
   });
 
   factory Diary.fromJson(Map<String, dynamic> json) => Diary(
         id: json['id'],
         account: json['account'],
         content: json['content'],
+        monsterId: json['monsterId'],
+        mood: json['mood'],
         index: json['index'],
         time: json['time'],
         share: json['share'],
         contentFile: json['contentFile'],
+        moodFile: json['moodFile'],
       );
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = id;
     data['account'] = account;
     data['content'] = content;
+    data['monsterId'] = monsterId;
+    data['mood'] = mood;
     data['index'] = index;
     data['time'] = time;
     data['share'] = share;
     data['contentFile'] = contentFile;
+    data['moodFile'] = moodFile;
     return data;
   }
 }

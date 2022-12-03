@@ -30,12 +30,8 @@ class DiaryRepository implements DiaryApiDataSource {
   ) async {
     try {
       var body = json.encode(diary);
-      log(diary.index.toString());
       var request = await client.post(url,
           headers: {'Content-type': 'application/json'}, body: body);
-      // body: diary);
-      log(request.statusCode.toString());
-      log(request.body);
       if (request.statusCode == 201) {
         log(
           request.body,
