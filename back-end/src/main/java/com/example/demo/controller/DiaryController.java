@@ -55,9 +55,11 @@ public class DiaryController {
                         System.out.println(diarybean.getContent());
                     }
                     List<AllMonsterBean> allMonster = allMonsterService.searchAll();
-                    index = (int) (Math.random() * 19);
+//                    index = (int) (Math.random() * 19);
+                    index = (int) (Math.random() * 11);
                     while (allMonster.get(index).getMain() != 1) {
-                        index = (int) (Math.random() * 19);
+//                        index = (int) (Math.random() * 19);
+                        index = (int) (Math.random() * 11);
                     }
                     diarybean.setMonsterId(allMonster.get(index).getId());
                     diaryService.createAndReturnBean(diarybean);
