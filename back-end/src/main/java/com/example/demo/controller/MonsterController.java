@@ -1,8 +1,11 @@
 package com.example.demo.controller;
 
 import com.example.demo.bean.AllMonsterBean;
+import com.example.demo.bean.PersonalMonsterBean;
 import com.example.demo.service.impl.AllMonsterServiceImpl;
+import com.example.demo.service.impl.PersonalMonsterServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -12,12 +15,14 @@ import org.springframework.web.bind.annotation.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 @AllArgsConstructor
 @RestController
 @RequestMapping(value = "/monster")
 public class MonsterController {
     private final AllMonsterServiceImpl allMonsterService;
+    private final PersonalMonsterServiceImpl personalMonsterService;
 
     private final String MONSTER_FILE = "D:/APPS/FORK/monsters/back-end/file/monster/";
 
@@ -80,4 +85,29 @@ public class MonsterController {
         }
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
+
+    @ResponseBody
+    @GetMapping(value = "/monster/search/{account}")
+    public ResponseEntity searchMonster(@PathVariable(name = "account") String account) {
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode result = mapper.createObjectNode();
+        ArrayNode dataNode = result.putArray("data");
+        try {
+            List<PersonalMonsterBean> personalMonsterBeanList = personalMonsterService.findByAccount(account);
+            for(PersonalMonsterBean personalMonsterBean : personalMonsterBeanList){
+                ObjectNode personalMonsterNode = dataNode.addObject();
+                personalMonsterNode.put("account", personalMonsterBean.getAccount());
+                personalMonsterNode.put("monsterId", personalMonsterBean.getMonsterId());
+                personalMonsterNode.put("monsterGroup", personalMonsterBean.getMonsterGroup());
+            }
+            result.put("result", true);
+            result.put("errorCode", "200");
+            result.put("message", "查詢成功");
+        } catch (Exception e) {
+            System.out.println(e);
+            e.printStackTrace();
+        }
+        return ResponseEntity.status(HttpStatus.CREATED).body(result);
+    }
+
 }

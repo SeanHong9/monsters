@@ -4,7 +4,6 @@ import com.example.demo.bean.AnnoyanceBean;
 import com.example.demo.bean.DiaryBean;
 import com.example.demo.service.impl.AnnoyanceServiceImpl;
 import com.example.demo.service.impl.DiaryServiceImpl;
-import com.example.demo.service.impl.PersonalInfoServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -206,4 +205,6 @@ public class HistoryController {
         }
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
+
+
 }

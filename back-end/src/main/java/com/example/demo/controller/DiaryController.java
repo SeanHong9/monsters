@@ -79,7 +79,6 @@ public class DiaryController {
                         personalMonsterBean.setMonsterGroup(allMonster.get(index).getGroup());
                         personalMonsterService.createAndReturnBean(personalMonsterBean);
                     }
-                    diaryService.createAndReturnBean(diarybean);
                     result.put("result", true);
                     result.put("errorCode", "200");
                     result.put("message", "新增成功");
