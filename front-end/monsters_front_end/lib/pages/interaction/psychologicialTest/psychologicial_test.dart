@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:monsters_front_end/pages/interaction/psychologicial_result.dart';
+import 'package:monsters_front_end/pages/interaction/psychologicialTest/psychologicial_result.dart';
 import 'package:monsters_front_end/pages/settings/style.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 

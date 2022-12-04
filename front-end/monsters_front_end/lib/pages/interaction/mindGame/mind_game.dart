@@ -4,7 +4,7 @@ import 'package:monsters_front_end/pages/settings/style.dart';
 import 'package:monsters_front_end/repository/mindGameRepo.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
-import '../../model/mindGameModel.dart';
+import '../../../model/mindGameModel.dart';
 
 class Psychologicial_game extends StatefulWidget {
   @override

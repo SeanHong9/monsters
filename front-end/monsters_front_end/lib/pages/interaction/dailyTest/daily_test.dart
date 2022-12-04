@@ -1,8 +1,8 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
-import 'package:monsters_front_end/pages/interaction/dailyTest_correct.dart';
-import 'package:monsters_front_end/pages/interaction/dailyTest_wrong.dart';
+import 'package:monsters_front_end/pages/interaction/dailyTest/dailyTest_correct.dart';
+import 'package:monsters_front_end/pages/interaction/dailyTest/dailyTest_wrong.dart';
 import 'package:monsters_front_end/pages/settings/style.dart';
 import 'package:monsters_front_end/repository/dailyTestRepo.dart';
 

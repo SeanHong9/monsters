@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:monsters_front_end/pages/destressWays_list/destressWays_list.dart';
-import 'package:monsters_front_end/pages/interaction/mind_game.dart';
+import 'package:monsters_front_end/pages/interaction/destressWays/destressWay_detail/destressWays_list.dart';
+import 'package:monsters_front_end/pages/interaction/mindGame/mind_game.dart';
 
 import 'package:monsters_front_end/pages/settings/style.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
