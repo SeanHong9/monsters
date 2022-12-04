@@ -96,7 +96,6 @@ public class MonsterController {
             List<PersonalMonsterBean> personalMonsterBeanList = personalMonsterService.findByAccount(account);
             for(PersonalMonsterBean personalMonsterBean : personalMonsterBeanList){
                 ObjectNode personalMonsterNode = dataNode.addObject();
-                personalMonsterNode.put("account", personalMonsterBean.getAccount());
                 personalMonsterNode.put("monsterId", personalMonsterBean.getMonsterId());
                 personalMonsterNode.put("monsterGroup", personalMonsterBean.getMonsterGroup());
             }
