@@ -87,7 +87,7 @@ public class MonsterController {
     }
 
     @ResponseBody
-    @GetMapping(value = "/monster/search/{account}")
+    @GetMapping(value = "/search/{account}")
     public ResponseEntity searchMonster(@PathVariable(name = "account") String account) {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode result = mapper.createObjectNode();

@@ -240,7 +240,7 @@ class _SignUpState extends State<SignUp> {
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     inputFormatters: [
                       FilteringTextInputFormatter.allow(
-                          RegExp("[a-zA-Z]|[0-9]|[@]|[.]")),
+                          RegExp("[a-zA-Z]|[0-9]|[@._]|")),
                     ],
                     validator: (email) =>
                         email != null && !EmailValidator.validate(email)
