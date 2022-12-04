@@ -16,7 +16,7 @@ class _DailyTest_correctState extends State<DailyTest_correct> {
   late Future _future;
   var learn;
   _DailyTest_correctState(this.learn);
-  int unlockProgress = 1;
+  int unlockProgress = 7;
 
   @override
   void initState() {
@@ -208,11 +208,13 @@ class _DailyTest_correctState extends State<DailyTest_correct> {
   }
 
   dailyTestReward() async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    if (DateTime.now().day.toString() != pref.getString("LastTryDate")) {
-      //TODO:使用者解鎖進度+1
+    //進度到7，顯示獲得怪獸
+    if (unlockProgress == 7) {
+      //要較晚跳出才能pop，不然會出錯
+      Future.delayed(Duration(microseconds: 200), () {
+        popUp(context);
+      });
     }
-    popUp(context);
   }
 
   Future<bool> getUserDailyTestProgress() async {
