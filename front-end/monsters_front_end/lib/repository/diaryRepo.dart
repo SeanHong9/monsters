@@ -24,6 +24,12 @@ class DiaryRepository implements DiaryApiDataSource {
         Uri.parse('$domain/diary/search/$userAccount'));
   }
 
+  @override
+  Future<String> modifyDiary(int id, Diary diary) {
+    return _modifyDiary(
+        Uri.parse('$domain/diary/modify/$id'), diary);
+  }
+
   Future<String> _createDiary(
     Uri url,
     Diary diary,
@@ -61,6 +67,29 @@ class DiaryRepository implements DiaryApiDataSource {
     } catch (e) {
       print(e.toString());
       return null;
+    }
+  }
+
+  Future<String> _modifyDiary(
+    Uri url,
+    Diary diary,
+  ) async {
+    log(json.encode(diary).toString());
+    try {
+      final request = await client.patch(
+        url,
+        headers: {'Content-type': 'application/json'},
+        body: json.encode(diary),
+      );
+      log("modify statusCode: " + request.statusCode.toString());
+      log("modify body: " + request.body.toString());
+      if (request.statusCode == 200) {
+        return request.body;
+      } else {
+        return Future.value(request.body);
+      }
+    } catch (e) {
+      return e.toString();
     }
   }
 }
