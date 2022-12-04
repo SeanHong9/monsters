@@ -9,6 +9,7 @@ import 'package:adobe_xd/page_link.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:monsters_front_end/model/annoyanceModel.dart';
 import 'package:monsters_front_end/pages/annoyanceChat.dart';
+import 'package:monsters_front_end/pages/history_diaryChat.dart';
 import 'package:monsters_front_end/pages/monsters_information.dart';
 import 'package:monsters_front_end/pages/diaryChat.dart';
 import 'package:monsters_front_end/pages/history_annoyanceChat.dart';
@@ -419,28 +420,27 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                                           ],
                                         ),
                                   onTap: () async {
-                                    print(
-                                      "type: " +
-                                          snapshot.data["result $index"]
-                                              ["type"] +
-                                          "\n" +
-                                          "id: " +
-                                          snapshot.data["result $index"]["id"]
-                                              .toString() +
-                                          "\n" +
-                                          snapshot.data["result $index"]
-                                                  ["monsterId"]
-                                              .toString() +
-                                          "\n",
-                                    );
-
-                                    await Navigator.push(
+                                    if (snapshot.data["result $index"]
+                                            ["solve"] !=
+                                        null) {
+                                      await Navigator.push(
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) =>
                                                 historyAnnoyanceChat(
                                                     data: snapshot.data[
                                                         "result $index"])));
+                                    } else {
+                                      await Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  historyDiaryChat(
+                                                      data: snapshot.data[
+                                                          "result $index"])));
+                                    }
+
+                                    
                                     setState(() {});
                                   }),
                             ),
