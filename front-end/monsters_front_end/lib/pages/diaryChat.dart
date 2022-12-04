@@ -7,15 +7,15 @@ import 'package:image_picker/image_picker.dart';
 import 'package:monsters_front_end/main.dart';
 import 'package:monsters_front_end/model/audio_model/audio_player.dart';
 import 'package:monsters_front_end/model/diaryModel.dart';
-import 'package:monsters_front_end/pages/Timer_Widget.dart';
-import 'package:monsters_front_end/pages/manual.dart';
-import 'package:monsters_front_end/pages/monsters_information.dart';
-import 'package:monsters_front_end/pages/drawing_colors.dart';
+import 'package:monsters_front_end/pages/chat_items/Timer_Widget.dart';
+import 'package:monsters_front_end/pages/manual/manual.dart';
+import 'package:monsters_front_end/pages/settings/monsters_information.dart';
+import 'package:monsters_front_end/pages/chat_items/drawing_colors.dart';
 import 'package:monsters_front_end/pages/history.dart';
-import 'package:monsters_front_end/pages/style.dart';
+import 'package:monsters_front_end/pages/settings/style.dart';
 import 'package:monsters_front_end/repository/diaryRepo.dart';
 import 'package:video_player/video_player.dart';
-import 'package:monsters_front_end/pages/audio_main.dart';
+import 'package:monsters_front_end/pages/chat_items/audio_main.dart';
 
 class diaryChat extends StatefulWidget {
   @override
@@ -743,16 +743,17 @@ class _diaryChat extends State<diaryChat> with WidgetsBindingObserver {
     if (chatRound == 0) {
       int hourNow = DateTime.now().hour.toInt();
       if (hourNow < 5) {
-        reply("凌晨睡不好嗎？\n有甚麼煩惱都可以跟我說"); //0~5點
+        reply("凌晨睡不好嗎？\n甚麼事情都可以跟我說～"); //0~5點
       } else if (hourNow < 12) {
-        reply("早上好啊！\n發生甚麼事情都可以跟我說"); //5~12點
+        reply("早安！\n可以跟我說任何事情！"); //5~12點
       } else if (hourNow < 14) {
-        reply("中午好啊！\n午餐吃了嗎？發生任何事都可以找我聊聊"); //12~14點
+        reply("中午好啊！\n午餐吃了嗎？發生任何事都可以找我說"); //12~14點
       } else if (hourNow < 18){
-        reply("下午好，快下班了吧？正在煩惱什麼事情嗎?"); //14~18點
+        reply("下午好，快下班了吧？今天過得如何呀？"); //14~18點
       }else {
         reply("晚上好，今天過得如何呀？希望你有愉快的一天！"); //18~24點
       }
+        reply("想跟我說些甚麼嗎？"); 
     }
 
     if (chatRound < 5) {
@@ -907,6 +908,8 @@ class _diaryChat extends State<diaryChat> with WidgetsBindingObserver {
 
     return annoyanceImageColumn;
   }
+
+
 
   Future<dynamic> popUp(BuildContext context) {
     return showDialog(

@@ -6,5 +6,7 @@ abstract class DiaryApiDataSource{
   Future<String> createDiary(Diary diary);
 
   Future<Map<String, dynamic>?> searchDiaryByAccount(String account);
+  
+  Future<String> modifyDiary(int id, Diary diary);
 }
 

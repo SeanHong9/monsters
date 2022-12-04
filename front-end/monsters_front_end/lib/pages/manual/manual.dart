@@ -1,102 +1,92 @@
-// ignore_for_file: prefer_const_constructors, use_key_in_widget_constructors
+// ignore_for_file: prefer_const_constructors
 
-import 'package:adobe_xd/page_link.dart';
-import 'package:adobe_xd/pinned.dart';
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:monsters_front_end/pages/interaction/destressWays/destressWay_detail/destressWays_list.dart';
+import 'package:adobe_xd/pinned.dart';
+import 'package:adobe_xd/page_link.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:monsters_front_end/pages/settings/monsters_information.dart';
 import 'package:monsters_front_end/pages/diaryChat.dart';
 import 'package:monsters_front_end/pages/history.dart';
 import 'package:monsters_front_end/pages/home.dart';
-import 'package:monsters_front_end/pages/interaction/answerBook/answerbook.dart';
-import 'package:monsters_front_end/pages/interaction/dailyTest/daily_test.dart';
-import 'package:monsters_front_end/pages/manual/manual.dart';
-import 'package:monsters_front_end/pages/interaction/mindGame/mind_game.dart';
-import 'package:monsters_front_end/pages/interaction/psychologicialTest/psychologicial_test.dart';
+import 'package:monsters_front_end/pages/interaction.dart';
+import 'package:monsters_front_end/pages/manual/monster_detail.dart';
 import 'package:monsters_front_end/pages/social.dart';
 import 'package:monsters_front_end/pages/settings/style.dart';
 import 'package:monsters_front_end/state/drawer.dart';
-import 'annoyanceChat.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 
-class InteractionPage extends StatefulWidget {
+import '../annoyanceChat.dart';
+
+class Manual extends StatefulWidget {
   @override
-  _InteractionPageState createState() => _InteractionPageState();
+  _ManualState createState() => _ManualState();
 }
 
-class _InteractionPageState extends State<InteractionPage>
-    with SingleTickerProviderStateMixin {
+class _ManualState extends State<Manual> with SingleTickerProviderStateMixin {
   //新增的浮出按鈕動畫用
   late AnimationController animationController;
   late Animation degOneTranslationAnimation, degTwoTranslationAnimation;
   late Animation rotationAnimation;
   StateSetter? animationState;
+  //TODO:用userAccount傳入圖鑑API獲得圖鑑資訊
+  List<int> UnlockMonsterId = [0, 1, 3, 4, 6, 9, 10, 13, 18]; //資料庫取得
+  List<String> showNames = [];
+  List<String> showPics = [];
+  int selectionTab_type = 1;
+  static const List monsterNames = monsterNamesList;
+  static const List monsterNames_CH = monsterNamesList_CH;
+  int TotalMonsters = monsterNames.length;
 
-  double getRadiansFromDegree(double degree) {
-    double unitRadian = 57.295779513;
-    return degree / unitRadian;
-  }
+  void changeUI() {
+    //get Unlocked id
+    showNames = [];
+    showPics = [];
 
-  @override
-  void dispose() {
-    animationController.dispose();
-    super.dispose();
-  }
+    for (int i = 0; i < monsterNames.length; i++) {
+      if (UnlockMonsterId.contains(i)) {
+        showNames.add(monsterNames_CH[i]);
+        showPics.add(getMonsterImage(monsterNames[i]));
+        log("ID= " + i.toString());
+      } else {
+        if (selectionTab_type == 1) {
+          showNames.add("???");
+          showPics.add(
+            'assets/image/unknown.png',
+          );
+        }
+      }
+      log("------------");
+      log(showNames.toString());
+      log(showPics.toString());
+      TotalMonsters = showNames.length;
+    }
 
-  @override
-  void initState() {
-    animationController =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 250));
-    degOneTranslationAnimation = TweenSequence([
-      TweenSequenceItem<double>(
-          tween: Tween<double>(begin: 0.0, end: 1.2), weight: 75.0),
-      TweenSequenceItem<double>(
-          tween: Tween<double>(begin: 1.2, end: 1.0), weight: 25.0),
-    ]).animate(animationController);
-    degTwoTranslationAnimation = TweenSequence([
-      TweenSequenceItem<double>(
-          tween: Tween<double>(begin: 0.0, end: 1.4), weight: 55.0),
-      TweenSequenceItem<double>(
-          tween: Tween<double>(begin: 1.4, end: 1.0), weight: 45.0),
-    ]).animate(animationController);
-    rotationAnimation = Tween<double>(begin: 180.0, end: 0.0).animate(
-        CurvedAnimation(parent: animationController, curve: Curves.easeOut));
-    super.initState();
-    animationController.addListener(() {
-      setState(() {});
-    });
+    log("SHOWNAME: " + showNames.toString());
+    log("SHOWPic: " + showPics.toString());
+    setState(() {});
+    //go through data when touch UnlockedMonsterId then save MonsterName and monsterPics
   }
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+    for (int i = 0; i < TotalMonsters; i++) {
+      if (UnlockMonsterId.contains(i)) {
+        showNames.add(monsterNamesList_CH[i]);
+        showPics.add(getMonsterImage(monsterNamesList[i]));
+      } else {
+        showNames.add("???");
+        showPics.add('assets/image/unknown.png');
+      }
+    }
     GlobalKey<ScaffoldState> _scaffoldKEy = GlobalKey<ScaffoldState>();
+
     return Scaffold(
-      backgroundColor: BackgroundColorLight,
+      backgroundColor: const Color(0xfffffed4),
       key: _scaffoldKEy,
       endDrawer: GetDrawer(context),
       body: Stack(
         children: <Widget>[
-          //TODO:互動區的標題位置改正確
-          //標題
-          Pinned.fromPins(
-            Pin(size: 150.0, middle: 0.5),
-            Pin(size: 63.0, start: 20.0),
-            child: Text(
-              '互動區',
-              textAlign: TextAlign.center,
-              style: WidgeTitleTextStyle,
-              softWrap: false,
-            ),
-          ),
-          //底部
-          Pinned.fromPins(
-            Pin(start: 0.0, end: 0.0),
-            Pin(size: 78.0, end: 0.0),
-            child: Container(
-              color: const Color(0xffffed97),
-            ),
-          ),
           //抽屜
           Align(
             alignment: Alignment.topRight,
@@ -108,224 +98,169 @@ class _InteractionPageState extends State<InteractionPage>
               onPressed: () => _scaffoldKEy.currentState?.openEndDrawer(),
             ),
           ),
-          //解答之書等按鈕
-          Pinned.fromPins(
-            Pin(start: 55.0, end: 55.0),
-            Pin(size: 524.0, start: 113.0),
-            child: Stack(
-              children: <Widget>[
-                //解答之書
-                Pinned.fromPins(
-                  Pin(start: 0.0, end: 0.0),
-                  Pin(size: 68.0, start: 0.0),
-                  child: PageLink(
-                      links: [
-                        PageLinkInfo(
-                          transition: LinkTransition.Fade,
-                          ease: Curves.easeOut,
-                          duration: 0.3,
-                          pageBuilder: () => AnswerbookPage(),
-                        ),
-                      ],
-                      child: Stack(
-                        children: <Widget>[
-                          Container(
-                            decoration: BoxDecoration(
-                              color: const Color(0xffffffff),
-                              borderRadius: BorderRadius.circular(23.0),
-                              border: Border.all(
-                                  width: 2, color: const Color(0xffa0522d)),
-                            ),
-                          ),
-                          Pinned.fromPins(
-                            Pin(size: 144.0, middle: 0.5),
-                            Pin(size: 48.0, start: 10.0),
-                            child: Center(
-                              child: const Text(
-                                '解答之書',
-                                style: TextStyle(
-                                  fontFamily: 'Segoe UI',
-                                  fontSize: 30,
-                                  color: Color(0xffa0522d),
+
+          //整體布局
+          Column(
+            mainAxisSize: MainAxisSize.max,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              //標題 完成
+              Expanded(flex: 10, child: mainAppBarTitleContainer("圖鑑")),
+              //標籤
+              Expanded(
+                  flex: 5,
+                  child: Container(
+                    alignment: Alignment.center,
+                    padding: EdgeInsets.only(left: 15, bottom: 10),
+                    child: Center(
+                      child: Wrap(
+                        spacing: 20,
+                        //標籤設定
+                        children: [
+                          //全部標籤
+                          InkWell(
+                              child: Container(
+                                width: 60,
+                                decoration: BoxDecoration(
+                                  color: selectionTab_type == 1
+                                      ? const Color(0xffa0522d)
+                                      : const Color(0xffffed97),
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.elliptical(9999.0, 9999.0)),
                                 ),
-                                softWrap: false,
-                              ),
-                            ),
-                          ),
-                        ],
-                      )),
-                ),
-                //TODO: 拉寬 或是 置中
-                //每日測驗
-                Pinned.fromPins(
-                  Pin(start: 0.0, end: 0.0),
-                  Pin(size: 68.0, middle: 0.25),
-                  child: PageLink(
-                      links: [
-                        PageLinkInfo(
-                          transition: LinkTransition.Fade,
-                          ease: Curves.easeOut,
-                          duration: 0.3,
-                          pageBuilder: () => Daily_test(),
-                        ),
-                      ],
-                      child: Stack(
-                        children: <Widget>[
-                          Container(
-                            decoration: BoxDecoration(
-                              color: const Color(0xffffffff),
-                              borderRadius: BorderRadius.circular(23.0),
-                              border: Border.all(
-                                  width: 2, color: const Color(0xffa0522d)),
-                            ),
-                          ),
-                          Pinned.fromPins(
-                            Pin(size: 144.0, middle: 0.5),
-                            Pin(size: 48.0, end: 10.0),
-                            child: Center(
-                              child: const Text(
-                                '每日測驗',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontFamily: 'Segoe UI',
-                                  fontSize: 30,
-                                  color: Color(0xffa0522d),
+                                child: Text(
+                                  '全部',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      fontFamily: 'Segoe UI',
+                                      fontSize: 20,
+                                      color: selectionTab_type == 1 //點按後更新文字顏色
+                                          ? const Color(0xffffffff)
+                                          : const Color(0xffa0522d)),
                                 ),
-                                softWrap: false,
                               ),
-                            ),
-                          ),
-                        ],
-                      )),
-                ),
-                //深度心理測驗
-                Pinned.fromPins(
-                  Pin(start: 0.0, end: 0.0),
-                  Pin(size: 70.0, middle: 0.5),
-                  child: PageLink(
-                      links: [
-                        PageLinkInfo(
-                          transition: LinkTransition.Fade,
-                          ease: Curves.easeOut,
-                          duration: 0.3,
-                          pageBuilder: () => Psychologicial_test(),
-                        ),
-                      ],
-                      child: Stack(
-                        children: <Widget>[
-                          Container(
-                            decoration: BoxDecoration(
-                              color: const Color(0xffffffff),
-                              borderRadius: BorderRadius.circular(23.0),
-                              border: Border.all(
-                                  width: 2, color: const Color(0xffa0522d)),
-                            ),
-                          ),
-                          Pinned.fromPins(
-                            Pin(start: 40.0, end: 40.0),
-                            Pin(size: 40.0, middle: 0.5),
-                            child: Center(
-                              child: const Text(
-                                '深度心理測驗',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontFamily: 'Segoe UI',
-                                  fontSize: 28,
-                                  color: Color(0xffa0522d),
+                              onTap: () {
+                                selectionTab_type = 1;
+                                changeUI();
+                              }),
+                          //已解鎖標籤
+                          InkWell(
+                              child: Container(
+                                width: 80,
+                                decoration: BoxDecoration(
+                                  color: selectionTab_type == 2
+                                      ? const Color(0xffa0522d)
+                                      : const Color(0xffffed97),
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.elliptical(100.0, 100.0)),
                                 ),
-                                softWrap: false,
-                              ),
-                            ),
-                          ),
-                        ],
-                      )),
-                ),
-                //心理小遊戲
-                Pinned.fromPins(
-                  Pin(start: 0.0, end: 0.0),
-                  Pin(size: 68.0, middle: 0.75),
-                  child: PageLink(
-                      links: [
-                        PageLinkInfo(
-                          transition: LinkTransition.Fade,
-                          ease: Curves.easeOut,
-                          duration: 0.3,
-                          pageBuilder: () => Psychologicial_game(),
-                        ),
-                      ],
-                      child: Stack(
-                        children: <Widget>[
-                          Container(
-                            decoration: BoxDecoration(
-                              color: const Color(0xffffffff),
-                              borderRadius: BorderRadius.circular(23.0),
-                              border: Border.all(
-                                  width: 2, color: const Color(0xffa0522d)),
-                            ),
-                          ),
-                          Pinned.fromPins(
-                            Pin(start: 0.0, end: 0.0),
-                            Pin(size: 40.0, middle: 0.5),
-                            child: Center(
-                              child: const Text(
-                                '心理小遊戲',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontFamily: 'Segoe UI',
-                                  fontSize: 30,
-                                  color: Color(0xffa0522d),
+                                child: Text(
+                                  '已解鎖',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                      fontFamily: 'Segoe UI',
+                                      fontSize: 20,
+                                      color: selectionTab_type == 2 //點按後更新文字顏色
+                                          ? const Color(0xffffffff)
+                                          : const Color(0xffa0522d)),
                                 ),
-                                softWrap: false,
                               ),
-                            ),
-                          ),
+                              onTap: () {
+                                selectionTab_type = 2;
+                                changeUI();
+                              }),
                         ],
-                      )),
-                ),
-                //紓壓方式
-                Pinned.fromPins(
-                  Pin(start: 0.0, end: 0.0),
-                  Pin(size: 68.0, end: 0.0),
-                  child: PageLink(
-                      links: [
-                        PageLinkInfo(
-                          transition: LinkTransition.Fade,
-                          ease: Curves.easeOut,
-                          duration: 0.3,
-                          pageBuilder: () => DestressWaysList(),
-                        ),
-                      ],
-                      child: Stack(
-                        children: <Widget>[
-                          Container(
-                            decoration: BoxDecoration(
-                              color: const Color(0xffffffff),
-                              borderRadius: BorderRadius.circular(23.0),
-                              border: Border.all(
-                                  width: 2, color: const Color(0xffa0522d)),
-                            ),
-                          ),
-                          Pinned.fromPins(
-                            Pin(size: 144.0, middle: 0.5),
-                            Pin(size: 48.0, end: 10.0),
-                            child: Center(
-                              child: const Text(
-                                '紓壓方法',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontFamily: 'Segoe UI',
-                                  fontSize: 30,
-                                  color: Color(0xffa0522d),
+                      ),
+                    ),
+                  )),
+
+              Expanded(
+                flex: 80,
+                child: GridView(
+                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      mainAxisSpacing: 20,
+                      crossAxisSpacing: 2),
+                  children: List.generate(
+                    TotalMonsters,
+                    (index) => Container(
+                      alignment: Alignment.center,
+                      child: SizedBox(
+                        width: 160.0,
+                        height: 180.0,
+                        child: GestureDetector(
+                          onTap: () {
+                            if (UnlockMonsterId.contains(index)) {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          Monster_detail(index)));
+                            }
+                          },
+                          child: Stack(
+                            children: <Widget>[
+                              //border
+                              Container(
+                                decoration: BoxDecoration(
+                                  color: Color.fromRGBO(255, 255, 255, 1),
+                                  borderRadius: BorderRadius.circular(11.0),
+                                  border: Border.all(
+                                      width: 1.8,
+                                      color: const Color(0xffa0522d)),
                                 ),
-                                softWrap: false,
+                                margin:
+                                    EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 32.0),
                               ),
-                            ),
+                              //image
+                              Pinned.fromPins(
+                                Pin(start: 10.0, end: 10.0),
+                                Pin(size: 120.0, start: 15.0),
+                                child:
+                                    // Adobe XD layer: 'monster1' (shape)
+                                    Container(
+                                  decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                      image: AssetImage(showPics[index]),
+                                      fit: BoxFit.scaleDown,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              //name
+                              Pinned.fromPins(
+                                Pin(size: 80.0, middle: 0.5),
+                                Pin(size: 80.0, middle: 1.55),
+                                child: Text(
+                                  showNames[index],
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    fontSize: 22,
+                                    fontWeight: FontWeight.w500,
+                                    color: const Color(0xffa0522d),
+                                  ),
+                                  softWrap: false,
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
-                      )),
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
-              ],
-            ),
+              ),
+
+              ///
+              ///
+              ///
+              Expanded(
+                flex: 10,
+                child: Container(
+                  color: BackgroundColorSoft,
+                ),
+              )
+            ],
           ),
 
           //互動
@@ -340,14 +275,15 @@ class _InteractionPageState extends State<InteractionPage>
                   transition: LinkTransition.Fade,
                   ease: Curves.easeOut,
                   duration: 0.3,
-                  pageBuilder: () => MainPage(),
+                  pageBuilder: () => InteractionPage(),
                 ),
               ],
               child: Stack(
                 children: <Widget>[
                   Container(
                     decoration: const BoxDecoration(
-                      color: BackgroundColorWarm,
+                      color: Color(0xffffffff),
+                      // color: BackgroundColorWarm,
                       borderRadius:
                           BorderRadius.all(Radius.elliptical(9999.0, 9999.0)),
                     ),
@@ -361,7 +297,8 @@ class _InteractionPageState extends State<InteractionPage>
                       style: TextStyle(
                         fontFamily: 'Segoe UI',
                         fontSize: 12,
-                        color: Colors.white,
+                        color: const Color(0xffa0522d),
+                        //color: Colors.white,
                       ),
                       softWrap: false,
                     ),
@@ -375,7 +312,7 @@ class _InteractionPageState extends State<InteractionPage>
                           // Adobe XD layer: 'Icon material-gamep…' (shape)
                           SvgPicture.string(
                         _svg_a3julx,
-                        color: Colors.white,
+                        // color:Colors.white,
                         allowDrawingOutsideViewBox: true,
                       ),
                     ),
@@ -396,14 +333,15 @@ class _InteractionPageState extends State<InteractionPage>
                   transition: LinkTransition.Fade,
                   ease: Curves.easeOut,
                   duration: 0.3,
-                  pageBuilder: () => Manual(),
+                  pageBuilder: () => MainPage(),
                 ),
               ],
               child: Stack(
                 children: <Widget>[
                   Container(
                     decoration: BoxDecoration(
-                      color: const Color(0xffffffff),
+                      // color: const Color(0xffffffff),
+                      color: BackgroundColorWarm,
                       borderRadius:
                           BorderRadius.all(Radius.elliptical(9999.0, 9999.0)),
                     ),
@@ -417,6 +355,7 @@ class _InteractionPageState extends State<InteractionPage>
                           // Adobe XD layer: 'Icon awesome-book' (shape)
                           SvgPicture.string(
                         _svg_i02mi2,
+                        color: Colors.white,
                         allowDrawingOutsideViewBox: true,
                       ),
                     ),
@@ -430,7 +369,8 @@ class _InteractionPageState extends State<InteractionPage>
                       style: TextStyle(
                         fontFamily: 'Segoe UI',
                         fontSize: 12,
-                        color: const Color(0xffa0522d),
+                        // color: const Color(0xffa0522d),
+                        color: Colors.white,
                       ),
                       softWrap: false,
                     ),
@@ -617,10 +557,6 @@ class _InteractionPageState extends State<InteractionPage>
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => diaryChat()));
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
                                       builder: (context) => AnnoyanceChat()));
                             },
                           ),
@@ -663,6 +599,42 @@ class _InteractionPageState extends State<InteractionPage>
       ),
     );
   }
+
+  //介面設計
+  double getRadiansFromDegree(double degree) {
+    double unitRadian = 57.295779513;
+    return degree / unitRadian;
+  }
+
+  @override
+  void dispose() {
+    animationController.dispose();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    animationController =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 250));
+    degOneTranslationAnimation = TweenSequence([
+      TweenSequenceItem<double>(
+          tween: Tween<double>(begin: 0.0, end: 1.2), weight: 75.0),
+      TweenSequenceItem<double>(
+          tween: Tween<double>(begin: 1.2, end: 1.0), weight: 25.0),
+    ]).animate(animationController);
+    degTwoTranslationAnimation = TweenSequence([
+      TweenSequenceItem<double>(
+          tween: Tween<double>(begin: 0.0, end: 1.4), weight: 55.0),
+      TweenSequenceItem<double>(
+          tween: Tween<double>(begin: 1.4, end: 1.0), weight: 45.0),
+    ]).animate(animationController);
+    rotationAnimation = Tween<double>(begin: 180.0, end: 0.0).animate(
+        CurvedAnimation(parent: animationController, curve: Curves.easeOut));
+    animationController.addListener(() {
+      setState(() {});
+    });
+    super.initState();
+  }
 }
 
 class CircularButton extends StatelessWidget {
@@ -672,7 +644,7 @@ class CircularButton extends StatelessWidget {
   final Icon icon;
   final void Function() onClick;
 
-  const CircularButton(
+  CircularButton(
       {required this.color,
       required this.width,
       required this.height,
@@ -690,8 +662,10 @@ class CircularButton extends StatelessWidget {
   }
 }
 
-const String _svg_y7nr8j =
-    '<svg viewBox="180.0 711.0 52.0 54.0" ><path transform="translate(180.0, 710.88)" d="M 25.54673194885254 54.12040328979492 C 21.82439994812012 54.05290222167969 18.86386680603027 50.56230926513672 18.9357967376709 46.32462692260742 C 18.94706535339355 45.6369514465332 19.03806304931641 44.97177505493164 19.19753074645996 44.33990478515625 L 18.9687328338623 44.33540344238281 L 19.1403923034668 34.1219482421875 L 7.389199733734131 34.1219482421875 L 7.115333080291748 34.1219482421875 L 7.115333080291748 34.11744689941406 C 3.16159987449646 33.98153305053711 0 30.9013843536377 0 27.12095642089844 C 0 23.34142684936523 3.16159987449646 20.26128196716309 7.115333080291748 20.12536430358887 L 7.115333080291748 20.11996459960938 L 19.37573432922363 20.11996459960938 L 19.58493232727051 7.673354625701904 L 19.59013175964355 7.388922691345215 L 19.5944652557373 7.388922691345215 C 19.79466438293457 3.285358190536499 22.81499862670898 0.05579237267374992 26.45413398742676 0.1223999261856079 C 30.09239959716797 0.1881073564291 33.00266265869141 3.524784803390503 33.06505966186523 7.632848262786865 L 33.06939315795898 7.633748531341553 L 32.85968780517578 20.11996459960938 L 42.69546508789062 20.11996459960938 L 42.69546508789062 20.35758972167969 C 43.30646133422852 20.2027759552002 43.94866180419922 20.11996459960938 44.61079788208008 20.11996459960938 C 48.69192886352539 20.11996459960938 51.99999618530273 23.25501823425293 51.99999618530273 27.12095642089844 C 51.99999618530273 30.98779296875 48.69192886352539 34.1219482421875 44.61079788208008 34.1219482421875 C 43.94866180419922 34.1219482421875 43.30646133422852 34.04004287719727 42.69546508789062 33.88432312011719 L 42.69546508789062 34.1219482421875 L 32.62451553344727 34.1219482421875 L 32.4488639831543 44.58023834228516 L 32.22006607055664 44.57573318481445 C 32.35873413085938 45.2130012512207 32.42719650268555 45.88088226318359 32.41506195068359 46.5694580078125 C 32.34469604492188 50.76549530029297 29.32918548583984 54.12139129638672 25.6562557220459 54.12140274047852 C 25.61980628967285 54.12140274047852 25.58330917358398 54.12107849121094 25.54673194885254 54.12040328979492 Z" fill="#ffbb00" stroke="none" stroke-width="1" stroke-miterlimit="4" stroke-linecap="butt" /></svg>';
+const String _svg_xvbnb =
+    '<svg viewBox="100.5 230.9 33.0 31.6" ><path transform="translate(99.06, 230.92)" d="M 16.17111015319824 1.097833633422852 L 12.1432638168335 9.264556884765625 L 3.131494522094727 10.57838726043701 C 1.515420794487 10.81277942657471 0.8677577972412109 12.80511474609375 2.039719343185425 13.94623565673828 L 8.559527397155762 20.29950141906738 L 7.017472743988037 29.27426147460938 C 6.739902973175049 30.89650535583496 8.44849967956543 32.11164093017578 9.87952709197998 31.35295104980469 L 17.9413890838623 27.11538505554199 L 26.00325393676758 31.35295104980469 C 27.43428039550781 32.10547256469727 29.14287567138672 30.8965015411377 28.86530685424805 29.27426147460938 L 27.32325172424316 20.29950141906738 L 33.84305953979492 13.94623470306396 C 35.01502227783203 12.80511379241943 34.36735916137695 10.81277942657471 32.75128555297852 10.5783863067627 L 23.73951530456543 9.264556884765625 L 19.71166801452637 1.097833633422852 C 18.98998641967773 -0.357866108417511 16.89896202087402 -0.3763708472251892 16.17111206054688 1.097833633422852 Z" fill="#ffff00" stroke="#a0522d" stroke-width="1" stroke-miterlimit="4" stroke-linecap="butt" /></svg>';
+const String _svg_tn4ajf =
+    '<svg viewBox="139.5 230.9 33.0 31.6" ><path transform="translate(138.06, 230.92)" d="M 16.17111015319824 1.097833633422852 L 12.1432638168335 9.264556884765625 L 3.131494522094727 10.57838726043701 C 1.515420794487 10.81277942657471 0.8677577972412109 12.80511474609375 2.039719343185425 13.94623565673828 L 8.559527397155762 20.29950141906738 L 7.017472743988037 29.27426147460938 C 6.739902973175049 30.89650535583496 8.44849967956543 32.11164093017578 9.87952709197998 31.35295104980469 L 17.9413890838623 27.11538505554199 L 26.00325393676758 31.35295104980469 C 27.43428039550781 32.10547256469727 29.14287567138672 30.8965015411377 28.86530685424805 29.27426147460938 L 27.32325172424316 20.29950141906738 L 33.84305953979492 13.94623470306396 C 35.01502227783203 12.80511379241943 34.36735916137695 10.81277942657471 32.75128555297852 10.5783863067627 L 23.73951530456543 9.264556884765625 L 19.71166801452637 1.097833633422852 C 18.98998641967773 -0.357866108417511 16.89896202087402 -0.3763708472251892 16.17111206054688 1.097833633422852 Z" fill="#ffff00" stroke="#a0522d" stroke-width="1" stroke-miterlimit="4" stroke-linecap="butt" /></svg>';
 const String _svg_i02mi2 =
     '<svg viewBox="112.3 717.3 23.7 27.1" ><path transform="translate(112.33, 717.32)" d="M 23.66897201538086 19.01971054077148 L 23.66897201538086 1.267980933189392 C 23.66897201538086 0.5653080940246582 23.10366439819336 0 22.40099143981934 0 L 5.071923732757568 0 C 2.271798849105835 0 0 2.271798849105835 0 5.071923732757568 L 0 21.97833633422852 C 0 24.7784595489502 2.271798849105835 27.05025482177734 5.071923732757568 27.05025482177734 L 22.40099143981934 27.05025482177734 C 23.10366439819336 27.05025482177734 23.66897201538086 26.48495101928711 23.66897201538086 25.78227424621582 L 23.66897201538086 24.93695259094238 C 23.66897201538086 24.54071044921875 23.48405838012695 24.18144989013672 23.19876289367676 23.94898414611816 C 22.97686576843262 23.13536262512207 22.97686576843262 20.81601715087891 23.19876289367676 20.00239562988281 C 23.48405838012695 19.77521514892578 23.66897201538086 19.41595458984375 23.66897201538086 19.01971054077148 Z M 6.762563705444336 7.079558849334717 C 6.762563705444336 6.905211925506592 6.905211925506592 6.762563705444336 7.079558849334717 6.762563705444336 L 18.28005599975586 6.762563705444336 C 18.45440292358398 6.762563705444336 18.59705352783203 6.905211925506592 18.59705352783203 7.079558849334717 L 18.59705352783203 8.136210441589355 C 18.59705352783203 8.310558319091797 18.45440292358398 8.453206062316895 18.28005599975586 8.453206062316895 L 7.079558849334717 8.453206062316895 C 6.905211925506592 8.453206062316895 6.762563705444336 8.310558319091797 6.762563705444336 8.136210441589355 L 6.762563705444336 7.079558849334717 Z M 6.762563705444336 10.46084022521973 C 6.762563705444336 10.28649425506592 6.905211925506592 10.14384746551514 7.079558849334717 10.14384746551514 L 18.28005599975586 10.14384746551514 C 18.45440292358398 10.14384746551514 18.59705352783203 10.28649425506592 18.59705352783203 10.46084022521973 L 18.59705352783203 11.51749134063721 C 18.59705352783203 11.69183731079102 18.45440292358398 11.83448600769043 18.28005599975586 11.83448600769043 L 7.079558849334717 11.83448600769043 C 6.905211925506592 11.83448600769043 6.762563705444336 11.69183731079102 6.762563705444336 11.51749134063721 L 6.762563705444336 10.46084022521973 Z M 20.15032768249512 23.66897201538086 L 5.071923732757568 23.66897201538086 C 4.136787414550781 23.66897201538086 3.381281852722168 22.9134693145752 3.381281852722168 21.97833633422852 C 3.381281852722168 21.04848289489746 4.142070293426514 20.28769493103027 5.071923732757568 20.28769493103027 L 20.15032768249512 20.28769493103027 C 20.04994583129883 21.19112586975098 20.04994583129883 22.76553916931152 20.15032768249512 23.66897201538086 Z" fill="#a0522d" stroke="none" stroke-width="1" stroke-miterlimit="4" stroke-linecap="butt" /></svg>';
 const String _svg_uat9w =

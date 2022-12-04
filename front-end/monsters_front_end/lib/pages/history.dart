@@ -9,15 +9,16 @@ import 'package:adobe_xd/page_link.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:monsters_front_end/model/annoyanceModel.dart';
 import 'package:monsters_front_end/pages/annoyanceChat.dart';
-import 'package:monsters_front_end/pages/monsters_information.dart';
+import 'package:monsters_front_end/pages/history/history_diaryChat.dart';
+import 'package:monsters_front_end/pages/settings/monsters_information.dart';
 import 'package:monsters_front_end/pages/diaryChat.dart';
-import 'package:monsters_front_end/pages/history_annoyanceChat.dart';
+import 'package:monsters_front_end/pages/history/history_annoyanceChat.dart';
 import 'package:monsters_front_end/pages/home.dart';
 import 'package:monsters_front_end/pages/interaction.dart';
-import 'package:monsters_front_end/pages/manual.dart';
-import 'package:monsters_front_end/pages/moodLineChart.dart';
+import 'package:monsters_front_end/pages/manual/manual.dart';
+import 'package:monsters_front_end/pages/history/moodLineChart.dart';
 import 'package:monsters_front_end/pages/social.dart';
-import 'package:monsters_front_end/pages/style.dart';
+import 'package:monsters_front_end/pages/settings/style.dart';
 import 'package:monsters_front_end/repository/historyRepo.dart';
 import 'package:monsters_front_end/state/drawer.dart';
 
@@ -419,28 +420,27 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                                           ],
                                         ),
                                   onTap: () async {
-                                    print(
-                                      "type: " +
-                                          snapshot.data["result $index"]
-                                              ["type"] +
-                                          "\n" +
-                                          "id: " +
-                                          snapshot.data["result $index"]["id"]
-                                              .toString() +
-                                          "\n" +
-                                          snapshot.data["result $index"]
-                                                  ["monsterId"]
-                                              .toString() +
-                                          "\n",
-                                    );
-
-                                    await Navigator.push(
+                                    if (snapshot.data["result $index"]
+                                            ["solve"] !=
+                                        null) {
+                                      await Navigator.push(
                                         context,
                                         MaterialPageRoute(
                                             builder: (context) =>
                                                 historyAnnoyanceChat(
                                                     data: snapshot.data[
                                                         "result $index"])));
+                                    } else {
+                                      await Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  historyDiaryChat(
+                                                      data: snapshot.data[
+                                                          "result $index"])));
+                                    }
+
+                                    
                                     setState(() {});
                                   }),
                             ),

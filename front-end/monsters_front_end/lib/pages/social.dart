@@ -7,13 +7,13 @@ import 'package:flutter/material.dart';
 import 'package:adobe_xd/pinned.dart';
 import 'package:adobe_xd/page_link.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:monsters_front_end/pages/monsters_information.dart';
+import 'package:monsters_front_end/pages/settings/monsters_information.dart';
 import 'package:monsters_front_end/pages/diaryChat.dart';
 import 'package:monsters_front_end/pages/history.dart';
 import 'package:monsters_front_end/pages/home.dart';
 import 'package:monsters_front_end/pages/interaction.dart';
-import 'package:monsters_front_end/pages/manual.dart';
-import 'package:monsters_front_end/pages/style.dart';
+import 'package:monsters_front_end/pages/manual/manual.dart';
+import 'package:monsters_front_end/pages/settings/style.dart';
 import 'package:monsters_front_end/state/drawer.dart';
 
 import '../model/socialModel.dart';
@@ -129,8 +129,6 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
           default:
             break;
         }
-        dv.log("test:${value.data.elementAt(index).nickName}");
-        dv.log("id:${value.data.elementAt(index).id}");
 
         socialResult.putIfAbsent(
           "result $index",
