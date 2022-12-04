@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:monsters_front_end/model/destressWayModel.dart';
 import 'package:monsters_front_end/pages/destressWay_detail/destressWay_detail.dart';
-import 'package:monsters_front_end/pages/style.dart';
+import 'package:monsters_front_end/pages/settings/style.dart';
 
 class DestressWaysList extends StatelessWidget {
   final destressWays = DestressWay.fetchAll();

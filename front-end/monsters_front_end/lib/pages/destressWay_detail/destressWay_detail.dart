@@ -1,7 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:monsters_front_end/model/destressWayModel.dart';
-import 'package:monsters_front_end/pages/style.dart';
+import 'package:monsters_front_end/pages/settings/style.dart';
 import 'text_section.dart';
 
 class DestressWayDetail extends StatelessWidget {

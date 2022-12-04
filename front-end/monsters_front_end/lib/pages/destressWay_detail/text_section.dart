@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:monsters_front_end/pages/destressWay_detail/image_banner.dart';
-import '../style.dart';
+import '../settings/style.dart';
 
 class TextSection extends StatelessWidget {
   final String _originalText;

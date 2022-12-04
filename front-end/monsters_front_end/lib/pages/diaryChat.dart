@@ -7,15 +7,15 @@ import 'package:image_picker/image_picker.dart';
 import 'package:monsters_front_end/main.dart';
 import 'package:monsters_front_end/model/audio_model/audio_player.dart';
 import 'package:monsters_front_end/model/diaryModel.dart';
-import 'package:monsters_front_end/pages/Timer_Widget.dart';
-import 'package:monsters_front_end/pages/manual.dart';
-import 'package:monsters_front_end/pages/monsters_information.dart';
-import 'package:monsters_front_end/pages/drawing_colors.dart';
+import 'package:monsters_front_end/pages/chat_items/Timer_Widget.dart';
+import 'package:monsters_front_end/pages/manual/manual.dart';
+import 'package:monsters_front_end/pages/settings/monsters_information.dart';
+import 'package:monsters_front_end/pages/chat_items/drawing_colors.dart';
 import 'package:monsters_front_end/pages/history.dart';
-import 'package:monsters_front_end/pages/style.dart';
+import 'package:monsters_front_end/pages/settings/style.dart';
 import 'package:monsters_front_end/repository/diaryRepo.dart';
 import 'package:video_player/video_player.dart';
-import 'package:monsters_front_end/pages/audio_main.dart';
+import 'package:monsters_front_end/pages/chat_items/audio_main.dart';
 
 class diaryChat extends StatefulWidget {
   @override

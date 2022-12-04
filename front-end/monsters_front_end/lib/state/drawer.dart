@@ -2,15 +2,15 @@
 import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 import 'package:monsters_front_end/API/google_sign_in_API.dart';
-import 'package:monsters_front_end/pages/instructions.dart';
-import 'package:monsters_front_end/pages/lock/close_lock_page.dart';
-import 'package:monsters_front_end/pages/lock/setting_lock_page.dart';
-import 'package:monsters_front_end/pages/style.dart';
-import 'package:monsters_front_end/pages/user_Feedback.dart';
-import 'package:monsters_front_end/pages/login.dart';
+import 'package:monsters_front_end/pages/account/lock/close_lock_page.dart';
+import 'package:monsters_front_end/pages/account/lock/setting_lock_page.dart';
+import 'package:monsters_front_end/pages/drawer/instructions.dart';
+import 'package:monsters_front_end/pages/settings/style.dart';
+import 'package:monsters_front_end/pages/drawer/user_Feedback.dart';
+import 'package:monsters_front_end/pages/account/login.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../pages/drawer_personalInfo.dart';
+import '../pages/drawer/drawer_personalInfo.dart';
 
 Widget GetDrawer(BuildContext context) {
   Future<dynamic> popUp(BuildContext context) {
