@@ -51,7 +51,6 @@ class _historyAnnoyanceChat extends State<historyAnnoyanceChat> {
     final AnnoyanceRepository annoyanceRepository = AnnoyanceRepository();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
     response();
-    log(data.toString());
     response(data["type"]);
     response(data["content"]);
     if (data["mood"] != null) {
@@ -651,14 +650,12 @@ class _historyAnnoyanceChat extends State<historyAnnoyanceChat> {
         if (chatRound == 4) {
           insert(text!);
           reply("想不想把這件事分享給別人呢？");
-          log("--完成心情分數");
         }
         //取得是否分享
         if (chatRound == 5) {
           insert(text!);
           lastSpeaking = true;
           reply("解決煩惱請馬上跟我說！我已經迫不及待想吃飯了！");
-          log(getSolved().toString());
           if (getSolved()) {
             insert("我解決煩惱了！");
             reply("剩下的交給${getMonsterAvatarName_CH()}吧！");
@@ -740,7 +737,6 @@ class _historyAnnoyanceChat extends State<historyAnnoyanceChat> {
     } else {
       isSolved = false;
     }
-    log("this is: " + isSolved.toString());
     return isSolved;
   }
 

@@ -129,8 +129,6 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
           default:
             break;
         }
-        dv.log("test:${value.data.elementAt(index).nickName}");
-        dv.log("id:${value.data.elementAt(index).id}");
 
         socialResult.putIfAbsent(
           "result $index",

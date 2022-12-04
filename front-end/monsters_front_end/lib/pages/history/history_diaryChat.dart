@@ -141,7 +141,6 @@ class _historyDiaryChat extends State<historyDiaryChat> {
     final DiaryRepository diaryRepository = DiaryRepository();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
     response();
-    log(data.toString());
     response(data["content"]);
     if (data["mood"] != null) {
       response("是");
@@ -622,7 +621,6 @@ class _historyDiaryChat extends State<historyDiaryChat> {
       if (chatRound == 3) {
         insert(text!);
         reply("想不想把這件事分享給別人呢？");
-        log("--完成心情分數");
       }
       //取得是否分享
       if (chatRound == 4) {
@@ -704,7 +702,6 @@ class _historyDiaryChat extends State<historyDiaryChat> {
     } else {
       isSolved = false;
     }
-    log("this is: " + isSolved.toString());
     return isSolved;
   }
 
