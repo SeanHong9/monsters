@@ -7,6 +7,7 @@ import com.example.demo.service.impl.AllMonsterServiceImpl;
 import com.example.demo.service.impl.DiaryServiceImpl;
 import com.example.demo.service.impl.PersonalMonsterServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -39,7 +40,7 @@ public class DiaryController {
         boolean isAddMonster = true;
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode result = mapper.createObjectNode();
-        result.putObject("data");
+        ArrayNode dataNode = result.putArray("data");
         try {
             if (diarybean.getContent() == null && diarybean.getContent().isEmpty() && diarybean.getContentFile().isEmpty() && diarybean.getContentFile() == null) {
                 result.put("result", false);
@@ -77,7 +78,14 @@ public class DiaryController {
                         personalMonsterBean.setAccount(diarybean.getAccount());
                         personalMonsterBean.setMonsterId(allMonster.get(index).getId());
                         personalMonsterBean.setMonsterGroup(allMonster.get(index).getGroup());
+                        ObjectNode personalMonsterNode = dataNode.addObject();
+                        personalMonsterNode.put("newMonster", true);
+                        personalMonsterNode.put("monster", allMonster.get(index).getNameChinese());
                         personalMonsterService.createAndReturnBean(personalMonsterBean);
+                    }else {
+                        ObjectNode personalMonsterNode = dataNode.addObject();
+                        personalMonsterNode.put("newMonster", false);
+                        personalMonsterNode.put("monster", allMonster.get(index).getNameChinese());
                     }
                     result.put("result", true);
                     result.put("errorCode", "200");

@@ -7,6 +7,7 @@ import com.example.demo.service.impl.AllMonsterServiceImpl;
 import com.example.demo.service.impl.AnnoyanceServiceImpl;
 import com.example.demo.service.impl.PersonalMonsterServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -43,7 +44,7 @@ public class AnnoyanceController {
         boolean isAddMonster = true;
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode result = mapper.createObjectNode();
-        result.putObject("data");
+        ArrayNode dataNode = result.putArray("data");
         try {
             if (annoyanceBean.getContent() == null && annoyanceBean.getContent().isEmpty() && annoyanceBean.getContentFile() == null && annoyanceBean.getContentFile().isEmpty()) {
                 result.put("result", false);
@@ -88,7 +89,14 @@ public class AnnoyanceController {
                         personalMonsterBean.setAccount(annoyanceBean.getAccount());
                         personalMonsterBean.setMonsterId(allMonster.get(index).getId());
                         personalMonsterBean.setMonsterGroup(allMonster.get(index).getGroup());
+                        ObjectNode personalMonsterNode = dataNode.addObject();
+                        personalMonsterNode.put("newMonster", true);
+                        personalMonsterNode.put("monster", allMonster.get(index).getNameChinese());
                         personalMonsterService.createAndReturnBean(personalMonsterBean);
+                    }else {
+                        ObjectNode personalMonsterNode = dataNode.addObject();
+                        personalMonsterNode.put("newMonster", false);
+                        personalMonsterNode.put("monster", allMonster.get(index).getNameChinese());
                     }
                     result.put("result", true);
                     result.put("errorCode", "200");
