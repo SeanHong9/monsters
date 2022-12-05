@@ -821,10 +821,10 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
     await histories.then((value) async {
       await historyResult.putIfAbsent(
         "itemCounter",
-        () => min(value.data.length, 20),
+        () => min(value.data.length, 30),
       );
 
-      for (int index = 0; index < min(value.data.length, 20); index++) {
+      for (int index = 0; index < min(value.data.length, 30); index++) {
         String type = "";
         switch (value.data.elementAt(index).type) {
           case 1:
