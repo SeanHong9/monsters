@@ -174,27 +174,20 @@ class _dev_annoyanceChatState extends State<dev_annoyanceChat> {
                     } else {
                       _mood = "是";
                     }
-                    log("_type: " + _type.toString());
-                    log("_content: " + pushContent.toString());
-                    log("_mood: " + _mood);
-                    log("_index: " + _index.toString());
-                    log("_share: " + _share.toString());
-                    log("_contentFile: " + _contentFile.toString());
-                    log("_moodFile: " + _moodFile.toString());
                     annoyanceRepository.createAnnoyance(
                       Annoyance(
                         id: 0,
-                        account: userAccount, //"Lin"
-                        monsterId: 1,
-                        type: _type, //4
-                        content: pushContent, //"純文字不分享無多媒體"
-                        mood: _mood, //"否"
-                        index: _index, //3
-                        share: _share, //0
-                        contentFile: _contentFile, //null
-                        moodFile: _moodFile, //null
-                        time: '',
+                        account: "tonyhong", //"Lin"
+                        content: "123", //"純文字不分享無多媒體"
+                        type: null,
+                        monsterId: 0,
+                        mood: "否", //
+                        index: 2, //3
+                        time: "",
                         solve: 0,
+                        share: 0, //0
+                        moodFile: null, //null
+                        contentFile: null, //null
                       ),
                     );
                   },

@@ -1,6 +1,8 @@
 import 'dart:math';
 import 'dart:developer' as dv;
 
+import 'package:flutter/material.dart';
+
 const List monsterNamesList = [
   "Baku", //0
   "Cloud", //1
@@ -74,4 +76,19 @@ String getMonsterImage(String monsterName) {
 String getMonsterAnimationPath(String monsterName, String direction) {
   String dir = direction.toLowerCase();
   return "assets/image/animatedImage/${monsterName}_$dir.gif";
+}
+
+AssetImage getMonsterSkin(int monsterId, int skinId) {
+  String tempName = monsterNamesList[monsterId];
+  String tempString = 'assets/image/monsters/monster_$tempName';
+  if(skinId==0){
+    tempString += ".png";
+  }
+  if(skinId>0){
+    tempString += "_item$skinId.png";
+  }
+
+  AssetImage temp = AssetImage(tempString);
+
+  return temp;
 }

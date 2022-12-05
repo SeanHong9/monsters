@@ -43,7 +43,7 @@ class _InstructionsPageState extends State<InstructionsPage> {
                   color: Color.fromARGB(255, 255, 254, 224),
                   urlImage: 'assets/image/instructions/instructionPage_3.png',
                   title: "圖鑑",
-                  subtitle: "點選下方導覽列的圖鑑，\n查看可愛怪獸圖鑑，\n點選已獲得的怪獸來裝飾配件吧！"),
+                  subtitle: "點選下方導覽列的圖鑑，\n查看可愛怪獸圖鑑，\n點選已獲得的怪獸來裝飾造型吧！"),
               buildPage(
                   // color: Color.fromARGB(255, 254, 253, 178),
                   color: Color.fromARGB(255, 255, 254, 224),
