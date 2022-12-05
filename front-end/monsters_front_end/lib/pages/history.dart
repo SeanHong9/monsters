@@ -155,11 +155,12 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                               ),
                             ),
                             onTap: () {
-                              setState(() {
+                              if (selectionTab_type != 1) {
                                 selectionTab_type = 1;
                                 selectionTab_solve_enabled = false;
                                 selectionTab_solve = 0;
-                              });
+                                setState(() {});
+                              }
                             }),
                         //煩惱標籤 selectionTab_type == 2
                         InkWell(
@@ -184,11 +185,12 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                               ),
                             ),
                             onTap: () {
-                              setState(() {
+                              if (selectionTab_type != 2) {
                                 selectionTab_type = 2;
                                 selectionTab_solve_enabled = true;
                                 selectionTab_solve = 1;
-                              });
+                                setState(() {});
+                              }
                             }),
                         //日記標籤 selectionTab_type == 3
                         InkWell(
@@ -213,11 +215,15 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                               ),
                             ),
                             onTap: () {
-                              setState(() {
+                              if (selectionTab_type != 3) {
+                                
+                              
                                 selectionTab_type = 3;
                                 selectionTab_solve_enabled = false;
                                 selectionTab_solve = 0;
+                                setState(() {
                               });
+                              }
                             }),
                         //未解決標籤 selectionTab_solve == 1
                         InkWell(
@@ -242,7 +248,8 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                               ),
                             ),
                             onTap: () {
-                              if (selectionTab_solve_enabled == true) {
+                              if (selectionTab_solve_enabled == true &&
+                                  selectionTab_solve != 1) {
                                 selectionTab_solve = 1;
                                 setState(() {});
                               }
@@ -270,7 +277,8 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                               ),
                             ),
                             onTap: () {
-                              if (selectionTab_solve_enabled == true) {
+                              if (selectionTab_solve_enabled == true &&
+                                  selectionTab_solve != 2) {
                                 selectionTab_solve = 2;
                                 setState(() {});
                               }
@@ -424,12 +432,12 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                                             ["solve"] !=
                                         null) {
                                       await Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                historyAnnoyanceChat(
-                                                    data: snapshot.data[
-                                                        "result $index"])));
+                                          context,
+                                          MaterialPageRoute(
+                                              builder: (context) =>
+                                                  historyAnnoyanceChat(
+                                                      data: snapshot.data[
+                                                          "result $index"])));
                                     } else {
                                       await Navigator.push(
                                           context,
@@ -440,7 +448,6 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                                                           "result $index"])));
                                     }
 
-                                    
                                     setState(() {});
                                   }),
                             ),

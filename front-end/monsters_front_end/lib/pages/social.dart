@@ -99,8 +99,6 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
         .then((value) => Data.fromJson(value!));
     Map socialResult = {};
 
-    
-
     await socials.then((value) async {
       await socialResult.putIfAbsent(
         "itemCounter",
@@ -213,9 +211,10 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
                                 ),
                               ),
                               onTap: () {
+                                if (selectionTab_type != 1) {
                                   selectionTab_type = 1;
-                                setState(() {
-                                });
+                                  setState(() {});
+                                }
                               }),
                           //煩惱標籤
                           InkWell(
@@ -240,8 +239,10 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
                                 ),
                               ),
                               onTap: () {
-                                selectionTab_type = 2;
-                                setState(() {});
+                                if (selectionTab_type != 2) {
+                                  selectionTab_type = 2;
+                                  setState(() {});
+                                }
                               }),
                           //日記標籤
                           InkWell(
@@ -266,8 +267,10 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
                                 ),
                               ),
                               onTap: () {
-                                selectionTab_type = 3;
-                                setState(() {});
+                                if (selectionTab_type != 3) {
+                                  selectionTab_type = 3;
+                                  setState(() {});
+                                }
                               }),
                           //怪獸標籤
                           InkWell(
@@ -292,8 +295,10 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
                                 ),
                               ),
                               onTap: () {
+                                if (selectionTab_type != 4) {
                                 selectionTab_type = 4;
-                                setState(() {});
+                                  setState(() {});
+                                }
                               }),
                         ],
                       ),
