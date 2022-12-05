@@ -1,4 +1,7 @@
-import 'dart:developer';
+import 'dart:developer' as dv;
+import 'dart:math';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
@@ -21,27 +24,90 @@ class _Forget_Lock_AuthState extends State<Forget_Lock_Auth> {
   late EmailAuth emailAuth;
   late Future _future;
   String hintEmail = "";
+  String userEmail = "";
 
   @override
   void initState() {
     super.initState();
     _future = getPersonalInfo();
+    VerifyCode = 0;
     // Initialize the package
     // emailAuth = EmailAuth(
     //   sessionName: "貘nsters",
     // );
   }
 
-  //關閉
-  @override
-  void dispose() {
-    super.dispose();
+  void verifyCode(String input) {
+    var inputCode = int.parse(input);
+    if (inputCode == VerifyCode) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          duration: Duration(seconds: 1),
+          backgroundColor: BackgroundColorWarm,
+          content: Text(
+            "認證成功",
+            style: TextStyle(color: Colors.white, fontSize: 30),
+          )));
+      Navigator.pushReplacement(
+          context, MaterialPageRoute(builder: (context) => SettingLockPage()));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          duration: Duration(seconds: 1),
+          backgroundColor: BackgroundColorWarm,
+          content: Text(
+            "認證失敗",
+            style: TextStyle(color: Colors.white, fontSize: 30),
+          )));
+    }
+  }
+
+  Future sendVerifyEmail({
+    required String userEmail,
+    required int code,
+  }) async {
+    print("sending VerifyEmail");
+    String? email = userEmail; //useremail
+    const serviceId = "service_v0eahku";
+    const templateId = "template_989nvlq";
+    const userId = "x0TtUpsa7W7aHFIbl";
+    final url = Uri.parse('https://api.emailjs.com/api/v1.0/email/send');
+    final response = await http.post(url,
+        headers: {
+          'origin': 'http://localhost',
+          'Content-Type': 'application/json'
+        },
+        body: json.encode({
+          'service_id': serviceId,
+          'template_id': templateId,
+          'user_id': userId,
+          'accessToken': "9OoipUoZgha107DzjjE3w",
+          'template_params': {
+            'user_email': email,
+            'verify_code': code,
+          }
+        }));
+
+    if (response.statusCode == 200) {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          duration: Duration(seconds: 1),
+          backgroundColor: BackgroundColorWarm,
+          content: Text(
+            "驗證碼傳送成功",
+            style: TextStyle(color: Colors.white, fontSize: 30),
+          )));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          duration: Duration(seconds: 1),
+          backgroundColor: BackgroundColorWarm,
+          content: Text(
+            "驗證碼傳送失敗",
+            style: TextStyle(color: Colors.white, fontSize: 30),
+          )));
+    }
   }
 
   Future<Map> getPersonalInfo() async {
     Map personalInfoResult = {};
     print("doing...");
-    log(userAccount);
     final MemberRepository memberRepository = MemberRepository();
     Future<Data> personalInfo = memberRepository
         .searchPersonalInfoByAccount(userAccount)
@@ -50,6 +116,7 @@ class _Forget_Lock_AuthState extends State<Forget_Lock_Auth> {
     await personalInfo.then((value) async {
       personalInfoResult["mail"] = value.data.first.mail;
     });
+    userEmail = personalInfoResult["mail"];
     hintEmailFunc(personalInfoResult["mail"]);
     setState(() {});
     return personalInfoResult;
@@ -62,53 +129,7 @@ class _Forget_Lock_AuthState extends State<Forget_Lock_Auth> {
     String hintBack = splitEmail[0].substring(lenth - 1);
     String hintMiddle = "*" * (lenth - 2);
     hintEmail = hintFront + hintMiddle + hintBack + "@" + splitEmail[1];
-  }
-
-  void sendOTP() async {
-    emailAuth.sessionName = "貘nsters";
-    var res = await emailAuth.sendOtp(recipientMail: _mailController.text);
-    if (res) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          duration: Duration(seconds: 1),
-          backgroundColor: BackgroundColorWarm,
-          content: Text(
-            "認證碼傳送成功",
-            style: TextStyle(color: Colors.white, fontSize: 30),
-          )));
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          duration: Duration(seconds: 1),
-          backgroundColor: BackgroundColorWarm,
-          content: Text(
-            "認證碼傳送失敗",
-            style: TextStyle(color: Colors.white, fontSize: 30),
-          )));
-    }
-  }
-
-  void verifyOTP() {
-    var res = emailAuth.validateOtp(
-        recipientMail: _mailController.text, userOtp: _otpController.text);
-    if (res) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          duration: Duration(seconds: 1),
-          backgroundColor: BackgroundColorWarm,
-          content: Text(
-            "認證成功",
-            style: TextStyle(color: Colors.white, fontSize: 30),
-          )));
-
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => SettingLockPage()));
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          duration: Duration(seconds: 1),
-          backgroundColor: BackgroundColorWarm,
-          content: Text(
-            "認證失敗",
-            style: TextStyle(color: Colors.white, fontSize: 30),
-          )));
-    }
+    print(userEmail);
   }
 
   @override
@@ -166,10 +187,10 @@ class _Forget_Lock_AuthState extends State<Forget_Lock_Auth> {
                           ],
                         ),
                       ),
-
                       const SizedBox(height: 50.0),
                       //信箱
                       TextFormField(
+                        style: const TextStyle(color: Colors.black),
                         autofocus: false,
                         controller: _mailController,
                         decoration: InputDecoration(
@@ -201,7 +222,17 @@ class _Forget_Lock_AuthState extends State<Forget_Lock_Auth> {
                       Align(
                         alignment: Alignment.centerRight,
                         child: TextButton(
-                            onPressed: () => sendOTP(),
+                            onPressed: () {
+                              if (_mailController.text == userEmail) {
+                                VerifyCode = Random().nextInt(899999) + 100000;
+                                sendVerifyEmail(
+                                    userEmail: _mailController.text,
+                                    code: VerifyCode);
+                              } else {
+                                showAlertDialog(context);
+                              }
+                            },
+                            //sendOTP(),
                             child: const Text(
                               '傳送認證碼',
                               style: TextStyle(
@@ -214,6 +245,7 @@ class _Forget_Lock_AuthState extends State<Forget_Lock_Auth> {
                       SizedBox(height: 10.0),
                       //認證碼
                       TextFormField(
+                        style: const TextStyle(color: Colors.black),
                         controller: _otpController,
                         decoration: const InputDecoration(
                           labelText: "認證碼",
@@ -267,7 +299,8 @@ class _Forget_Lock_AuthState extends State<Forget_Lock_Auth> {
                             final isValidForm =
                                 _formKey.currentState!.validate();
                             if (isValidForm) {
-                              verifyOTP();
+                              verifyCode(_otpController.text);
+                              //verifyOTP();
                             }
                           },
                         ),
@@ -283,3 +316,52 @@ class _Forget_Lock_AuthState extends State<Forget_Lock_Auth> {
     );
   }
 }
+
+showAlertDialog(BuildContext context) {
+  AlertDialog dialog = AlertDialog(
+    //backgroundColor: const Color(0xfffffed4),
+    title: const Text(
+      "信箱錯誤",
+      style: TextStyle(
+        fontFamily: 'Segoe UI',
+        fontSize: 30,
+        color: Color.fromRGBO(160, 82, 45, 1),
+      ),
+      softWrap: true,
+    ),
+    content: const Text(
+      "請依照提示輸入與註冊時相同的信箱",
+      style: TextStyle(
+        fontFamily: 'Segoe UI',
+        fontSize: 25,
+        color: Colors.black,
+      ),
+      softWrap: true,
+    ),
+    actions: [
+      RaisedButton(
+          color: const Color.fromRGBO(160, 82, 45, 1),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(22.0)),
+          child: const Text(
+            "OK",
+            style: TextStyle(
+              fontFamily: 'Segoe UI',
+              fontSize: 15,
+              color: Color.fromRGBO(255, 255, 255, 1),
+            ),
+            softWrap: true,
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          })
+    ],
+  );
+  showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return dialog;
+      });
+}
+
+int VerifyCode = 1;
