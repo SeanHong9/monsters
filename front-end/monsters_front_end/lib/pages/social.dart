@@ -99,13 +99,15 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
         .then((value) => Data.fromJson(value!));
     Map socialResult = {};
 
+    
+
     await socials.then((value) async {
       await socialResult.putIfAbsent(
         "itemCounter",
-        () => value.data.length,
+        () => min(value.data.length, 32),
       );
 
-      for (int index = 0; index < min(value.data.length, 20); index++) {
+      for (int index = 0; index < min(value.data.length, 32); index++) {
         String type = "";
         switch (value.data.elementAt(index).type) {
           case 1:
@@ -130,19 +132,20 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
             break;
         }
 
-        socialResult.putIfAbsent(
+        await socialResult.putIfAbsent(
           "result $index",
           () => {
             'id': value.data.elementAt(index).id,
             'nickName': value.data.elementAt(index).nickName,
             'avatar': value.data.elementAt(index).monsterId,
             'content': value.data.elementAt(index).content,
-            'type': type,
             'time': value.data.elementAt(index).time,
-            'solve': value.data.elementAt(index).solve?.toInt(),
-            'mood': value.data.elementAt(index).mood,
-            'index': value.data.elementAt(index).index,
-            'share': value.data.elementAt(index).share,
+            // 'avatar': 1,
+            // 'type': type,
+            // 'solve': value.data.elementAt(index).solve?.toInt(),
+            // 'mood': value.data.elementAt(index).mood,
+            // 'index': value.data.elementAt(index).index,
+            // 'share': value.data.elementAt(index).share,
           },
         );
       }
@@ -210,8 +213,8 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
                                 ),
                               ),
                               onTap: () {
-                                setState(() {
                                   selectionTab_type = 1;
+                                setState(() {
                                 });
                               }),
                           //煩惱標籤
@@ -412,17 +415,17 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
                                                             color: const Color(
                                                                 0xffffffff),
                                                             border: Border(
-                                                                bottom: BorderSide(
-                                                                    width: 1.0,
-                                                                    color: const Color(
-                                                                        0xffa0522d)),
-                                                                left: BorderSide(
-                                                                    width: 1.0,
-                                                                    color: const Color(
-                                                                        0xffa0522d)),
-                                                                right: BorderSide(
-                                                                    width: 1.0,
-                                                                    color: const Color(
+                                                              bottom: BorderSide(
+                                                                  width: 1.0,
+                                                                  color: const Color(
+                                                                      0xffa0522d)),
+                                                              left: BorderSide(
+                                                                  width: 1.0,
+                                                                  color: const Color(
+                                                                      0xffa0522d)),
+                                                              right: BorderSide(
+                                                                width: 1.0,
+                                                                color: const Color(
                                                                     0xffa0522d),
                                                               ),
                                                             ),
