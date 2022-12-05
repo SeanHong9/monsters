@@ -1,5 +1,6 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, constant_identifier_names, non_constant_identifier_names
 
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
@@ -16,6 +17,8 @@ import 'package:monsters_front_end/pages/social.dart';
 import 'package:monsters_front_end/pages/settings/style.dart';
 import 'package:monsters_front_end/state/drawer.dart';
 
+import '../../model/monsterModel.dart';
+import '../../repository/monsterRepo.dart';
 import '../annoyanceChat.dart';
 
 class Manual extends StatefulWidget {
@@ -24,61 +27,22 @@ class Manual extends StatefulWidget {
 }
 
 class _ManualState extends State<Manual> with SingleTickerProviderStateMixin {
+  late Future _future;
   //新增的浮出按鈕動畫用
   late AnimationController animationController;
   late Animation degOneTranslationAnimation, degTwoTranslationAnimation;
   late Animation rotationAnimation;
   StateSetter? animationState;
-  //TODO:用userAccount傳入圖鑑API獲得圖鑑資訊
-  List<int> UnlockMonsterId = [0, 1, 3, 4, 6, 9, 10, 13, 18]; //資料庫取得
-  List<String> showNames = [];
-  List<String> showPics = [];
   int selectionTab_type = 1;
   static const List monsterNames = monsterNamesList;
   static const List monsterNames_CH = monsterNamesList_CH;
-  int TotalMonsters = monsterNames.length;
-
-  void changeUI() {
-    //get Unlocked id
-    showNames = [];
-    showPics = [];
-
-    for (int i = 0; i < monsterNames.length; i++) {
-      if (UnlockMonsterId.contains(i)) {
-        showNames.add(monsterNames_CH[i]);
-        showPics.add(getMonsterImage(monsterNames[i]));
-        log("ID= " + i.toString());
-      } else {
-        if (selectionTab_type == 1) {
-          showNames.add("???");
-          showPics.add(
-            'assets/image/unknown.png',
-          );
-        }
-      }
-      log("------------");
-      log(showNames.toString());
-      log(showPics.toString());
-      TotalMonsters = showNames.length;
-    }
-
-    log("SHOWNAME: " + showNames.toString());
-    log("SHOWPic: " + showPics.toString());
-    setState(() {});
-    //go through data when touch UnlockedMonsterId then save MonsterName and monsterPics
-  }
+  int totalMonsters = monsterNames.length;
 
   @override
   Widget build(BuildContext context) {
-    for (int i = 0; i < TotalMonsters; i++) {
-      if (UnlockMonsterId.contains(i)) {
-        showNames.add(monsterNamesList_CH[i]);
-        showPics.add(getMonsterImage(monsterNamesList[i]));
-      } else {
-        showNames.add("???");
-        showPics.add('assets/image/unknown.png');
-      }
-    }
+    _future = getMonsterList();
+    setState(() {});
+
     GlobalKey<ScaffoldState> _scaffoldKEy = GlobalKey<ScaffoldState>();
 
     return Scaffold(
@@ -99,169 +63,181 @@ class _ManualState extends State<Manual> with SingleTickerProviderStateMixin {
             ),
           ),
 
-          //整體布局
-          Column(
-            mainAxisSize: MainAxisSize.max,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              //標題 完成
-              Expanded(flex: 10, child: mainAppBarTitleContainer("圖鑑")),
-              //標籤
-              Expanded(
-                  flex: 5,
-                  child: Container(
-                    alignment: Alignment.center,
-                    padding: EdgeInsets.only(left: 15, bottom: 10),
-                    child: Center(
-                      child: Wrap(
-                        spacing: 20,
-                        //標籤設定
-                        children: [
-                          //全部標籤
-                          InkWell(
-                              child: Container(
-                                width: 60,
-                                decoration: BoxDecoration(
-                                  color: selectionTab_type == 1
-                                      ? const Color(0xffa0522d)
-                                      : const Color(0xffffed97),
-                                  borderRadius: const BorderRadius.all(
-                                      Radius.elliptical(9999.0, 9999.0)),
-                                ),
-                                child: Text(
-                                  '全部',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      fontFamily: 'Segoe UI',
-                                      fontSize: 20,
-                                      color: selectionTab_type == 1 //點按後更新文字顏色
-                                          ? const Color(0xffffffff)
-                                          : const Color(0xffa0522d)),
-                                ),
-                              ),
-                              onTap: () {
-                                selectionTab_type = 1;
-                                changeUI();
-                              }),
-                          //已解鎖標籤
-                          InkWell(
-                              child: Container(
-                                width: 80,
-                                decoration: BoxDecoration(
-                                  color: selectionTab_type == 2
-                                      ? const Color(0xffa0522d)
-                                      : const Color(0xffffed97),
-                                  borderRadius: const BorderRadius.all(
-                                      Radius.elliptical(100.0, 100.0)),
-                                ),
-                                child: Text(
-                                  '已解鎖',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      fontFamily: 'Segoe UI',
-                                      fontSize: 20,
-                                      color: selectionTab_type == 2 //點按後更新文字顏色
-                                          ? const Color(0xffffffff)
-                                          : const Color(0xffa0522d)),
-                                ),
-                              ),
-                              onTap: () {
-                                selectionTab_type = 2;
-                                changeUI();
-                              }),
-                        ],
-                      ),
-                    ),
-                  )),
-
-              Expanded(
-                flex: 80,
-                child: GridView(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      mainAxisSpacing: 20,
-                      crossAxisSpacing: 2),
-                  children: List.generate(
-                    TotalMonsters,
-                    (index) => Container(
-                      alignment: Alignment.center,
-                      child: SizedBox(
-                        width: 160.0,
-                        height: 180.0,
-                        child: GestureDetector(
-                          onTap: () {
-                            if (UnlockMonsterId.contains(index)) {
-                              Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) =>
-                                          Monster_detail(index)));
-                            }
-                          },
-                          child: Stack(
-                            children: <Widget>[
-                              //border
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: Color.fromRGBO(255, 255, 255, 1),
-                                  borderRadius: BorderRadius.circular(11.0),
-                                  border: Border.all(
-                                      width: 1.8,
-                                      color: const Color(0xffa0522d)),
-                                ),
-                                margin:
-                                    EdgeInsets.fromLTRB(0.0, 0.0, 0.0, 32.0),
-                              ),
-                              //image
-                              Pinned.fromPins(
-                                Pin(start: 10.0, end: 10.0),
-                                Pin(size: 120.0, start: 15.0),
-                                child:
-                                    // Adobe XD layer: 'monster1' (shape)
-                                    Container(
-                                  decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                      image: AssetImage(showPics[index]),
-                                      fit: BoxFit.scaleDown,
+          FutureBuilder<dynamic>(
+              future: _future,
+              builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                if (snapshot.data == null) {
+                  return Center(
+                      child: Text(
+                    "Loading...",
+                    style: TextStyle(fontSize: 30),
+                  ));
+                }
+                return Column(
+                  mainAxisSize: MainAxisSize.max,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    //標題 完成
+                    Expanded(flex: 10, child: mainAppBarTitleContainer("圖鑑")),
+                    //標籤
+                    Expanded(
+                        flex: 5,
+                        child: Container(
+                          alignment: Alignment.center,
+                          padding: EdgeInsets.only(left: 15, bottom: 10),
+                          child: Center(
+                            child: Wrap(
+                              spacing: 20,
+                              //標籤設定
+                              children: [
+                                //全部標籤
+                                InkWell(
+                                    child: Container(
+                                      width: 60,
+                                      decoration: BoxDecoration(
+                                        color: selectionTab_type == 1
+                                            ? const Color(0xffa0522d)
+                                            : const Color(0xffffed97),
+                                        borderRadius: const BorderRadius.all(
+                                            Radius.elliptical(9999.0, 9999.0)),
+                                      ),
+                                      child: Text(
+                                        '全部',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            fontFamily: 'Segoe UI',
+                                            fontSize: 20,
+                                            color: selectionTab_type ==
+                                                    1 //點按後更新文字顏色
+                                                ? const Color(0xffffffff)
+                                                : const Color(0xffa0522d)),
+                                      ),
                                     ),
-                                  ),
+                                    onTap: () {
+                                      selectionTab_type = 1;
+                                      setState(() {});
+                                    }),
+                                //已解鎖標籤
+                                InkWell(
+                                    child: Container(
+                                      width: 80,
+                                      decoration: BoxDecoration(
+                                        color: selectionTab_type == 2
+                                            ? const Color(0xffa0522d)
+                                            : const Color(0xffffed97),
+                                        borderRadius: const BorderRadius.all(
+                                            Radius.elliptical(100.0, 100.0)),
+                                      ),
+                                      child: Text(
+                                        '已解鎖',
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                            fontFamily: 'Segoe UI',
+                                            fontSize: 20,
+                                            color: selectionTab_type ==
+                                                    2 //點按後更新文字顏色
+                                                ? const Color(0xffffffff)
+                                                : const Color(0xffa0522d)),
+                                      ),
+                                    ),
+                                    onTap: () {
+                                      selectionTab_type = 2;
+                                      setState(() {});
+                                    }),
+                              ],
+                            ),
+                          ),
+                        )),
+
+                    Expanded(
+                      flex: 80,
+                      child: GridView(
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            mainAxisSpacing: 20,
+                            crossAxisSpacing: 2),
+                        children: List.generate(
+                          totalMonsters,
+                          (index) => Container(
+                            alignment: Alignment.center,
+                            child: SizedBox(
+                              width: 160.0,
+                              height: 180.0,
+                              child: GestureDetector(
+                                onTap: () {
+                                  if (snapshot.data["route"][index] != -1) {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                Monster_detail(snapshot
+                                                    .data["route"][index])));
+                                  }
+                                },
+                                child: Stack(
+                                  children: <Widget>[
+                                    //border
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        color: Color.fromRGBO(255, 255, 255, 1),
+                                        borderRadius:
+                                            BorderRadius.circular(11.0),
+                                        border: Border.all(
+                                            width: 1.8,
+                                            color: const Color(0xffa0522d)),
+                                      ),
+                                      margin: EdgeInsets.fromLTRB(
+                                          0.0, 0.0, 0.0, 32.0),
+                                    ),
+                                    //image
+                                    Pinned.fromPins(
+                                      Pin(start: 10.0, end: 10.0),
+                                      Pin(size: 120.0, start: 15.0),
+                                      child:
+                                          // Adobe XD layer: 'monster1' (shape)
+                                          Container(
+                                        decoration: BoxDecoration(
+                                          image: DecorationImage(
+                                            image: AssetImage(snapshot
+                                                .data["showPics"][index]),
+                                            fit: BoxFit.scaleDown,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    //name
+                                    Pinned.fromPins(
+                                      Pin(size: 80.0, middle: 0.5),
+                                      Pin(size: 80.0, middle: 1.55),
+                                      child: Text(
+                                        snapshot.data["showName"][index],
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(
+                                          fontSize: 22,
+                                          fontWeight: FontWeight.w500,
+                                          color: const Color(0xffa0522d),
+                                        ),
+                                        softWrap: false,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                              //name
-                              Pinned.fromPins(
-                                Pin(size: 80.0, middle: 0.5),
-                                Pin(size: 80.0, middle: 1.55),
-                                child: Text(
-                                  showNames[index],
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    fontSize: 22,
-                                    fontWeight: FontWeight.w500,
-                                    color: const Color(0xffa0522d),
-                                  ),
-                                  softWrap: false,
-                                ),
-                              ),
-                            ],
+                            ),
                           ),
                         ),
                       ),
                     ),
-                  ),
-                ),
-              ),
-
-              ///
-              ///
-              ///
-              Expanded(
-                flex: 10,
-                child: Container(
-                  color: BackgroundColorSoft,
-                ),
-              )
-            ],
-          ),
+                    Expanded(
+                      flex: 10,
+                      child: Container(
+                        color: BackgroundColorSoft,
+                      ),
+                    )
+                  ],
+                );
+              }),
+          //整體布局
 
           //互動
           Pinned.fromPins(
@@ -633,7 +609,51 @@ class _ManualState extends State<Manual> with SingleTickerProviderStateMixin {
     animationController.addListener(() {
       setState(() {});
     });
+    _future = getMonsterList();
     super.initState();
+  }
+
+  Future<Map> getMonsterList() async {
+    Map finalMap = {};
+    final MonsterRepository monsterRepository = MonsterRepository();
+    Future<Data> monsters = monsterRepository
+        .searchMonsterByAccount()
+        .then((value) => Data.fromJson(value!));
+    List<int> monsterResult = [];
+    List<String> showNames = [];
+    List<String> showPics = [];
+    List<int> route = [];
+    await monsters.then((value) {
+      //monsterList為使用者已擁有怪獸的清單
+      String temp = jsonDecode(value.data.first.monsterGroup!).toString();
+      temp = temp.substring(1, temp.length - 1);
+      List<String> monsterResult = temp.split(",");
+      final List<int> monsterList =
+          monsterResult.map((e) => int.parse(e)).toList();
+      //更新顯示資料
+      for (int i = 0; i < monsterNames.length; i++) {
+        if (monsterList.contains(i)) {
+          showNames.add(monsterNames_CH[i]);
+          showPics.add(getMonsterImage(monsterNames[i]));
+          route.add(i);
+        } else {
+          if (selectionTab_type == 1) {
+            showNames.add("???");
+            showPics.add(
+              'assets/image/unknown.png',
+            );
+            route.add(-1);
+          }
+        }
+        totalMonsters = showNames.length;
+      }
+      finalMap.putIfAbsent("monsterList", () => monsterList);
+      finalMap.putIfAbsent("showName", () => showNames);
+      finalMap.putIfAbsent("showPics", () => showPics);
+      finalMap.putIfAbsent("route", () => route);
+    });
+
+    return finalMap;
   }
 }
 
