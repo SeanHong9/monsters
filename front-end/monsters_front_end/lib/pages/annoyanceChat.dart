@@ -344,19 +344,20 @@ class _AnnoyanceChat extends State<AnnoyanceChat> with WidgetsBindingObserver {
                           ),
                         ),
                         onPressed: () {
-                          annoyanceRepository.createAnnoyance(Annoyance(
-                            id: 0,
-                            account: userAccount, //"Lin"
-                            content: userAnswers[1], //"純文字不分享無多媒體"
-                            type: userAnswers[0], //4
-                            monsterId: 1,
+                          annoyanceRepository.createAnnoyance(
+                            Annoyance(
+                            id: 0, //0
+                            account: userAccount, //"帳號"
+                            content: userAnswers[1], //"文字內容"
+                            type: userAnswers[0], //0~5
+                            monsterId: 1, //1
                             mood: userAnswers[2], //"否"
-                            index: userAnswers[3], //3
+                            index: userAnswers[3], //1~5
                             time: '',
                             solve: 0,
                             share: userAnswers[4], //0
                             contentFile: contentFile, //null
-                            moodFile: moodFile, //null)
+                            moodFile: moodFile, //null
                           ));
                           Navigator.pushReplacement(
                               //TODO: Level 2

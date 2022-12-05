@@ -1,21 +1,19 @@
 // ignore_for_file: use_key_in_widget_constructors, unnecessary_string_interpolations, prefer_const_constructors, file_names, avoid_unnecessary_containers, sized_box_for_whitespace, non_constant_identifier_names, camel_case_types
 import 'dart:async';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:bubble/bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:monsters_front_end/model/diaryModel.dart';
 import 'package:monsters_front_end/pages/chat_items/Timer_Widget.dart';
 import 'package:monsters_front_end/pages/chat_items/audio_main.dart';
 import 'package:monsters_front_end/pages/chat_items/drawing_colors.dart';
 import 'package:monsters_front_end/pages/settings/monsters_information.dart';
 import 'package:monsters_front_end/pages/settings/style.dart';
-import 'package:monsters_front_end/model/diaryModel.dart';
 import 'package:monsters_front_end/repository/diaryRepo.dart';
 import 'package:video_player/video_player.dart';
-
 import '../../model/audio_Model/audio_player.dart';
 
 class historyDiaryChat extends StatefulWidget {
@@ -129,7 +127,7 @@ class _historyDiaryChat extends State<historyDiaryChat> {
       reply("畫心情失敗，請通知官方平台");
     } else {
       final imageTemporary = File(moodImage.path);
-      this.moodFile = imageTemporary;
+      moodFile = imageTemporary;
       messages.insert(0, {"data": 5, "image": moodFile});
     }
 

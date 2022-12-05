@@ -15,7 +15,11 @@ import org.springframework.web.bind.annotation.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.acl.Group;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @AllArgsConstructor
 @RestController
@@ -94,11 +98,34 @@ public class MonsterController {
         ArrayNode dataNode = result.putArray("data");
         try {
             List<PersonalMonsterBean> personalMonsterBeanList = personalMonsterService.findByAccount(account);
+            ObjectNode personalMonsterNode = dataNode.addObject();
+            ArrayList monsterArray = new ArrayList();
+            for(PersonalMonsterBean personalMonsterBean : personalMonsterBeanList){
+                monsterArray.add(personalMonsterBean.getMonsterGroup());
+            }
+            Set<Integer> targetSet = new HashSet<>(monsterArray);
+            personalMonsterNode.put("monsterGroup",targetSet.toString());
+            result.put("result", true);
+            result.put("errorCode", "200");
+            result.put("message", "查詢成功");
+        } catch (Exception e) {
+            System.out.println(e);
+            e.printStackTrace();
+        }
+        return ResponseEntity.status(HttpStatus.CREATED).body(result);
+    }
+
+    @ResponseBody
+    @GetMapping(value = "skin/search/{monsterGroup}/{account}")
+    public ResponseEntity searchMonsterSkin(@PathVariable(name = "monsterGroup") Integer monsterGroup,@PathVariable(name = "account") String account) {
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode result = mapper.createObjectNode();
+        ArrayNode dataNode = result.putArray("data");
+        try {
+            List<PersonalMonsterBean> personalMonsterBeanList = personalMonsterService.findMonsterIdByMonsterGroupByAccount(monsterGroup,account);
             for(PersonalMonsterBean personalMonsterBean : personalMonsterBeanList){
                 ObjectNode personalMonsterNode = dataNode.addObject();
-                personalMonsterNode.put("account", personalMonsterBean.getAccount());
-                personalMonsterNode.put("monsterId", personalMonsterBean.getMonsterId());
-                personalMonsterNode.put("monsterGroup", personalMonsterBean.getMonsterGroup());
+                personalMonsterNode.put("monsterSkin", personalMonsterBean.getMonsterId()%4);
             }
             result.put("result", true);
             result.put("errorCode", "200");
@@ -109,5 +136,6 @@ public class MonsterController {
         }
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
+
 
 }
