@@ -22,7 +22,7 @@ class _LockPageState extends State<LockPage> {
           const Align(
             alignment: Alignment.topCenter,
             child: Text(
-              '密碼',
+              '密碼鎖',
               style: TextStyle(
                 fontFamily: 'Segoe UI',
                 fontSize: 40,
