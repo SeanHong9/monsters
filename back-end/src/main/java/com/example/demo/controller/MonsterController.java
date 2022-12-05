@@ -123,10 +123,12 @@ public class MonsterController {
         ArrayNode dataNode = result.putArray("data");
         try {
             List<PersonalMonsterBean> personalMonsterBeanList = personalMonsterService.findMonsterIdByMonsterGroupByAccount(monsterGroup,account);
+            ObjectNode personalMonsterNode = dataNode.addObject();
+            ArrayList monsterSkinArray = new ArrayList();
             for(PersonalMonsterBean personalMonsterBean : personalMonsterBeanList){
-                ObjectNode personalMonsterNode = dataNode.addObject();
-                personalMonsterNode.put("monsterSkin", personalMonsterBean.getMonsterId()%4);
+                monsterSkinArray.add(personalMonsterBean.getMonsterId()%4);
             }
+            personalMonsterNode.put("monsterSkin", monsterSkinArray.toString());
             result.put("result", true);
             result.put("errorCode", "200");
             result.put("message", "查詢成功");
