@@ -24,6 +24,12 @@ class MonsterRepository implements MonsterApiDataSource {
         Uri.parse('$domain/monster/skin/search/$monsterGroup/$userAccount'));
   }
 
+  @override
+  Future<String> modifySkin(Monster monster) {
+    return _modifySkin(
+        Uri.parse('$domain/monster/modify/skin/$userAccount'), monster);
+  }
+
   Future<Map<String, dynamic>?> _searchMonsterByAccount(Uri url) async {
     try {
       log("doing..._searchMonsterByAccount()");
@@ -48,11 +54,11 @@ class MonsterRepository implements MonsterApiDataSource {
     try {
       final request =
           await client.get(url, headers: {'Content-type': 'application/json'});
-      log("*" * 20);
-      log("monster status");
-      log("status: " + request.statusCode.toString());
-      log("body: " + request.body.toString());
-      log("*" * 20);
+      // log("*" * 20);
+      // log("monster status");
+      // log("status: " + request.statusCode.toString());
+      // log("body: " + request.body.toString());
+      // log("*" * 20);
       if (request.statusCode == 200) {
         Map<String, dynamic> monsterSkin = jsonDecode(request.body);
         return Future.value(monsterSkin);
@@ -63,6 +69,29 @@ class MonsterRepository implements MonsterApiDataSource {
     } catch (e) {
       print(e.toString());
       return null;
+    }
+  }
+
+  Future<String> _modifySkin(
+    Uri url,
+    Monster monster,
+  ) async {
+    log(json.encode(monster).toString());
+    try {
+      final request = await client.patch(
+        url,
+        headers: {'Content-type': 'application/json'},
+        body: json.encode(monster),
+      );
+      log("modify statusCode: " + request.statusCode.toString());
+      log("modify body: " + request.body.toString());
+      if (request.statusCode == 200) {
+        return request.body;
+      } else {
+        return Future.value(request.body);
+      }
+    } catch (e) {
+      return e.toString();
     }
   }
 }

@@ -129,9 +129,7 @@ public class MonsterController {
             for(PersonalMonsterBean personalMonsterBean : personalMonsterBeanList){
                 monsterSkinArray.add(personalMonsterBean.getMonsterId()%4);
             }
-            personalMonsterNode.put("monsterSkin", monsterSkinArray.toString());
-            personalMonsterNode.put("account", personalMonsterUseBean.getAccount());
-            personalMonsterNode.put("monsterGroup", personalMonsterUseBean.getMonsterGroup());
+            personalMonsterNode.put("ownSkin", monsterSkinArray.toString());
             personalMonsterNode.put("use", personalMonsterUseBean.getUse());
             result.put("result", true);
             result.put("errorCode", "200");
