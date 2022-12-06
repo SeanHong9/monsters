@@ -49,19 +49,24 @@ class Annoyance {
   int? share;
   File? contentFile;
   File? moodFile;
-  Annoyance(
-      {this.id,
-      this.account,
-      this.content,
-      this.type,
-      this.monsterId,
-      this.mood,
-      this.index,
-      this.time,
-      this.solve,
-      this.share,
-      this.contentFile,
-      this.moodFile});
+  bool? newMonster;
+  int? newMonsterId;
+  Annoyance({
+    this.id,
+    this.account,
+    this.content,
+    this.type,
+    this.monsterId,
+    this.mood,
+    this.index,
+    this.time,
+    this.solve,
+    this.share,
+    this.contentFile,
+    this.moodFile,
+    this.newMonster,
+    this.newMonsterId,
+  });
 
   factory Annoyance.fromJson(Map<String, dynamic> json) => Annoyance(
         id: json['id'],
@@ -76,6 +81,8 @@ class Annoyance {
         share: json['share'],
         contentFile: json['contentFile'],
         moodFile: json['moodFile'],
+        newMonster: json['newMonster'],
+        newMonsterId: json['newMonsterId'],
       );
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
@@ -91,10 +98,18 @@ class Annoyance {
     data['share'] = share;
     data['contentFile'] = contentFile;
     data['moodFile'] = moodFile;
+    data['newMonster'] = newMonster;
+    data['newMonsterId'] = newMonsterId;
     return data;
   }
+
   @override
   String toString() {
-    return "{account:$account,id: $id,account: $account,content: $content, type: $type, monsterId: $monsterId, mood: $mood, index: $index, time: $time, solve: $solve, share: $share, contentFile: $contentFile, moodFile: $moodFile}}";
+    return "{account:$account,id: $id,account: $account,content: $content, type: $type, monsterId: $monsterId, mood: $mood, index: $index, time: $time, solve: $solve, share: $share, contentFile: $contentFile, moodFile: $moodFile,newMonster:$newMonster,newMonsterId:$newMonsterId}";
+  }
+
+  @override
+  String getCreate() {
+    return "{newMonster:$newMonster,newMonsterId:$newMonsterId}";
   }
 }

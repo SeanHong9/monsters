@@ -116,8 +116,6 @@ class _historyAnnoyanceChat extends State<historyAnnoyanceChat> {
                                     data["id"],
                                     Annoyance(
                                       id: data["id"],
-                                      monsterId: data["monsterId"],
-                                      index: data["index"],
                                       solve: 1,
                                     ),
                                   );
@@ -178,9 +176,6 @@ class _historyAnnoyanceChat extends State<historyAnnoyanceChat> {
                                         data["id"],
                                         Annoyance(
                                           id: data["id"],
-                                          monsterId: data["monsterId"],
-                                          index: data["index"],
-                                          solve: data["solve"],
                                           share: _share,
                                         ),
                                       );
@@ -231,9 +226,6 @@ class _historyAnnoyanceChat extends State<historyAnnoyanceChat> {
                                     data["id"],
                                     Annoyance(
                                       id: data["id"],
-                                      monsterId: data["monsterId"],
-                                      index: data["index"],
-                                      solve: data["solve"],
                                       share: _share,
                                     ),
                                   );

@@ -3,6 +3,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:flutter/cupertino.dart';
 import 'package:monsters_front_end/main.dart';
 
 import '../API/annoyanceAPI.dart';
@@ -15,7 +16,7 @@ const String domain = "http://220.132.124.140:5000";
 class AnnoyanceRepository implements AnnoyanceApiDataSource {
   final client = http.Client();
   @override
-  Future<String> createAnnoyance(Annoyance annoyance) {
+  Future<Map<String, dynamic>?> createAnnoyance(Annoyance annoyance) {
     return _createAnnoyance(Uri.parse('$domain/annoyance/create'), annoyance);
   }
 
@@ -28,30 +29,28 @@ class AnnoyanceRepository implements AnnoyanceApiDataSource {
   @override
   Future<String> modifyAnnoyance(int id, Annoyance annoyance) {
     return _modifyAnnoyance(
-        Uri.parse('$domain/annoyance/modify/$id'), annoyance);
+        Uri.parse('$domain/annoyance/modify/$id/$userAccount'), annoyance);
   }
 
-  Future<String> _createAnnoyance(
+  Future<Map<String, dynamic>?> _createAnnoyance(
     Uri url,
     Annoyance annoyance,
   ) async {
-    log(annoyance.toString());
     try {
       var body = json.encode(annoyance);
       var request = await client.post(url,
           headers: {'Content-type': 'application/json'}, body: body);
+
       if (request.statusCode == 201) {
-        log(
-          request.body,
-          name: request.statusCode.toString(),
-        );
-        return request.body;
+        Map<String, dynamic> annoyance = jsonDecode(request.body);
+        return Future.value(annoyance);
       } else {
-        return request.body;
+        Map<String, dynamic> annoyance = jsonDecode(request.body);
+        return annoyance;
       }
     } catch (e) {
-      print(e);
-      return e.toString();
+      print(e.toString());
+      return null;
     }
   }
 
