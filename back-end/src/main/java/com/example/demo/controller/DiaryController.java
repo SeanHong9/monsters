@@ -87,7 +87,7 @@ public class DiaryController {
                         personalMonsterUseBean.setUse(allMonster.get(index).getId());
                         ObjectNode personalMonsterNode = dataNode.addObject();
                         personalMonsterNode.put("newMonster", true);
-                        personalMonsterNode.put("monster", allMonster.get(index).getNameChinese());
+                        personalMonsterNode.put("monster", allMonster.get(index).getId());
                         personalMonsterService.createAndReturnBean(personalMonsterBean);
                         personalMonsterUseService.createAndReturnBean(personalMonsterUseBean);
                     }else {
@@ -96,7 +96,7 @@ public class DiaryController {
                         personalMonsterUseBean.setUse(allMonster.get(index).getId());
                         ObjectNode personalMonsterNode = dataNode.addObject();
                         personalMonsterNode.put("newMonster", false);
-                        personalMonsterNode.put("monster", allMonster.get(index).getNameChinese());
+                        personalMonsterNode.put("monster", allMonster.get(index).getId());
                         personalMonsterUseService.createAndReturnBean(personalMonsterUseBean);
                     }
                     result.put("result", true);

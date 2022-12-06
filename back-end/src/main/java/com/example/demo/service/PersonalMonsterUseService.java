@@ -6,4 +6,6 @@ import org.springframework.transaction.annotation.Transactional;
 public interface PersonalMonsterUseService extends BaseService<PersonalMonsterUseBean> {
     @Transactional(readOnly = false)
     void updateMonsterSkin(String account, PersonalMonsterUseBean personalMonsterUseBean);
+
+    PersonalMonsterUseBean findByAccountAndMonsterGroup(String account, Integer monsterGroup);
 }

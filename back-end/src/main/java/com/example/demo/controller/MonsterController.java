@@ -18,10 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @AllArgsConstructor
 @RestController
@@ -126,12 +123,16 @@ public class MonsterController {
         ArrayNode dataNode = result.putArray("data");
         try {
             List<PersonalMonsterBean> personalMonsterBeanList = personalMonsterService.findMonsterIdByMonsterGroupByAccount(monsterGroup,account);
+            PersonalMonsterUseBean personalMonsterUseBean = personalMonsterUseService.findByAccountAndMonsterGroup(account, monsterGroup);
             ObjectNode personalMonsterNode = dataNode.addObject();
             ArrayList monsterSkinArray = new ArrayList();
             for(PersonalMonsterBean personalMonsterBean : personalMonsterBeanList){
                 monsterSkinArray.add(personalMonsterBean.getMonsterId()%4);
             }
             personalMonsterNode.put("monsterSkin", monsterSkinArray.toString());
+            personalMonsterNode.put("account", personalMonsterUseBean.getAccount());
+            personalMonsterNode.put("monsterGroup", personalMonsterUseBean.getMonsterGroup());
+            personalMonsterNode.put("use", personalMonsterUseBean.getUse());
             result.put("result", true);
             result.put("errorCode", "200");
             result.put("message", "查詢成功");
@@ -143,7 +144,7 @@ public class MonsterController {
     }
 
     @ResponseBody
-    @PatchMapping("/modify/{account}")
+    @PatchMapping("/modify/skin/{account}")
     public ResponseEntity modifyMonsterSkin(@PathVariable(name = "account") String account, PersonalMonsterUseBean personalMonsterUseBean) throws NotFoundException {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode result = mapper.createObjectNode();
