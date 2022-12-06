@@ -114,8 +114,11 @@ class _ManualState extends State<Manual> with SingleTickerProviderStateMixin {
                                       ),
                                     ),
                                     onTap: () {
+                                      if (selectionTab_type != 1) {
+
                                       selectionTab_type = 1;
                                       setState(() {});
+                                      }
                                     }),
                                 //已解鎖標籤
                                 InkWell(
@@ -141,8 +144,11 @@ class _ManualState extends State<Manual> with SingleTickerProviderStateMixin {
                                       ),
                                     ),
                                     onTap: () {
+                                      if (selectionTab_type != 2) {
+
                                       selectionTab_type = 2;
                                       setState(() {});
+                                      }
                                     }),
                               ],
                             ),

@@ -66,12 +66,10 @@ public class AnnoyanceController {
                         annoyanceBean.setMood(moodPath.toString());
                     }
                     List<AllMonsterBean> allMonster = allMonsterService.searchAll();
-//                    index = (int) (Math.random() * 19);
-                    index = (int) (Math.random() * 11);
+                    index = (int) (Math.random() * 19);
 
                     while (allMonster.get(index).getMain() != 1) {
-//                    index = (int) (Math.random() * 19);
-                        index = (int) (Math.random() * 11);
+                    index = (int) (Math.random() * 19);
                     }
                     annoyanceBean.setMonsterId(allMonster.get(index).getId());
                     annoyanceService.createAndReturnBean(annoyanceBean);
