@@ -54,7 +54,7 @@ public class HistoryController {
                     ObjectNode annoyanceNode = dataNode.addObject();
                     annoyanceNode.put("id", annoyanceBean.getId());
                     annoyanceNode.put("content", annoyanceBean.getContent());
-                    annoyanceNode.put("type", annoyanceBean.getType().getId());
+                    annoyanceNode.put("type", annoyanceBean.getType());
                     annoyanceNode.put("monsterId", annoyanceBean.getMonsterId());
                     annoyanceNode.put("mood", annoyanceBean.getMood());
                     annoyanceNode.put("index", annoyanceBean.getIndex());
@@ -104,7 +104,7 @@ public class HistoryController {
                     ObjectNode annoyanceNode = dataNode.addObject();
                     annoyanceNode.put("id", annoyanceBean.getId());
                     annoyanceNode.put("content", annoyanceBean.getContent());
-                    annoyanceNode.put("type", annoyanceBean.getType().getId());
+                    annoyanceNode.put("type", annoyanceBean.getType());
                     annoyanceNode.put("monsterId", annoyanceBean.getMonsterId());
                     annoyanceNode.put("mood", annoyanceBean.getMood());
                     annoyanceNode.put("index", annoyanceBean.getIndex());
@@ -145,7 +145,7 @@ public class HistoryController {
                     ObjectNode annoyanceNode = dataNode.addObject();
                     annoyanceNode.put("id", annoyanceBean.getId());
                     annoyanceNode.put("content", annoyanceBean.getContent());
-                    annoyanceNode.put("type", annoyanceBean.getType().getId());
+                    annoyanceNode.put("type", annoyanceBean.getType());
                     annoyanceNode.put("monsterId", annoyanceBean.getMonsterId());
                     annoyanceNode.put("mood", annoyanceBean.getMood());
                     annoyanceNode.put("index", annoyanceBean.getIndex());

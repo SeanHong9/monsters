@@ -7,6 +7,7 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class DiaryDAOImpl extends BaseDAOImplement<Diary> implements DiaryDAO {
@@ -30,5 +31,13 @@ public class DiaryDAOImpl extends BaseDAOImplement<Diary> implements DiaryDAO {
         detachedCriteria.add(Restrictions.eq("share", 1));
         detachedCriteria.add(Restrictions.eq("account", account));
         return findByCriteria(detachedCriteria);
+    }
+
+    @Override
+    public Optional<Diary> findByIdAndAccount(Integer id, String account) {
+        DetachedCriteria detachedCriteria = DetachedCriteria.forClass(Diary.class);
+        detachedCriteria.add(Restrictions.eq("id", id));
+        detachedCriteria.add(Restrictions.eq("account", account));
+        return Optional.empty();
     }
 }

@@ -106,8 +106,8 @@ public class DiaryController {
     }
 
     @ResponseBody
-    @PatchMapping("/modify/{id}")
-    public ResponseEntity modifyAnnoyance(@PathVariable(name = "id") int id,@RequestBody DiaryBean diaryBean){
+    @PatchMapping("/modify/{id}/{account}")
+    public ResponseEntity modifyAnnoyance(@PathVariable(name = "id") int id,@PathVariable(name = "account") String account,@RequestBody DiaryBean diaryBean){
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode result = mapper.createObjectNode();
         diaryService.update(id, diaryBean);

@@ -10,6 +10,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.AllArgsConstructor;
+import org.apache.ibatis.javassist.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -41,6 +42,7 @@ public class AnnoyanceController {
     @PostMapping("/create")
     public ResponseEntity createAnnoyance(@RequestBody AnnoyanceBean annoyanceBean) {
         int index = 0;
+        System.out.println("------------------------------------");
         boolean isAddMonster = true;
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode result = mapper.createObjectNode();
@@ -118,11 +120,11 @@ public class AnnoyanceController {
     }
 
     @ResponseBody
-    @PatchMapping("/modify/{id}")
-    public ResponseEntity modifyAnnoyance(@PathVariable(name = "id") int id,@RequestBody AnnoyanceBean annoyanceBean) {
+    @PatchMapping("/modify/{id}/{account}")
+    public ResponseEntity modifyAnnoyance(@PathVariable(name = "id") int id,@PathVariable(name = "account") String account,@RequestBody AnnoyanceBean annoyanceBean) throws NotFoundException {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode result = mapper.createObjectNode();
-        annoyanceService.update(id, annoyanceBean);
+        annoyanceService.updateAnnoyance(id, account, annoyanceBean);
         result.put("result", true);
         result.put("errorCode", "200");
         result.put("message", "修改成功");

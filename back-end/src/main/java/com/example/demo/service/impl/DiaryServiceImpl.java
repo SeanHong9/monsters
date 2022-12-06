@@ -1,9 +1,12 @@
 package com.example.demo.service.impl;
 
+import com.example.demo.bean.AnnoyanceBean;
 import com.example.demo.bean.DiaryBean;
 import com.example.demo.dao.DiaryDAO;
+import com.example.demo.entity.Annoyance;
 import com.example.demo.entity.Diary;
 import com.example.demo.service.DiaryService;
+import org.apache.ibatis.javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,6 +14,7 @@ import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class DiaryServiceImpl extends BaseServiceImplement<DiaryDAO, Diary, DiaryBean> implements DiaryService {
@@ -63,6 +67,19 @@ public class DiaryServiceImpl extends BaseServiceImplement<DiaryDAO, Diary, Diar
             diaryBeanList.add(createBean(diary));
         }
         return diaryBeanList;
+    }
+
+    @Override
+    public void updateDiary(Integer id, String account, DiaryBean diaryBean) throws NotFoundException {
+        Optional<Diary> diaryOptional = diaryDAO.findByIdAndAccount(id, account);
+        if (diaryOptional.isPresent()) {
+            Diary diary = diaryOptional.get();
+            diaryBean.setMonsterId(diary.getMonsterId());
+            copy(diaryBean, diary);
+            diaryDAO.update(diary);
+        } else {
+            throw new NotFoundException("找不到此煩惱, projectNo = " + id + ",functionName = " + account);
+        }
     }
 
     @Override

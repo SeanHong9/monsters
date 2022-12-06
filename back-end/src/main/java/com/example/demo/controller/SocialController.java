@@ -61,7 +61,7 @@ public class SocialController {
                     annoyanceNode.put("id", annoyanceBean.getId());
                     annoyanceNode.put("nickName", nickName);
                     annoyanceNode.put("content", annoyanceBean.getContent());
-                    annoyanceNode.put("type", annoyanceBean.getType().getId());
+                    annoyanceNode.put("type", annoyanceBean.getType());
                     annoyanceNode.put("monsterId", annoyanceBean.getMonsterId());
                     annoyanceNode.put("mood", annoyanceBean.getMood());
                     annoyanceNode.put("index", annoyanceBean.getIndex());
@@ -117,7 +117,7 @@ public class SocialController {
                     annoyanceNode.put("id", annoyanceBean.getId());
                     annoyanceNode.put("content", annoyanceBean.getContent());
                     annoyanceNode.put("nickName", nickName);
-                    annoyanceNode.put("type", annoyanceBean.getType().getId());
+                    annoyanceNode.put("type", annoyanceBean.getType());
                     annoyanceNode.put("monsterId", annoyanceBean.getMonsterId());
                     annoyanceNode.put("mood", annoyanceBean.getMood());
                     annoyanceNode.put("index", annoyanceBean.getIndex());
@@ -209,7 +209,7 @@ public class SocialController {
                     annoyanceNode.put("id", annoyanceBean.getId());
                     annoyanceNode.put("content", annoyanceBean.getContent());
                     annoyanceNode.put("nickName", nickName);
-                    annoyanceNode.put("type", annoyanceBean.getType().getId());
+                    annoyanceNode.put("type", annoyanceBean.getType());
                     annoyanceNode.put("monsterId", annoyanceBean.getMonsterId());
                     annoyanceNode.put("mood", annoyanceBean.getMood());
                     annoyanceNode.put("index", annoyanceBean.getIndex());

@@ -10,7 +10,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class AnnoyanceTypeServiceImpl extends BaseServiceImplement<AnnoyanceTypeDAO, AnnoyanceType, AnnoyanceTypeBean> implements AnnoyanceTypeService {
+public class
+AnnoyanceTypeServiceImpl extends BaseServiceImplement<AnnoyanceTypeDAO, AnnoyanceType, AnnoyanceTypeBean> implements AnnoyanceTypeService {
 
     @Autowired
     private final AnnoyanceTypeDAO annoyanceTypeDAO;

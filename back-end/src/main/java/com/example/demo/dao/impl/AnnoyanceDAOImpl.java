@@ -7,6 +7,7 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class AnnoyanceDAOImpl extends BaseDAOImplement<Annoyance> implements AnnoyanceDAO {
@@ -41,7 +42,13 @@ public class AnnoyanceDAOImpl extends BaseDAOImplement<Annoyance> implements Ann
         return findByCriteria(detachedCriteria);
     }
 
-
+    @Override
+    public Optional<Annoyance> findByIdAndAccount(Integer id, String account) {
+        DetachedCriteria detachedCriteria = DetachedCriteria.forClass(Annoyance.class);
+        detachedCriteria.add(Restrictions.eq("id", id));
+        detachedCriteria.add(Restrictions.eq("account", account));
+        return getOne(detachedCriteria);
+    }
 }
 
 

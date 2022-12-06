@@ -5,6 +5,7 @@ import com.example.demo.dao.AnnoyanceDAO;
 import com.example.demo.entity.Annoyance;
 import com.example.demo.entity.enumerate.AnnoyanceTypeEnum;
 import com.example.demo.service.AnnoyanceService;
+import org.apache.ibatis.javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +13,7 @@ import javax.transaction.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AnnoyanceServiceImpl extends BaseServiceImplement<AnnoyanceDAO, Annoyance, AnnoyanceBean> implements AnnoyanceService {
@@ -29,7 +31,8 @@ public class AnnoyanceServiceImpl extends BaseServiceImplement<AnnoyanceDAO, Ann
     public AnnoyanceBean createAndReturnBean(AnnoyanceBean bean) {
         Annoyance annoyance = createVO(bean);
         annoyance.setTime(LocalDateTime.now());
-        annoyance.setType(AnnoyanceTypeEnum.CAUSE);
+        AnnoyanceTypeEnum annoyanceTypeEnum = AnnoyanceTypeEnum.check(bean.getType().toString());
+//        annoyance.setType(annoyanceTypeEnum);
         annoyanceDAO.insert(annoyance);
         bean = createBean(annoyance);
         return bean;
@@ -73,6 +76,19 @@ public class AnnoyanceServiceImpl extends BaseServiceImplement<AnnoyanceDAO, Ann
             annoyanceBeanList.add(createBean(annoyance));
         }
         return annoyanceBeanList;
+    }
+
+    @Override
+    public void updateAnnoyance(Integer id, String account, AnnoyanceBean annoyanceBean) throws NotFoundException {
+        Optional<Annoyance> annoyanceOptional = annoyanceDAO.findByIdAndAccount(id, account);
+        if (annoyanceOptional.isPresent()) {
+            Annoyance annoyance = annoyanceOptional.get();
+            annoyanceBean.setMonsterId(annoyance.getMonsterId());
+            copy(annoyanceBean, annoyance);
+            annoyanceDAO.update(annoyance);
+        } else {
+            throw new NotFoundException("找不到此煩惱, projectNo = " + id + ",functionName = " + account);
+        }
     }
 
     @Override

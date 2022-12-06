@@ -11,4 +11,10 @@ public enum AnnoyanceTypeEnum {
     public int getId() {
         return id;
     }
+
+    public static AnnoyanceTypeEnum check(String val) {
+        try { return AnnoyanceTypeEnum.valueOf(val); }
+        catch (Exception e) {/* do nothing */}
+        return null;
+    }
 }
