@@ -32,14 +32,14 @@ class _Monster_detailState extends State<Monster_detail> {
   @override
   void initState() {
     _future = getSkinList();
-    setState(() {});
+    // setState(() {});
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     _future = getSkinList();
-    setState(() {});
+    // setState(() {});
     String monsterName = monsterNamesList[index];
     String monsterName_CH = monsterNamesList_CH[index];
 
