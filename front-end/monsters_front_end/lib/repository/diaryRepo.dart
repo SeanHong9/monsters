@@ -14,7 +14,7 @@ import 'annoyanceRepo.dart';
 class DiaryRepository implements DiaryApiDataSource {
   final client = http.Client();
   @override
-  Future<String> createDiary(Diary diary) {
+  Future<Map<String, dynamic>?> createDiary(Diary diary) {
     return _createDiary(Uri.parse('$domain/diary/create'), diary);
   }
 
@@ -27,10 +27,10 @@ class DiaryRepository implements DiaryApiDataSource {
   @override
   Future<String> modifyDiary(int id, Diary diary) {
     return _modifyDiary(
-        Uri.parse('$domain/diary/modify/$id'), diary);
+        Uri.parse('$domain/diary/modify/$id/$userAccount'), diary);
   }
 
-  Future<String> _createDiary(
+  Future<Map<String, dynamic>?> _createDiary(
     Uri url,
     Diary diary,
   ) async {
@@ -39,17 +39,16 @@ class DiaryRepository implements DiaryApiDataSource {
       var request = await client.post(url,
           headers: {'Content-type': 'application/json'}, body: body);
       if (request.statusCode == 201) {
-        log(
-          request.body,
-          name: request.statusCode.toString(),
-        );
-        return request.body;
+        
+        Map<String, dynamic> diary = jsonDecode(request.body);
+        return Future.value(diary);
       } else {
-        return request.body;
+        Map<String, dynamic> diary = jsonDecode(request.body);
+        return Future.value(diary);
       }
     } catch (e) {
       print(e);
-      return e.toString();
+      return null;
     }
   }
 
