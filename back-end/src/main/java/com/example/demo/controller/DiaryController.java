@@ -59,11 +59,9 @@ public class DiaryController {
                         System.out.println(diarybean.getContent());
                     }
                     List<AllMonsterBean> allMonster = allMonsterService.searchAll();
-//                    index = (int) (Math.random() * 19);
-                    index = (int) (Math.random() * 11);
+                    index = (int) (Math.random() * 19);
                     while (allMonster.get(index).getMain() != 1) {
-//                        index = (int) (Math.random() * 19);
-                        index = (int) (Math.random() * 11);
+                        index = (int) (Math.random() * 19);
                     }
                     diarybean.setMonsterId(allMonster.get(index).getId());
                     diaryService.createAndReturnBean(diarybean);
@@ -87,7 +85,7 @@ public class DiaryController {
                         personalMonsterUseBean.setUse(allMonster.get(index).getId());
                         ObjectNode personalMonsterNode = dataNode.addObject();
                         personalMonsterNode.put("newMonster", true);
-                        personalMonsterNode.put("monster", allMonster.get(index).getId());
+                        personalMonsterNode.put("newMonsterId", allMonster.get(index).getId());
                         personalMonsterService.createAndReturnBean(personalMonsterBean);
                         personalMonsterUseService.createAndReturnBean(personalMonsterUseBean);
                     }else {
@@ -96,7 +94,7 @@ public class DiaryController {
                         personalMonsterUseBean.setUse(allMonster.get(index).getId());
                         ObjectNode personalMonsterNode = dataNode.addObject();
                         personalMonsterNode.put("newMonster", false);
-                        personalMonsterNode.put("monster", allMonster.get(index).getId());
+                        personalMonsterNode.put("newMonsterId", allMonster.get(index).getId());
                         personalMonsterUseService.createAndReturnBean(personalMonsterUseBean);
                     }
                     result.put("result", true);
