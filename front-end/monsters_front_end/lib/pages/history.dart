@@ -353,11 +353,10 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                                     textAlign: TextAlign.left,
                                   ),
                                   trailing: (snapshot.data["result $index"]
-                                                  ["type"]
-                                              .toString()
-                                              .length <
-                                          1)
-                                      ? Container(
+                                              ["type"]
+                                          .toString()
+                                          .isEmpty)
+                                      ? SizedBox(
                                           width: 55,
                                           child: Center(
                                             child: Text(
@@ -827,25 +826,26 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
       for (int index = 0; index < min(value.data.length, 30); index++) {
         String type = "";
         switch (value.data.elementAt(index).type) {
-          case 1:
+          case 0:
             type = "課業";
             break;
-          case 2:
+          case 1:
             type = "事業";
             break;
-          case 3:
+          case 2:
             type = "愛情";
             break;
-          case 4:
+          case 3:
             type = "友情";
             break;
-          case 5:
+          case 4:
             type = "親情";
             break;
-          case 6:
+          case 5:
             type = "其他";
             break;
           default:
+            type = "";
             break;
         }
 
