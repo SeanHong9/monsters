@@ -304,7 +304,7 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                           itemCount: snapshot.data["itemCounter"],
                           itemBuilder: (BuildContext context, int index) =>
                               Container(
-                            height: 150,
+                            height: 160,
                             decoration: BoxDecoration(
                               border: Border(
                                   bottom: BorderSide(
@@ -314,7 +314,7 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                             ),
                             alignment: Alignment.center,
                             child: Container(
-                              height: 180,
+                              height: 140,
                               alignment: Alignment.center,
                               child: ListTile(
                                   dense: true,

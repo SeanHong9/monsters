@@ -798,16 +798,16 @@ class _PresentWidget extends State<PresentWidget> {
                   ),
                   Center(
                     child: Text(
-                      // "太好了，煩惱解決了\n接下來就交給${present_name}吧！",
-                      "太好了，煩惱解決了！\n接下來就交給巴古吧！",
+                    "太好了，煩惱解決了！\n接下來就交給我吧！",
                       style:
                           TextStyle(color: BackgroundColorWarm, fontSize: 22),
                     ),
-                  )
+                )
                 ],
               ),
             ),
           ),
-        ));
+      ),
+    );
   }
 }

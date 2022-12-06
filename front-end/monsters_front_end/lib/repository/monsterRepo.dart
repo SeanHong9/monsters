@@ -32,7 +32,7 @@ class MonsterRepository implements MonsterApiDataSource {
 
   Future<Map<String, dynamic>?> _searchMonsterByAccount(Uri url) async {
     try {
-      log("doing..._searchMonsterByAccount()");
+      // log("doing..._searchMonsterByAccount()");
       final request =
           await client.get(url, headers: {'Content-type': 'application/json'});
       if (request.statusCode == 200) {
