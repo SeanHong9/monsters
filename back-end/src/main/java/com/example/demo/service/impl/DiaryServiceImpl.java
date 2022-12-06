@@ -1,9 +1,7 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.bean.AnnoyanceBean;
 import com.example.demo.bean.DiaryBean;
 import com.example.demo.dao.DiaryDAO;
-import com.example.demo.entity.Annoyance;
 import com.example.demo.entity.Diary;
 import com.example.demo.service.DiaryService;
 import org.apache.ibatis.javassist.NotFoundException;
@@ -78,7 +76,7 @@ public class DiaryServiceImpl extends BaseServiceImplement<DiaryDAO, Diary, Diar
             copy(diaryBean, diary);
             diaryDAO.update(diary);
         } else {
-            throw new NotFoundException("找不到此煩惱, projectNo = " + id + ",functionName = " + account);
+            throw new NotFoundException("該帳號 : " + account + "找不到此日記 : " + id);
         }
     }
 

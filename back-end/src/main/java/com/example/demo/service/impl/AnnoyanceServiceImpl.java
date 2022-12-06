@@ -87,7 +87,7 @@ public class AnnoyanceServiceImpl extends BaseServiceImplement<AnnoyanceDAO, Ann
             copy(annoyanceBean, annoyance);
             annoyanceDAO.update(annoyance);
         } else {
-            throw new NotFoundException("找不到此煩惱, projectNo = " + id + ",functionName = " + account);
+            throw new NotFoundException("該帳號 : " + account + "找不到此煩惱 : " + id);
         }
     }
 
