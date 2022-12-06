@@ -7,6 +7,6 @@ import java.util.List;
 public interface PersonalMonsterDAO extends BaseDAO<PersonalMonster>{
     List<PersonalMonster> findByAccount(String account);
 
-    List<PersonalMonster> findMonsterIdByMonsterGroupByAccount(Integer monsterGroup,String account);
+    List<PersonalMonster> findMonsterIdByMonsterGroupByAccount(String account, Integer monsterGroup);
 
 }

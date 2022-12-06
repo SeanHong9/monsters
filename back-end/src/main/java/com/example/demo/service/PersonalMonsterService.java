@@ -8,4 +8,5 @@ public interface PersonalMonsterService  extends BaseService<PersonalMonsterBean
     List<PersonalMonsterBean> findByAccount(String account);
 
     List<PersonalMonsterBean> findMonsterIdByMonsterGroupByAccount(Integer monsterGroup, String account);
+
 }

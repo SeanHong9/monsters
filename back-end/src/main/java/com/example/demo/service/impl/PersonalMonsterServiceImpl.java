@@ -43,14 +43,13 @@ public class PersonalMonsterServiceImpl extends BaseServiceImplement<PersonalMon
 
     @Override
     public List<PersonalMonsterBean> findMonsterIdByMonsterGroupByAccount(Integer monsterGroup, String account) {
-        List<PersonalMonster> userList = personalMonsterDAO.findMonsterIdByMonsterGroupByAccount(monsterGroup,account);
+        List<PersonalMonster> userList = personalMonsterDAO.findMonsterIdByMonsterGroupByAccount(account, monsterGroup);
         List<PersonalMonsterBean> personalMonsterBeanList = new ArrayList<>();
-        for (PersonalMonster personalMonster : userList) {
+        for(PersonalMonster personalMonster : userList){
             personalMonsterBeanList.add(createBean(personalMonster));
         }
         return personalMonsterBeanList;
     }
-
 
     @Override
     protected PersonalMonster createVO(PersonalMonsterBean bean) {

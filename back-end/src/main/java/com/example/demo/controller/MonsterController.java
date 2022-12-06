@@ -2,12 +2,15 @@ package com.example.demo.controller;
 
 import com.example.demo.bean.AllMonsterBean;
 import com.example.demo.bean.PersonalMonsterBean;
+import com.example.demo.bean.PersonalMonsterUseBean;
 import com.example.demo.service.impl.AllMonsterServiceImpl;
 import com.example.demo.service.impl.PersonalMonsterServiceImpl;
+import com.example.demo.service.impl.PersonalMonsterUseServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.AllArgsConstructor;
+import org.apache.ibatis.javassist.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +18,6 @@ import org.springframework.web.bind.annotation.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.security.acl.Group;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -27,6 +29,7 @@ import java.util.Set;
 public class MonsterController {
     private final AllMonsterServiceImpl allMonsterService;
     private final PersonalMonsterServiceImpl personalMonsterService;
+    private final PersonalMonsterUseServiceImpl personalMonsterUseService;
 
     private final String MONSTER_FILE = "D:/APPS/FORK/monsters/back-end/file/monster/";
 
@@ -139,5 +142,16 @@ public class MonsterController {
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 
+    @ResponseBody
+    @PatchMapping("/modify/{account}")
+    public ResponseEntity modifyMonsterSkin(@PathVariable(name = "account") String account, PersonalMonsterUseBean personalMonsterUseBean) throws NotFoundException {
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode result = mapper.createObjectNode();
+        personalMonsterUseService.updateMonsterSkin(account, personalMonsterUseBean);
+        result.put("result", true);
+        result.put("errorCode", "200");
+        result.put("message", "修改成功");
+        return ResponseEntity.status(HttpStatus.CREATED).body(result);
+    }
 
 }

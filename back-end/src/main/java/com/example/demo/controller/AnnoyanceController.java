@@ -3,9 +3,11 @@ package com.example.demo.controller;
 import com.example.demo.bean.AllMonsterBean;
 import com.example.demo.bean.AnnoyanceBean;
 import com.example.demo.bean.PersonalMonsterBean;
+import com.example.demo.bean.PersonalMonsterUseBean;
 import com.example.demo.service.impl.AllMonsterServiceImpl;
 import com.example.demo.service.impl.AnnoyanceServiceImpl;
 import com.example.demo.service.impl.PersonalMonsterServiceImpl;
+import com.example.demo.service.impl.PersonalMonsterUseServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -34,6 +36,7 @@ public class AnnoyanceController {
     private final AnnoyanceServiceImpl annoyanceService;
     private final AllMonsterServiceImpl allMonsterService;
     private final PersonalMonsterServiceImpl personalMonsterService;
+    private final PersonalMonsterUseServiceImpl personalMonsterUseService;
 
     private final String CONTENT_FILE = "D:/monsters/back-end/file/annoyance/content/";
     private final String MOOD_FILE = "D:/monsters/back-end/file/annoyance/mood/";
@@ -42,7 +45,6 @@ public class AnnoyanceController {
     @PostMapping("/create")
     public ResponseEntity createAnnoyance(@RequestBody AnnoyanceBean annoyanceBean) {
         int index = 0;
-        System.out.println("------------------------------------");
         boolean isAddMonster = true;
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode result = mapper.createObjectNode();
@@ -76,6 +78,7 @@ public class AnnoyanceController {
                     annoyanceBean.setMonsterId(allMonster.get(index).getId());
                     annoyanceService.createAndReturnBean(annoyanceBean);
                     PersonalMonsterBean personalMonsterBean = new PersonalMonsterBean();
+                    PersonalMonsterUseBean personalMonsterUseBean = new PersonalMonsterUseBean();
                     List<PersonalMonsterBean> personalMonsterList = personalMonsterService.findByAccount(annoyanceBean.getAccount());
                     for (PersonalMonsterBean personalMonster : personalMonsterList) {
                         System.out.println(personalMonster.getMonsterId() + "/" + allMonster.get(index).getId());
@@ -89,14 +92,22 @@ public class AnnoyanceController {
                         personalMonsterBean.setAccount(annoyanceBean.getAccount());
                         personalMonsterBean.setMonsterId(allMonster.get(index).getId());
                         personalMonsterBean.setMonsterGroup(allMonster.get(index).getGroup());
+                        personalMonsterUseBean.setAccount(annoyanceBean.getAccount());
+                        personalMonsterUseBean.setMonsterGroup(allMonster.get(index).getGroup());
+                        personalMonsterUseBean.setUse(allMonster.get(index).getId());
                         ObjectNode personalMonsterNode = dataNode.addObject();
                         personalMonsterNode.put("newMonster", true);
                         personalMonsterNode.put("monster", allMonster.get(index).getNameChinese());
                         personalMonsterService.createAndReturnBean(personalMonsterBean);
+                        personalMonsterUseService.createAndReturnBean(personalMonsterUseBean);
                     }else {
+                        personalMonsterUseBean.setAccount(annoyanceBean.getAccount());
+                        personalMonsterUseBean.setMonsterGroup(allMonster.get(index).getGroup());
+                        personalMonsterUseBean.setUse(allMonster.get(index).getId());
                         ObjectNode personalMonsterNode = dataNode.addObject();
                         personalMonsterNode.put("newMonster", false);
                         personalMonsterNode.put("monster", allMonster.get(index).getNameChinese());
+                        personalMonsterUseService.createAndReturnBean(personalMonsterUseBean);
                     }
                     result.put("result", true);
                     result.put("errorCode", "200");

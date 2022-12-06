@@ -3,9 +3,11 @@ package com.example.demo.controller;
 import com.example.demo.bean.AllMonsterBean;
 import com.example.demo.bean.DiaryBean;
 import com.example.demo.bean.PersonalMonsterBean;
+import com.example.demo.bean.PersonalMonsterUseBean;
 import com.example.demo.service.impl.AllMonsterServiceImpl;
 import com.example.demo.service.impl.DiaryServiceImpl;
 import com.example.demo.service.impl.PersonalMonsterServiceImpl;
+import com.example.demo.service.impl.PersonalMonsterUseServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -31,6 +33,7 @@ public class DiaryController {
     private final DiaryServiceImpl diaryService;
     private final AllMonsterServiceImpl allMonsterService;
     private final PersonalMonsterServiceImpl personalMonsterService;
+    private final PersonalMonsterUseServiceImpl personalMonsterUseService;
     private final String CONTENT_FILE = "D:/monsters/back-end/file/diary/";
 
     @ResponseBody
@@ -65,6 +68,7 @@ public class DiaryController {
                     diarybean.setMonsterId(allMonster.get(index).getId());
                     diaryService.createAndReturnBean(diarybean);
                     PersonalMonsterBean personalMonsterBean = new PersonalMonsterBean();
+                    PersonalMonsterUseBean personalMonsterUseBean = new PersonalMonsterUseBean();
                     List<PersonalMonsterBean> personalMonsterList = personalMonsterService.findByAccount(diarybean.getAccount());
                     for (PersonalMonsterBean personalMonster : personalMonsterList) {
                         System.out.println(personalMonster.getMonsterId() + "/" + allMonster.get(index).getId());
@@ -78,14 +82,22 @@ public class DiaryController {
                         personalMonsterBean.setAccount(diarybean.getAccount());
                         personalMonsterBean.setMonsterId(allMonster.get(index).getId());
                         personalMonsterBean.setMonsterGroup(allMonster.get(index).getGroup());
+                        personalMonsterUseBean.setAccount(diarybean.getAccount());
+                        personalMonsterUseBean.setMonsterGroup(allMonster.get(index).getGroup());
+                        personalMonsterUseBean.setUse(allMonster.get(index).getId());
                         ObjectNode personalMonsterNode = dataNode.addObject();
                         personalMonsterNode.put("newMonster", true);
                         personalMonsterNode.put("monster", allMonster.get(index).getNameChinese());
                         personalMonsterService.createAndReturnBean(personalMonsterBean);
+                        personalMonsterUseService.createAndReturnBean(personalMonsterUseBean);
                     }else {
+                        personalMonsterUseBean.setAccount(diarybean.getAccount());
+                        personalMonsterUseBean.setMonsterGroup(allMonster.get(index).getGroup());
+                        personalMonsterUseBean.setUse(allMonster.get(index).getId());
                         ObjectNode personalMonsterNode = dataNode.addObject();
                         personalMonsterNode.put("newMonster", false);
                         personalMonsterNode.put("monster", allMonster.get(index).getNameChinese());
+                        personalMonsterUseService.createAndReturnBean(personalMonsterUseBean);
                     }
                     result.put("result", true);
                     result.put("errorCode", "200");

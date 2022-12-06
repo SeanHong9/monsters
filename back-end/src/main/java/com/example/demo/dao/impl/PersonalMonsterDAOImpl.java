@@ -1,7 +1,6 @@
 package com.example.demo.dao.impl;
 
 import com.example.demo.dao.PersonalMonsterDAO;
-import com.example.demo.entity.Annoyance;
 import com.example.demo.entity.PersonalMonster;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
@@ -12,7 +11,7 @@ import java.util.List;
 @Repository
 public class PersonalMonsterDAOImpl extends BaseDAOImplement<PersonalMonster> implements PersonalMonsterDAO {
     @Override
-    public List<PersonalMonster> findMonsterIdByMonsterGroupByAccount(Integer monsterGroup, String account) {
+    public List<PersonalMonster> findMonsterIdByMonsterGroupByAccount(String account, Integer monsterGroup) {
         DetachedCriteria detachedCriteria = DetachedCriteria.forClass(PersonalMonster.class);
         detachedCriteria.add(Restrictions.eq("account", account));
         detachedCriteria.add(Restrictions.eq("monsterGroup", monsterGroup));
