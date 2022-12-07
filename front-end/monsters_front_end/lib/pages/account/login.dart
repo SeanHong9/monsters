@@ -193,6 +193,7 @@ class _loginState extends State<LoginPage> {
     String? pin = pref.getString("pin");
     if (selfLogin != null) {
       print("已登入過，帳號:" + selfLogin);
+      userAccount = selfLogin;
       if (lock == 'true') {
         print("密碼:" + pin!);
         Navigator.pushReplacement(
@@ -202,6 +203,7 @@ class _loginState extends State<LoginPage> {
             context, MaterialPageRoute(builder: (context) => MainPage()));
       }
     } else if (googleLogin != null) {
+      userAccount = googleLogin;
       print("已登入過，Google帳號:" + googleLogin);
       if (lock == 'true') {
         Navigator.pushReplacement(
