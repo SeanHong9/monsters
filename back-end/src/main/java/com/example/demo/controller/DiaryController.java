@@ -85,18 +85,20 @@ public class DiaryController {
                         personalMonsterBean.setMonsterGroup(allMonster.get(index).getGroup());
                         personalMonsterUseBean.setAccount(diarybean.getAccount());
                         personalMonsterUseBean.setMonsterGroup(allMonster.get(index).getGroup());
-                        personalMonsterUseBean.setUse(allMonster.get(index).getId());
+                        personalMonsterUseBean.setUse(0);
                         ObjectNode personalMonsterNode = dataNode.addObject();
                         personalMonsterNode.put("newMonster", true);
+                        personalMonsterNode.put("use", personalMonsterUseBean.getUse());
                         personalMonsterNode.put("newMonsterId", allMonster.get(index).getGroup());
                         personalMonsterService.createAndReturnBean(personalMonsterBean);
                         personalMonsterUseService.createAndReturnBean(personalMonsterUseBean);
                     }else {
                         personalMonsterUseBean.setAccount(diarybean.getAccount());
                         personalMonsterUseBean.setMonsterGroup(allMonster.get(index).getGroup());
-                        personalMonsterUseBean.setUse(allMonster.get(index).getId());
+                        personalMonsterUseBean.setUse(0);
                         ObjectNode personalMonsterNode = dataNode.addObject();
                         personalMonsterNode.put("newMonster", false);
+                        personalMonsterNode.put("use", personalMonsterUseBean.getUse());
                         personalMonsterNode.put("newMonsterId", allMonster.get(index).getGroup());
                         personalMonsterUseService.createAndReturnBean(personalMonsterUseBean);
                     }

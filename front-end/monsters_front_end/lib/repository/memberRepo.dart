@@ -8,11 +8,10 @@ import '../main.dart';
 import '../model/memberModel.dart';
 import 'package:http/http.dart' as http;
 
-import 'annoyanceRepo.dart';
 
 class MemberRepository implements MemberApiDataSource {
   final client = http.Client();
-  // final String domain = "http://10.0.2.2:8080";
+  final String domain = "http://10.0.2.2:8080";
   @override
   Future<String> createMember(Member member) {
     return _createMember(Uri.parse('$domain/member/create'), member);
@@ -38,6 +37,7 @@ class MemberRepository implements MemberApiDataSource {
           headers: {'Content-type': 'application/json'},
           body: json.encode(member));
       if (request.statusCode == 200) {
+        log(request.body);
         return request.body;
       } else {
         return request.body;
