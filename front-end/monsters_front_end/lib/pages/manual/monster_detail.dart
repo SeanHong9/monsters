@@ -39,7 +39,8 @@ class _Monster_detailState extends State<Monster_detail> {
   @override
   Widget build(BuildContext context) {
     _future = getSkinList();
-    // setState(() {});
+
+    setState(() {});
     String monsterName = monsterNamesList[index];
     String monsterName_CH = monsterNamesList_CH[index];
 
@@ -169,7 +170,7 @@ class _Monster_detailState extends State<Monster_detail> {
                         GestureDetector(
                           onTap: () {
                             if (snapshot.data["ownSkinList"].contains(3)) {
-                              if (snapshot.data["_selectedSkin"] == 3) {
+                              if (_selectedSkin == 3) {
                                 modifySkin(0);
                               } else {
                                 modifySkin(3);
@@ -201,15 +202,20 @@ class _Monster_detailState extends State<Monster_detail> {
         .then((value) => Data.fromJson(value!));
 
     await skins.then((value) {
-      log(value.data.first.use.toString());
+      log("Use skin from DB: " + value.data.first.use.toString());
       String temp = jsonDecode(value.data.first.ownSkin!).toString();
       temp = temp.substring(1, temp.length - 1);
       List<String> skinResult = temp.split(",");
       final List<int> ownSkinList =
           skinResult.map((e) => int.parse(e)).toList();
-      // if (value.data.first.use == null) {
-      //   _selectedSkin = 0;
-      // }
+      if (value.data.first.use == null) {
+        _selectedSkin = 0;
+      } else {
+        _selectedSkin = value.data.first.use!;
+      }
+
+      log("ownSkinList skin: " + ownSkinList.toString());
+      log("_selectedSkin skin: " + _selectedSkin.toString());
       finalMap.putIfAbsent("ownSkinList", () => ownSkinList);
       finalMap.putIfAbsent("_selectedSkin", () => _selectedSkin);
 
@@ -236,15 +242,16 @@ class _Monster_detailState extends State<Monster_detail> {
     return finalMap;
   }
 
-  void modifySkin(int i) {
+  Future<void> modifySkin(int i) async {
     if (_selectedSkin == i) {
       _selectedSkin = 0;
     } else {
       _selectedSkin = i;
     }
-    monsterRepository.modifySkin(Monster(
+    await monsterRepository.modifySkin(Monster(
         account: userAccount,
         monsterGroup: index.toString(),
         use: index * 4 + i));
+    setState(() {});
   }
 }
