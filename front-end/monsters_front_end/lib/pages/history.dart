@@ -347,10 +347,13 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                                           : Container(),
                                     ),
                                   ),
-                                  title: Text(
-                                    snapshot.data["result $index"]["content"],
-                                    style: TextStyle(fontSize: BodyTextSize),
-                                    textAlign: TextAlign.left,
+                                  title: SingleChildScrollView(
+                                    scrollDirection: Axis.vertical,
+                                    child: Text(
+                                      snapshot.data["result $index"]["content"],
+                                      style: TextStyle(fontSize: BodyTextSize),
+                                      textAlign: TextAlign.left,
+                                    ),
                                   ),
                                   trailing: (snapshot.data["result $index"]
                                               ["type"]
