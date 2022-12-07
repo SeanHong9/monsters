@@ -208,11 +208,7 @@ class _Monster_detailState extends State<Monster_detail> {
       List<String> skinResult = temp.split(",");
       final List<int> ownSkinList =
           skinResult.map((e) => int.parse(e)).toList();
-      if (value.data.first.use == null) {
-        _selectedSkin = 0;
-      } else {
-        _selectedSkin = value.data.first.use!;
-      }
+      _selectedSkin = value.data.first.use!;
 
       log("ownSkinList skin: " + ownSkinList.toString());
       log("_selectedSkin skin: " + _selectedSkin.toString());

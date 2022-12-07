@@ -80,6 +80,7 @@ public class PersonalInfoController {
                 personalInfoNode.put("birthday",personalInfoBean.getBirthday().toString());
                 personalInfoNode.put("mail",personalInfoBean.getMail());
                 personalInfoNode.put("account",personalInfoBean.getAccount());
+                personalInfoNode.put("photo",personalInfoBean.getPhoto());
                 result.put("result", true);
                 result.put("errorCode", "200");
                 result.put("message", "查詢成功");
