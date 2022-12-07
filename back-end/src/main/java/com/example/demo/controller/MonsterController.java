@@ -130,7 +130,7 @@ public class MonsterController {
                 monsterSkinArray.add(personalMonsterBean.getMonsterId()%4);
             }
             personalMonsterNode.put("ownSkin", monsterSkinArray.toString());
-            personalMonsterNode.put("use", personalMonsterUseBean.getUse());
+            personalMonsterNode.put("use", personalMonsterUseBean.getUse()%4);
             result.put("result", true);
             result.put("errorCode", "200");
             result.put("message", "查詢成功");
@@ -143,7 +143,7 @@ public class MonsterController {
 
     @ResponseBody
     @PatchMapping("/modify/skin/{account}")
-    public ResponseEntity modifyMonsterSkin(@PathVariable(name = "account") String account, PersonalMonsterUseBean personalMonsterUseBean) throws NotFoundException {
+    public ResponseEntity modifyMonsterSkin(@PathVariable(name = "account") String account,@RequestBody PersonalMonsterUseBean personalMonsterUseBean) throws NotFoundException {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode result = mapper.createObjectNode();
         personalMonsterUseService.updateMonsterSkin(account, personalMonsterUseBean);

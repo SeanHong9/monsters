@@ -70,10 +70,12 @@ public class AnnoyanceController {
                         annoyanceBean.setMood(moodPath.toString());
                     }
                     List<AllMonsterBean> allMonster = allMonsterService.searchAll();
-                    index = (int) (Math.random() * 19);
+                    index = (int) (Math.random() * 20);
+                    index*=4;
 
                     while (allMonster.get(index).getMain() != 1) {
-                    index = (int) (Math.random() * 19);
+                        index = (int) (Math.random() * 20);
+                        index*=4;
                     }
                     annoyanceBean.setMonsterId(allMonster.get(index).getId());
                     annoyanceService.createAndReturnBean(annoyanceBean);
@@ -81,8 +83,8 @@ public class AnnoyanceController {
                     PersonalMonsterUseBean personalMonsterUseBean = new PersonalMonsterUseBean();
                     List<PersonalMonsterBean> personalMonsterList = personalMonsterService.findByAccount(annoyanceBean.getAccount());
                     for (PersonalMonsterBean personalMonster : personalMonsterList) {
-                        System.out.println(personalMonster.getMonsterId() + "/" + allMonster.get(index).getId());
-                        if (personalMonster.getMonsterId().equals(allMonster.get(index).getId())) {
+                        System.out.println(personalMonster.getMonsterId() + "/" + allMonster.get(index).getGroup());
+                        if (personalMonster.getMonsterId().equals(allMonster.get(index).getGroup())) {
                             isAddMonster = false;
                             break;
                         }
@@ -97,7 +99,7 @@ public class AnnoyanceController {
                         personalMonsterUseBean.setUse(allMonster.get(index).getId());
                         ObjectNode personalMonsterNode = dataNode.addObject();
                         personalMonsterNode.put("newMonster", true);
-                        personalMonsterNode.put("newMonsterId", allMonster.get(index).getId());
+                        personalMonsterNode.put("newMonsterId", allMonster.get(index).getGroup());
                         personalMonsterService.createAndReturnBean(personalMonsterBean);
                         personalMonsterUseService.createAndReturnBean(personalMonsterUseBean);
                     }else {
@@ -106,7 +108,7 @@ public class AnnoyanceController {
                         personalMonsterUseBean.setUse(allMonster.get(index).getId());
                         ObjectNode personalMonsterNode = dataNode.addObject();
                         personalMonsterNode.put("newMonster", false);
-                        personalMonsterNode.put("newMonsterId", allMonster.get(index).getId());
+                        personalMonsterNode.put("newMonsterId", allMonster.get(index).getGroup());
                         personalMonsterUseService.createAndReturnBean(personalMonsterUseBean);
                     }
                     result.put("result", true);
