@@ -1,64 +1,148 @@
 package com.example.demo.controller;
 
+import com.example.demo.bean.AllMonsterBean;
 import com.example.demo.bean.AnnoyanceBean;
+import com.example.demo.bean.PersonalMonsterBean;
+import com.example.demo.bean.PersonalMonsterUseBean;
+import com.example.demo.service.impl.AllMonsterServiceImpl;
 import com.example.demo.service.impl.AnnoyanceServiceImpl;
+import com.example.demo.service.impl.PersonalMonsterServiceImpl;
+import com.example.demo.service.impl.PersonalMonsterUseServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import lombok.AllArgsConstructor;
+import org.apache.ibatis.javassist.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+/**
+ * @author linwe
+ */
 @AllArgsConstructor
-@RestController
+@Controller
 @RequestMapping(value = "/annoyance")
 public class AnnoyanceController {
     private final AnnoyanceServiceImpl annoyanceService;
+    private final AllMonsterServiceImpl allMonsterService;
+    private final PersonalMonsterServiceImpl personalMonsterService;
+    private final PersonalMonsterUseServiceImpl personalMonsterUseService;
+
+    private final String CONTENT_FILE = "D:/monsters/back-end/file/annoyance/content/";
+    private final String MOOD_FILE = "D:/monsters/back-end/file/annoyance/mood/";
 
     @ResponseBody
-    @PostMapping("create")
+    @PostMapping("/create")
     public ResponseEntity createAnnoyance(@RequestBody AnnoyanceBean annoyanceBean) {
-        ObjectMapper mapper = new ObjectMapper();
-        ObjectNode result = mapper.createObjectNode();
-        result.putObject("data");
-        try {
-            annoyanceService.createAndReturnBean(annoyanceBean);
-            System.out.println(annoyanceBean.getAccount());
-            System.out.println(annoyanceBean.getContext());
-            System.out.println(annoyanceBean.getType());
-            System.out.println(annoyanceBean.getMood());
-            System.out.println(annoyanceBean.getIndex());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        result.put("result", true);
-        result.put("errorCode", "");
-        result.put("message", "新增成功");
-        return ResponseEntity.status(HttpStatus.CREATED).body(result);
-    }
-
-    @ResponseBody
-    @GetMapping(path = "search", params = "account", produces = "application/json; charset=UTF-8")
-    public ResponseEntity SearchAnnoyanceByAccount(@RequestParam(name = "account") String account) {
+        int index = 0;
+        boolean isAddMonster = true;
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode result = mapper.createObjectNode();
         ArrayNode dataNode = result.putArray("data");
         try {
-            List<AnnoyanceBean> annoyanceList = annoyanceService.searchAnnoyanceByAccount(account);
-            for (AnnoyanceBean annoyanceBean : annoyanceList){
-                ObjectNode annoyanceNode = dataNode.addObject();
-                annoyanceNode.put("id", annoyanceBean.getId());
+            if (annoyanceBean.getContent() == null && annoyanceBean.getContent().isEmpty() && annoyanceBean.getContentFile() == null && annoyanceBean.getContentFile().isEmpty()) {
+                result.put("result", false);
+                result.put("errorCode", "");
+                result.put("message", "新增失敗");
+            } else {
+                try {
+                    if (annoyanceBean.getContent() == null || annoyanceBean.getContent().isEmpty()) {
+                        System.out.println(annoyanceBean.getContentFile().getName());
+                        byte[] contentBytes = annoyanceBean.getContentFile().getBytes();
+                        Path contentPath = Paths.get(CONTENT_FILE + LocalDateTime.now().format(DateTimeFormatter.ofPattern("MMdd")) + annoyanceBean.getContentFile().getOriginalFilename());
+                        Files.write(contentPath, contentBytes);
+                        annoyanceBean.setContent(contentPath.toString());
+                    }
+                    if (annoyanceBean.getMood().equals("是")) {
+                        byte[] moodBytes = annoyanceBean.getMoodFile().getBytes();
+                        Path moodPath = Paths.get(MOOD_FILE + LocalDateTime.now().format(DateTimeFormatter.ofPattern("MMdd")) + annoyanceBean.getMoodFile().getOriginalFilename());
+                        Files.write(moodPath, moodBytes);
+                        annoyanceBean.setMood(moodPath.toString());
+                    }
+                    List<AllMonsterBean> allMonster = allMonsterService.searchAll();
+                    index = (int) (Math.random() * 20);
+                    index*=4;
+
+                    while (allMonster.get(index).getMain() != 1) {
+                        index = (int) (Math.random() * 20);
+                        index*=4;
+                    }
+                    annoyanceBean.setMonsterId(allMonster.get(index).getId());
+                    annoyanceService.createAndReturnBean(annoyanceBean);
+                    PersonalMonsterBean personalMonsterBean = new PersonalMonsterBean();
+                    PersonalMonsterUseBean personalMonsterUseBean = new PersonalMonsterUseBean();
+                    List<PersonalMonsterBean> personalMonsterList = personalMonsterService.findByAccount(annoyanceBean.getAccount());
+                    for (PersonalMonsterBean personalMonster : personalMonsterList) {
+                        System.out.println(personalMonster.getMonsterId() + "/" + allMonster.get(index).getGroup());
+                        if (personalMonster.getMonsterId().equals(allMonster.get(index).getGroup())) {
+                            isAddMonster = false;
+                            break;
+                        }
+                    }
+                    System.out.println(isAddMonster);
+                    if(isAddMonster){
+                        personalMonsterBean.setAccount(annoyanceBean.getAccount());
+                        personalMonsterBean.setMonsterId(allMonster.get(index).getId());
+                        personalMonsterBean.setMonsterGroup(allMonster.get(index).getGroup());
+                        personalMonsterUseBean.setAccount(annoyanceBean.getAccount());
+                        personalMonsterUseBean.setMonsterGroup(allMonster.get(index).getGroup());
+                        personalMonsterUseBean.setUse(0);
+                        ObjectNode personalMonsterNode = dataNode.addObject();
+                        personalMonsterNode.put("newMonster", true);
+                        personalMonsterNode.put("use", personalMonsterUseBean.getUse());
+                        personalMonsterNode.put("newMonsterId", allMonster.get(index).getGroup());
+                        personalMonsterService.createAndReturnBean(personalMonsterBean);
+                        personalMonsterUseService.createAndReturnBean(personalMonsterUseBean);
+                    }else {
+                        personalMonsterUseBean.setAccount(annoyanceBean.getAccount());
+                        personalMonsterUseBean.setMonsterGroup(allMonster.get(index).getGroup());
+                        personalMonsterUseBean.setUse(0);
+                        ObjectNode personalMonsterNode = dataNode.addObject();
+                        personalMonsterNode.put("newMonster", false);
+                        personalMonsterNode.put("newMonsterId", allMonster.get(index).getGroup());
+                        personalMonsterNode.put("use", personalMonsterUseBean.getUse());
+                        personalMonsterUseService.createAndReturnBean(personalMonsterUseBean);
+                    }
+                    result.put("result", true);
+                    result.put("errorCode", "200");
+                    result.put("message", "新增成功");
+                } catch (IOException e) {
+                    System.out.println(annoyanceBean.toString());
+                    System.out.println(e);
+                    result.put("result", false);
+                    result.put("errorCode", "");
+                    result.put("message", "新增失敗");
+                }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println(annoyanceBean.toString());
+            System.out.println(e);
+            result.put("result", false);
+            result.put("errorCode", "");
+            result.put("message", "新增失敗");
         }
-        result.put("result", true);
-        result.put("errorCode", "");
-        result.put("message", "查詢成功");
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 
+    @ResponseBody
+    @PatchMapping("/modify/{id}/{account}")
+    public ResponseEntity modifyAnnoyance(@PathVariable(name = "id") int id,@PathVariable(name = "account") String account,@RequestBody AnnoyanceBean annoyanceBean) throws NotFoundException {
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode result = mapper.createObjectNode();
+        annoyanceService.updateAnnoyance(id, account, annoyanceBean);
+        result.put("result", true);
+        result.put("errorCode", "200");
+        result.put("message", "修改成功");
+        return ResponseEntity.status(HttpStatus.CREATED).body(result);
+    }
 }

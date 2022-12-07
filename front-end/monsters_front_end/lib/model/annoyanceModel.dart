@@ -1,85 +1,115 @@
 // ignore_for_file: file_names
 
 import 'dart:convert';
+import 'dart:io';
 
-Annoyance annoyanceFromJson(String string) => Annoyance.fromJson(json.decode(string));
+Data annoyanceFromJson(String str) => Data.fromJson(json.decode(str));
 
-class Annoyance {
-  final String account;
-  final String context;
-  final int type;
-  final String mood;
-  final int index;
+String annoyanceToJson(Data data) => json.encode(data.toJson());
 
-  Annoyance({
-    required this.account, 
-    required this.context, 
-    required this.type, 
-    required this.mood, 
-    required this.index
+class Data {
+  Data({
+    required this.data,
+    required this.result,
+    required this.errorCode,
+    required this.message,
   });
 
-  Annoyance copyWith({
-    String? account,
-    String? context,
-    int? type,
-    String? mood,
-    int? index
-  }) {
-    return Annoyance(
-      account: account ?? this.account,
-      context: context ?? this.context,
-      type: type ?? this.type,
-      mood: mood ?? this.mood,
-      index: index ?? this.index
-    );
-  }
-  Map<String, dynamic> toMap() {
-    return {
-      'account': account,
-      'context': context,
-      'type': type,
-      'mood': mood,
-      'index': index
-    };
-  }
+  List<Annoyance> data;
+  bool result;
+  String errorCode;
+  String message;
 
-  factory Annoyance.fromMap(Map<String, dynamic> map) {
-    return Annoyance(
-      account: map['account'],
-      context: map['password'],
-      type: map['type'],
-      mood: map['mood'],
-      index: map['index']
-    );
+  factory Data.fromJson(Map<String, dynamic> json) => Data(
+        data: List<Annoyance>.from(
+            json["data"].map((x) => Annoyance.fromJson(x))),
+        result: json["result"],
+        errorCode: json["errorCode"],
+        message: json["message"],
+      );
+
+  Map<String, dynamic> toJson() => {
+        "data": List<dynamic>.from(data.map((x) => x.toJson())),
+        "result": result,
+        "errorCode": errorCode,
+        "message": message,
+      };
+}
+
+class Annoyance {
+  int? id;
+  String? account;
+  String? content;
+  int? type;
+  int? monsterId;
+  String? mood;
+  int? index;
+  String? time;
+  int? solve;
+  int? share;
+  File? contentFile;
+  File? moodFile;
+  bool? newMonster;
+  int? newMonsterId;
+  Annoyance({
+    this.id,
+    this.account,
+    this.content,
+    this.type,
+    this.monsterId,
+    this.mood,
+    this.index,
+    this.time,
+    this.solve,
+    this.share,
+    this.contentFile,
+    this.moodFile,
+    this.newMonster,
+    this.newMonsterId,
+  });
+
+  factory Annoyance.fromJson(Map<String, dynamic> json) => Annoyance(
+        id: json['id'],
+        account: json['account'],
+        content: json['content'],
+        type: json['type'],
+        monsterId: json['monsterId'],
+        mood: json['mood'],
+        index: json['index'],
+        time: json['time'],
+        solve: json['solve'],
+        share: json['share'],
+        contentFile: json['contentFile'],
+        moodFile: json['moodFile'],
+        newMonster: json['newMonster'],
+        newMonsterId: json['newMonsterId'],
+      );
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{};
+    data['id'] = id;
+    data['account'] = account;
+    data['content'] = content;
+    data['type'] = type;
+    data['monsterId'] = monsterId;
+    data['mood'] = mood;
+    data['index'] = index;
+    data['time'] = time;
+    data['solve'] = solve;
+    data['share'] = share;
+    data['contentFile'] = contentFile;
+    data['moodFile'] = moodFile;
+    data['newMonster'] = newMonster;
+    data['newMonsterId'] = newMonsterId;
+    return data;
   }
-
-  String toJson(){
-    return json.encode(toMap());
-  }
-
-  factory Annoyance.fromJson(String source) => Annoyance.fromMap(json.decode(source));
-
 
   @override
-  String toString() => 'Annoyance(account: $account, context: $context, type: $type, mood: $mood, index: $type)';
-
-  @override
-  bool operator ==(Object other) {
-    if (identical(this, other)) return true;
-
-    return other is Annoyance &&
-        other.account == account &&
-        other.context == context &&
-        other.type == type &&
-        other.mood == mood &&
-        other.index == index;
+  String toString() {
+    return "{account:$account,id: $id,account: $account,content: $content, type: $type, monsterId: $monsterId, mood: $mood, index: $index, time: $time, solve: $solve, share: $share, contentFile: $contentFile, moodFile: $moodFile,newMonster:$newMonster,newMonsterId:$newMonsterId}";
   }
 
   @override
-  int get hashCode => account.hashCode ^ 
-                      context.hashCode ^ 
-                      type.hashCode ^ 
-                      mood.hashCode ^
-                      index.hashCode;
+  String getCreate() {
+    return "{newMonster:$newMonster,newMonsterId:$newMonsterId}";
+  }
 }

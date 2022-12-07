@@ -1,7 +1,7 @@
 package com.example.demo.bean;
 
-import com.example.demo.entity.enumerate.AnnoyanceTypeEnum;
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 
@@ -9,12 +9,15 @@ import java.time.LocalDateTime;
 public class AnnoyanceBean extends BaseBean {
     private Integer id;
     private String account;
-    private String context;
-    private AnnoyanceTypeEnum type;
-    private int dallId;
+    private String content;
+    private Integer type;
+    private int monsterId;
     private String mood;
     private int index;
     private LocalDateTime time = LocalDateTime.now();
     private int solve = 0;
-    private int share = 0;
+    private int share;
+    private MultipartFile contentFile;
+    private MultipartFile moodFile;
+
 }

@@ -7,4 +7,14 @@ public enum AnnoyanceTypeEnum {
     AnnoyanceTypeEnum(int id) {
         this.id = id;
     }
+
+    public int getId() {
+        return id;
+    }
+
+    public static AnnoyanceTypeEnum check(String val) {
+        try { return AnnoyanceTypeEnum.valueOf(val); }
+        catch (Exception e) {/* do nothing */}
+        return null;
+    }
 }

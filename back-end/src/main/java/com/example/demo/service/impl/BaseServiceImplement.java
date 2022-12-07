@@ -14,8 +14,8 @@ public abstract class BaseServiceImplement<D extends BaseDAO<V>, V, B extends Ba
 		super(baseDAO);
 	}
 
-	@Transactional
 	@Override
+	@Transactional(readOnly = false)
 	public void update(Serializable pk, B bean) {
 		try {
 			Optional<V> optional = baseDAO.getByPK(pk);
@@ -32,7 +32,6 @@ public abstract class BaseServiceImplement<D extends BaseDAO<V>, V, B extends Ba
 		}
 	}
 
-	@Transactional
 	@Override
 	public void delete(Serializable pk) {
 		try {
@@ -49,5 +48,5 @@ public abstract class BaseServiceImplement<D extends BaseDAO<V>, V, B extends Ba
 		}
 	}
 
-	
+
 }
