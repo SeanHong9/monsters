@@ -217,8 +217,6 @@ class _historyDiaryChat extends State<historyDiaryChat> {
                               data["id"],
                               Diary(
                                 id: data["id"],
-                                monsterId: data["monsterId"],
-                                index: data["index"],
                                 share: _share,
                               ),
                             );

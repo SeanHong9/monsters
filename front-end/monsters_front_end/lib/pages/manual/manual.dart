@@ -37,6 +37,7 @@ class _ManualState extends State<Manual> with SingleTickerProviderStateMixin {
   static const List monsterNames = monsterNamesList;
   static const List monsterNames_CH = monsterNamesList_CH;
   int totalMonsters = monsterNames.length;
+  final MonsterRepository monsterRepository = MonsterRepository();
 
   @override
   Widget build(BuildContext context) {
@@ -69,7 +70,7 @@ class _ManualState extends State<Manual> with SingleTickerProviderStateMixin {
                 if (snapshot.data == null) {
                   return Center(
                       child: Text(
-                    "Loading...",
+                    "還沒有圖鑑嗎？\n先去新增煩惱或日記吧！",
                     style: TextStyle(fontSize: 30),
                   ));
                 }
@@ -115,9 +116,8 @@ class _ManualState extends State<Manual> with SingleTickerProviderStateMixin {
                                     ),
                                     onTap: () {
                                       if (selectionTab_type != 1) {
-
-                                      selectionTab_type = 1;
-                                      setState(() {});
+                                        selectionTab_type = 1;
+                                        setState(() {});
                                       }
                                     }),
                                 //已解鎖標籤
@@ -145,9 +145,8 @@ class _ManualState extends State<Manual> with SingleTickerProviderStateMixin {
                                     ),
                                     onTap: () {
                                       if (selectionTab_type != 2) {
-
-                                      selectionTab_type = 2;
-                                      setState(() {});
+                                        selectionTab_type = 2;
+                                        setState(() {});
                                       }
                                     }),
                               ],
@@ -612,20 +611,17 @@ class _ManualState extends State<Manual> with SingleTickerProviderStateMixin {
     ]).animate(animationController);
     rotationAnimation = Tween<double>(begin: 180.0, end: 0.0).animate(
         CurvedAnimation(parent: animationController, curve: Curves.easeOut));
-    animationController.addListener(() {
-      setState(() {});
-    });
+    animationController.addListener(() {});
     _future = getMonsterList();
+    setState(() {});
     super.initState();
   }
 
   Future<Map> getMonsterList() async {
     Map finalMap = {};
-    final MonsterRepository monsterRepository = MonsterRepository();
     Future<Data> monsters = monsterRepository
         .searchMonsterByAccount()
         .then((value) => Data.fromJson(value!));
-    List<int> monsterResult = [];
     List<String> showNames = [];
     List<String> showPics = [];
     List<int> route = [];

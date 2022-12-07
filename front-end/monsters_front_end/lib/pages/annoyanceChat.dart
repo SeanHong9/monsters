@@ -1,4 +1,5 @@
 // ignore_for_file: use_key_in_widget_constructors, unnecessary_string_interpolations, prefer_const_constructors, file_names, avoid_unnecessary_containers, sized_box_for_whitespace, non_constant_identifier_names
+
 import 'dart:developer';
 import 'dart:io';
 import 'package:bubble/bubble.dart';
@@ -7,10 +8,10 @@ import 'package:image_picker/image_picker.dart';
 import 'package:monsters_front_end/main.dart';
 import 'package:monsters_front_end/model/audio_Model/audio_player.dart';
 import 'package:monsters_front_end/pages/chat_items/Timer_Widget.dart';
+import 'package:monsters_front_end/pages/history.dart';
 import 'package:monsters_front_end/pages/manual/manual.dart';
 import 'package:monsters_front_end/pages/settings/monsters_information.dart';
 import 'package:monsters_front_end/pages/chat_items/drawing_colors.dart';
-import 'package:monsters_front_end/pages/history.dart';
 import 'package:monsters_front_end/pages/settings/style.dart';
 import 'package:video_player/video_player.dart';
 import '../model/annoyanceModel.dart';
@@ -27,6 +28,7 @@ class _AnnoyanceChat extends State<AnnoyanceChat> with WidgetsBindingObserver {
   final timerController = TimerController();
   final player = AudioPlayer();
   late final VideoPlayerController _videoPlayerController;
+  final AnnoyanceRepository annoyanceRepository = AnnoyanceRepository();
   int chatRound = 0;
   bool lastSpeaking = false;
   bool robotSpeakable = true;
@@ -148,7 +150,6 @@ class _AnnoyanceChat extends State<AnnoyanceChat> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    final AnnoyanceRepository annoyanceRepository = AnnoyanceRepository();
     if (chatRound == 0) {
       response("get intro"); //intro
     }
@@ -304,7 +305,6 @@ class _AnnoyanceChat extends State<AnnoyanceChat> with WidgetsBindingObserver {
                               setState(() {});
 
                               if (lastSpeaking == true) {
-                                popUp(context);
                                 Container(
                                     color: Colors.black,
                                     height: 100.0,
@@ -343,28 +343,15 @@ class _AnnoyanceChat extends State<AnnoyanceChat> with WidgetsBindingObserver {
                             ),
                           ),
                         ),
-                        onPressed: () {
-                          annoyanceRepository.createAnnoyance(
-                            Annoyance(
-                            id: 0, //0
-                            account: userAccount, //"帳號"
-                            content: userAnswers[1], //"文字內容"
-                            type: userAnswers[0], //0~5
-                            monsterId: 1, //1
-                            mood: userAnswers[2], //"否"
-                            index: userAnswers[3], //1~5
-                            time: '',
-                            solve: 0,
-                            share: userAnswers[4], //0
-                            contentFile: contentFile, //null
-                            moodFile: moodFile, //null
-                          ));
+                        onPressed: () async {
+                          
                           Navigator.pushReplacement(
                               //TODO: Level 2
                               //ADD HERO https://youtu.be/1xipg02Wu8s?t=657
                               context,
                               MaterialPageRoute(
                                   builder: (context) => History()));
+
                         },
                       ),
                     ),
@@ -749,9 +736,9 @@ class _AnnoyanceChat extends State<AnnoyanceChat> with WidgetsBindingObserver {
         reply("早上好啊！\n發生甚麼事情都可以跟我說"); //5~12點
       } else if (hourNow < 14) {
         reply("中午好啊！\n午餐吃了嗎？發生任何事都可以找我聊聊"); //12~14點
-      } else if (hourNow < 18){
+      } else if (hourNow < 18) {
         reply("下午好，快下班了吧？正在煩惱什麼事情嗎?"); //14~18點
-      }else {
+      } else {
         reply("晚上好，今天過得如何呀？希望你有愉快的一天！"); //18~24點
       }
       reply("什麼樣子的煩惱呢？");
@@ -817,6 +804,28 @@ class _AnnoyanceChat extends State<AnnoyanceChat> with WidgetsBindingObserver {
             lastSpeaking = true;
             reply("解決煩惱請馬上跟我說！我已經迫不及待想吃飯了！");
             reply("（歷史記錄點擊單一煩惱後按下完成按鈕！）");
+            
+            Future<Data> requestBody = annoyanceRepository
+                .createAnnoyance(Annoyance(
+                  id: 0, //0
+                  account: userAccount, //"帳號"
+                  content: userAnswers[1], //"文字內容"
+                  type: userAnswers[0], //0~5
+                  monsterId: 1, //1
+                  mood: userAnswers[2], //"否"
+                  index: userAnswers[3], //1~5
+                  time: '',
+                  solve: 0,
+                  share: userAnswers[4], //0
+                  contentFile: contentFile, //null
+                  moodFile: moodFile, //null
+                ))
+                .then((value) => Data.fromJson(value!));
+            await requestBody.then((value) {
+              if (value.data.first.newMonster == true) {
+                popUp(context, value.data.first.newMonsterId!);
+              }
+            });
 
             log("--完成分享");
           } else {
@@ -903,46 +912,32 @@ class _AnnoyanceChat extends State<AnnoyanceChat> with WidgetsBindingObserver {
     }
   }
 
-  Future<dynamic> popUp(BuildContext context) {
+  Future<dynamic> popUp(BuildContext context, int newMonsterId) {
     return showDialog(
       context: context,
       builder: (BuildContext context) {
-        return const PresentWidget();
+        return PresentWidget(newMonsterId);
       },
     );
   }
 }
 
-//彈出選單設置
-class PopUpMen extends StatelessWidget {
-  final List<PopupMenuEntry> menuList;
-  final Widget? icon;
-
-  const PopUpMen({Key? key, required this.menuList, this.icon})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return PopupMenuButton(
-      itemBuilder: ((context) => menuList),
-      icon: icon,
-    );
-  }
-}
-
 class PresentWidget extends StatefulWidget {
-  const PresentWidget({Key? key}) : super(key: key);
+  int newMonsterId;
+  PresentWidget(this.newMonsterId, {Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
-    return _PresentWidget();
+    return _PresentWidget(newMonsterId);
   }
 }
 
 class _PresentWidget extends State<PresentWidget> {
-  String present_name = getRandomMonsterName_CH();
+  int newMonsterId;
+  _PresentWidget(this.newMonsterId);
   @override
   Widget build(BuildContext context) {
+    String present_name = monsterNamesList_CH[newMonsterId];
     return Material(
         type: MaterialType.transparency,
         child: Center(
@@ -1049,5 +1044,22 @@ class _PresentWidget extends State<PresentWidget> {
             ),
           ),
         ));
+  }
+}
+
+//彈出選單設置
+class PopUpMen extends StatelessWidget {
+  final List<PopupMenuEntry> menuList;
+  final Widget? icon;
+
+  const PopUpMen({Key? key, required this.menuList, this.icon})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return PopupMenuButton(
+      itemBuilder: ((context) => menuList),
+      icon: icon,
+    );
   }
 }

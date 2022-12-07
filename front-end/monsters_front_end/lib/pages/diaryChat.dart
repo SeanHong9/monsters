@@ -23,6 +23,7 @@ class diaryChat extends StatefulWidget {
 }
 
 class _diaryChat extends State<diaryChat> with WidgetsBindingObserver {
+  final DiaryRepository diaryRepository = DiaryRepository();
   final messageInsert = TextEditingController();
   final timerController = TimerController();
   final player = AudioPlayer();
@@ -293,7 +294,6 @@ class _diaryChat extends State<diaryChat> with WidgetsBindingObserver {
                               setState(() {});
 
                               if (lastSpeaking == true) {
-                                popUp(context);
                                 Container(
                                     color: Colors.black,
                                     height: 100.0,
@@ -333,23 +333,7 @@ class _diaryChat extends State<diaryChat> with WidgetsBindingObserver {
                               ),
                             ),
                           ),
-                          onPressed: () {
-                            // 內容、是否畫心情、是否畫圖
-                            diaryRepository.createDiary(
-                              Diary(
-                                id: 0,
-                                account: userAccount, //"Lin"
-                                content: userAnswers[0], //"純文字不分享無多媒體"
-                                index: userAnswers[2], //3
-                                share: userAnswers[3], //0
-                                time: '',
-                                contentFile: contentFile,
-                                moodFile: moodFile,
-                                monsterId: 1,
-                                mood: userAnswers[1], //"否"
-                              ),
-                            );
-
+                          onPressed: () async {
                             Navigator.pushReplacement(
                                 //TODO: Level 2
                                 //ADD HERO https://youtu.be/1xipg02Wu8s?t=657
@@ -748,12 +732,12 @@ class _diaryChat extends State<diaryChat> with WidgetsBindingObserver {
         reply("早安！\n可以跟我說任何事情！"); //5~12點
       } else if (hourNow < 14) {
         reply("中午好啊！\n午餐吃了嗎？發生任何事都可以找我說"); //12~14點
-      } else if (hourNow < 18){
+      } else if (hourNow < 18) {
         reply("下午好，快下班了吧？今天過得如何呀？"); //14~18點
-      }else {
+      } else {
         reply("晚上好，今天過得如何呀？希望你有愉快的一天！"); //18~24點
       }
-        reply("想跟我說些甚麼嗎？"); 
+      reply("想跟我說些甚麼嗎？");
     }
 
     if (chatRound < 5) {
@@ -808,6 +792,28 @@ class _diaryChat extends State<diaryChat> with WidgetsBindingObserver {
             }
             lastSpeaking = true;
             reply("我幫你記錄下來囉，想回顧的時候隨時跟我說！");
+
+            Future<Data> requestBody = diaryRepository
+                .createDiary(
+                  Diary(
+                    id: 0,
+                    account: userAccount, //"Lin"
+                    content: userAnswers[0], //"純文字不分享無多媒體"
+                    index: userAnswers[2], //3
+                    share: userAnswers[3], //0
+                    time: '',
+                    contentFile: contentFile,
+                    moodFile: moodFile,
+                    monsterId: 1,
+                    mood: userAnswers[1], //"否"
+                  ),
+                )
+                .then((value) => Data.fromJson(value!));
+            await requestBody.then((value) {
+              if (value.data.first.newMonster == true) {
+                popUp(context, value.data.first.newMonsterId!);
+              }
+            });
             setState(() {});
             log("--完成分享");
           } else {
@@ -891,8 +897,8 @@ class _diaryChat extends State<diaryChat> with WidgetsBindingObserver {
   }
 
   Column emotionPointColumn(String point) {
-    Column annoyanceImageColumn = Column();
-    annoyanceImageColumn = Column(
+    Column moodImageColumn = Column();
+    moodImageColumn = Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         CircleAvatar(
@@ -906,52 +912,35 @@ class _diaryChat extends State<diaryChat> with WidgetsBindingObserver {
       ],
     );
 
-    return annoyanceImageColumn;
+    return moodImageColumn;
   }
 
-
-
-  Future<dynamic> popUp(BuildContext context) {
+  Future<dynamic> popUp(BuildContext context, int newMonsterId) {
     return showDialog(
       context: context,
       builder: (BuildContext context) {
-        return const PresentWidget();
+        return PresentWidget(newMonsterId);
       },
     );
   }
 }
 
-//彈出選單設置
-class PopUpMen extends StatelessWidget {
-  final List<PopupMenuEntry> menuList;
-  final Widget? icon;
-
-  const PopUpMen({Key? key, required this.menuList, this.icon})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return PopupMenuButton(
-      itemBuilder: ((context) => menuList),
-      icon: icon,
-    );
-  }
-}
-
 class PresentWidget extends StatefulWidget {
-  const PresentWidget({Key? key}) : super(key: key);
+  int newMonsterId;
+  PresentWidget(this.newMonsterId, {Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
-    return _PresentWidget();
+    return _PresentWidget(newMonsterId);
   }
 }
 
 class _PresentWidget extends State<PresentWidget> {
-  String present_name = getRandomMonsterName_CH();
-  final DiaryRepository diaryRepository = DiaryRepository();
+  int newMonsterId;
+  _PresentWidget(this.newMonsterId);
   @override
   Widget build(BuildContext context) {
+    String present_name = monsterNamesList_CH[newMonsterId];
     return Material(
         type: MaterialType.transparency,
         child: Center(
@@ -1058,5 +1047,22 @@ class _PresentWidget extends State<PresentWidget> {
             ),
           ),
         ));
+  }
+}
+
+//彈出選單設置
+class PopUpMen extends StatelessWidget {
+  final List<PopupMenuEntry> menuList;
+  final Widget? icon;
+
+  const PopUpMen({Key? key, required this.menuList, this.icon})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return PopupMenuButton(
+      itemBuilder: ((context) => menuList),
+      icon: icon,
+    );
   }
 }

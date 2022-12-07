@@ -38,17 +38,24 @@ class Monster {
   String? account;
   String? monsterId;
   String? monsterGroup;
+  String? ownSkin;
+  int? use;
   // String? nickName;
 
-  Monster(
-      {required this.account,
-      required this.monsterId,
-      required this.monsterGroup,});
+  Monster({
+    required this.account,
+    this.monsterId,
+    this.monsterGroup,
+    this.ownSkin,
+    this.use,
+  });
 
   factory Monster.fromJson(Map<String, dynamic> json) => Monster(
         account: json['account'],
         monsterId: json['monsterId'],
         monsterGroup: json['monsterGroup'],
+        ownSkin: json['ownSkin'],
+        use: json['use'],
       );
 
   Map<String, dynamic> toJson() {
@@ -56,6 +63,8 @@ class Monster {
     data['account'] = account;
     data['monsterId'] = monsterId;
     data['monsterGroup'] = monsterGroup;
+    data['ownSkin'] = ownSkin;
+    data['use'] = use;
     return data;
   }
 }

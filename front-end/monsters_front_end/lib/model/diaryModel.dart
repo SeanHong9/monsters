@@ -47,6 +47,8 @@ class Diary {
   int? share;
   File? contentFile;
   File? moodFile;
+  bool? newMonster;
+  int? newMonsterId;
   Diary({
     this.id,
     this.account,
@@ -58,6 +60,8 @@ class Diary {
     this.share,
     this.contentFile,
     this.moodFile,
+    this.newMonster,
+    this.newMonsterId,
   });
 
   factory Diary.fromJson(Map<String, dynamic> json) => Diary(
@@ -71,6 +75,8 @@ class Diary {
         share: json['share'],
         contentFile: json['contentFile'],
         moodFile: json['moodFile'],
+        newMonster: json['newMonster'],
+        newMonsterId: json['newMonsterId'],
       );
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
@@ -84,6 +90,8 @@ class Diary {
     data['share'] = share;
     data['contentFile'] = contentFile;
     data['moodFile'] = moodFile;
+    data['newMonster'] = newMonster;
+    data['newMonsterId'] = newMonsterId;
     return data;
   }
 }
