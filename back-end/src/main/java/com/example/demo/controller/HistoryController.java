@@ -207,4 +207,80 @@ public class HistoryController {
     }
 
 
+    @ResponseBody
+    @GetMapping(path = "/index/{account}/{type}")
+    public ResponseEntity searchIndex(@PathVariable(name = "account") String account, @PathVariable(name = "type") Integer type) {
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode result = mapper.createObjectNode();
+        ArrayNode dataNode = result.putArray("data");
+        try {
+            switch (type) {
+                case 1:
+                    List<AnnoyanceBean> annoyanceList = annoyanceService.searchAnnoyanceByAccount(account);
+                    if (annoyanceList.size() != 0) {
+                        Collections.sort(annoyanceList, new Comparator<AnnoyanceBean>() {
+                            @Override
+                            public int compare(AnnoyanceBean o1, AnnoyanceBean o2) {
+                                return o2.getTime().compareTo(o1.getTime());
+                            }
+                        });
+                        if (annoyanceList.size() >= 7) {
+                            for (int i = 0; i < 7; i++) {
+                                ObjectNode annoyanceNode = dataNode.addObject();
+                                annoyanceNode.put("index", annoyanceList.get(i).getIndex());
+                                annoyanceNode.put("time", annoyanceList.get(i).getTime().format(DateTimeFormatter.ofPattern("MM/dd")));
+                            }
+                        } else {
+                            for (int i = 0; i < annoyanceList.size(); i++) {
+                                ObjectNode annoyanceNode = dataNode.addObject();
+                                annoyanceNode.put("index", annoyanceList.get(i).getIndex());
+                                annoyanceNode.put("time", annoyanceList.get(i).getTime().format(DateTimeFormatter.ofPattern("MM/dd")));
+                            }
+                        }
+                        result.put("result", true);
+                        result.put("errorCode", "200");
+                        result.put("message", "查詢成功");
+                    } else {
+                        result.put("result", false);
+                        result.put("errorCode", "");
+                        result.put("message", "查詢失敗");
+                    }
+                case 2:
+                    List<DiaryBean> diaryList = diaryService.searchAnnoyanceByAccount(account);
+                    if (diaryList.size() != 0) {
+                        Collections.sort(diaryList, new Comparator<DiaryBean>() {
+                            @Override
+                            public int compare(DiaryBean o1, DiaryBean o2) {
+                                return o2.getTime().compareTo(o1.getTime());
+                            }
+                        });
+                        if (diaryList.size() >= 7) {
+                            for (int i = 0; i < 7; i++) {
+                                ObjectNode annoyanceNode = dataNode.addObject();
+                                annoyanceNode.put("index", diaryList.get(i).getIndex());
+                                annoyanceNode.put("time", diaryList.get(i).getTime().format(DateTimeFormatter.ofPattern("MM/dd")));
+                            }
+                        } else {
+                            for (int i = 0; i < diaryList.size(); i++) {
+                                ObjectNode annoyanceNode = dataNode.addObject();
+                                annoyanceNode.put("index", diaryList.get(i).getIndex());
+                                annoyanceNode.put("time", diaryList.get(i).getTime().format(DateTimeFormatter.ofPattern("MM/dd")));
+                            }
+                        }
+                        result.put("result", true);
+                        result.put("errorCode", "200");
+                        result.put("message", "查詢成功");
+                    } else {
+                        result.put("result", false);
+                        result.put("errorCode", "");
+                        result.put("message", "查詢失敗");
+                    }
+                case 3:
+                default:
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.status(HttpStatus.CREATED).body(result);
+    }
 }
