@@ -1,12 +1,18 @@
-// ignore_for_file: file_names
+// ignore_for_file: file_names, no_logic_in_create_state, must_be_immutable
+
+import 'dart:convert';
+import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:monsters_front_end/main.dart';
 import 'package:monsters_front_end/model/memberModel.dart';
+import 'package:monsters_front_end/model/monsterModel.dart' as ms;
 import 'package:monsters_front_end/pages/settings/monsters_information.dart';
 import 'package:monsters_front_end/pages/drawer/edit_personalInfo.dart';
 import 'package:monsters_front_end/pages/settings/style.dart';
 import 'package:monsters_front_end/repository/memberRepo.dart';
+
+import '../../repository/monsterRepo.dart';
 
 class Drawer_personalInfo extends StatefulWidget {
   Drawer_personalInfo({
@@ -17,7 +23,10 @@ class Drawer_personalInfo extends StatefulWidget {
 }
 
 class _Drawer_personalInfoState extends State<Drawer_personalInfo> {
+  final MemberRepository memberRepository = MemberRepository();
+  final MonsterRepository monsterRepository = MonsterRepository();
   late Future _future;
+  late List ownList;
 
   //初始化
   @override
@@ -34,8 +43,7 @@ class _Drawer_personalInfoState extends State<Drawer_personalInfo> {
 
   Future<Map> getPersonalInfo() async {
     Map personalInfoResult = {};
-    print("doing...");
-    final MemberRepository memberRepository = MemberRepository();
+    // print("doing...getPersonalInfo()");
     Future<Data> personalInfo = memberRepository
         .searchPersonalInfoByAccount(userAccount)
         .then((value) => Data.fromJson(value!));
@@ -45,17 +53,40 @@ class _Drawer_personalInfoState extends State<Drawer_personalInfo> {
       personalInfoResult["birthday"] = value.data.first.birthday;
       personalInfoResult["mail"] = value.data.first.mail;
       personalInfoResult["account"] = value.data.first.account;
+      personalInfoResult["photo"] = value.data.first.photo;
       // personalInfoResult["dailyTest"] = value.data.first.birthday;
       // personalInfoResult["lock"] = value.data.first.lock;
       // personalInfoResult["password"] = value.data.first.password;
-      // personalInfoResult["photo"] = value.data.first.photo;
+      Future<ms.Data> monsters = monsterRepository
+          .searchMonsterByAccount()
+          .then((value) => ms.Data.fromJson(value!));
+      await monsters.then((value) {
+        String temp = jsonDecode(value.data.first.monsterGroup!).toString();
+        temp = temp.substring(1, temp.length - 1);
+        List<String> monsterResult = temp.split(",");
+        final List<int> monsterList =
+            monsterResult.map((e) => int.parse(e)).toList();
+        log("monsterList:" + monsterList.toString());
+        personalInfoResult.putIfAbsent("ownList", () => monsterList);
+      });
     });
-    setState(() {});
+
+    log("personalInfoResult:" + personalInfoResult.toString());
+  
     return personalInfoResult;
+    
+  }
+
+  void modifyPersonalInfo() {
+    memberRepository.modifyPersonalInfo(
+      Member(account: userAccount, photo: 1),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    _future = getPersonalInfo();
+    
     setState(() {});
     return Scaffold(
         backgroundColor: Colors.white,
@@ -94,41 +125,17 @@ class _Drawer_personalInfoState extends State<Drawer_personalInfo> {
                                 ),
                                 child: CircleAvatar(
                                   minRadius: 40,
-                                  backgroundImage: (choosenAvatar.isEmpty)
-                                      ? AssetImage(getMonsterAvatarPath("Baku"))
-                                      : AssetImage(
-                                          getMonsterAvatarPath(choosenAvatar)),
+                                  backgroundImage: AssetImage(
+                                      getMonsterAvatarPath(monsterNamesList[
+                                          snapshot.data["photo"]])),
                                 ),
                               ),
-
-                              /*
-                              Container(
-                                padding: EdgeInsets.only(top: 5),
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                      width: 5, color: BackgroundColorWarm),
-                                  image: DecorationImage(
-                                    alignment: Alignment.topCenter,
-                                    // alignment: Alignment.Center,
-                                    image: (choosenAvatar.isEmpty)
-                                        ? AssetImage(
-                                            getMonsterAvatarPath("Baku"))
-                                        : AssetImage(getMonsterAvatarPath(
-                                            choosenAvatar)),
-                                    fit: BoxFit.contain,
-                                    // fit: BoxFit.cover,
-                                  ),
-                                ),
-                              ),
-
-                              */
                             ),
                           ),
                           Center(
                               child: GestureDetector(
                             onTap: () {
-                              changeAvatar(context)
+                              changeAvatar(context, snapshot.data["ownList"])
                                   .then((value) => setState(() {}));
                             },
                             child: Container(
@@ -256,7 +263,6 @@ class _Drawer_personalInfoState extends State<Drawer_personalInfo> {
                                   MaterialPageRoute(
                                       builder: (context) => Edit_personalInfo(
                                           data: snapshot.data)));
-
                             },
                           ),
                         ),
@@ -266,30 +272,35 @@ class _Drawer_personalInfoState extends State<Drawer_personalInfo> {
             }));
   }
 
-  Future<dynamic> changeAvatar(BuildContext context) {
+  Future<dynamic> changeAvatar(BuildContext context, List ownList) {
     return showDialog(
       context: context,
       builder: (BuildContext context) {
-        return AvatarWidget();
+        return AvatarWidget(ownList);
       },
     );
   }
 }
 
 class AvatarWidget extends StatefulWidget {
-  const AvatarWidget({Key? key}) : super(key: key);
+  List ownList;
+  AvatarWidget(this.ownList, {Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
-    return _AvatarWidget();
+    return _AvatarWidget(ownList);
   }
 }
 
 class _AvatarWidget extends State<AvatarWidget> {
-  int itemCounter = monsterNamesList.length;
   String selected = "";
+  List ownList;
+
+  _AvatarWidget(this.ownList);
   @override
   Widget build(BuildContext context) {
+    int itemCounter = ownList.length;
+    // int itemCounter = monsterNamesList.length;
     return Material(
         type: MaterialType.transparency,
         child: Center(
@@ -318,14 +329,17 @@ class _AvatarWidget extends State<AvatarWidget> {
                       itemCounter,
                       ((index) => GestureDetector(
                             onTap: () {
-                              selected = monsterNamesList[index];
+                              // selected = monsterNamesList[index];
+                              selected = monsterNamesList[ownList[index]];
                               setState(() {});
                             },
                             child: Container(
                               alignment: Alignment.center,
                               height: 50,
                               width: 50,
-                              decoration: (selected == monsterNamesList[index])
+                              // decoration: (selected == monsterNamesList[index])
+                              decoration: (selected ==
+                                      monsterNamesList[ownList[index]])
                                   ? BoxDecoration(
                                       color: BackgroundColorLight,
                                       borderRadius: const BorderRadius.all(
@@ -338,8 +352,10 @@ class _AvatarWidget extends State<AvatarWidget> {
                               child: CircleAvatar(
                                 minRadius: 10,
                                 backgroundImage: AssetImage(
+                                    // getMonsterAvatarPath(
+                                    //     monsterNamesList[index])),
                                     getMonsterAvatarPath(
-                                        monsterNamesList[index])),
+                                        monsterNamesList[ownList[index]])),
                               ),
                             ),
                           )),
@@ -388,6 +404,16 @@ class _AvatarWidget extends State<AvatarWidget> {
             Navigator.pop(context);
           } else {
             choosenAvatar = selected;
+            log("selected: " + selected);
+
+            final MemberRepository memberRepository = MemberRepository();
+            int modifyAvatar = monsterNamesList.indexOf(choosenAvatar);
+            memberRepository.modifyPersonalInfo(
+              Member(
+                account: userAccount,
+                photo: modifyAvatar,
+              ),
+            );
             Navigator.pop(context);
           }
         });

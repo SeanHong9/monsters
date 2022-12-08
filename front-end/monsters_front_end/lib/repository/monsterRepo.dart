@@ -54,11 +54,11 @@ class MonsterRepository implements MonsterApiDataSource {
     try {
       final request =
           await client.get(url, headers: {'Content-type': 'application/json'});
-      // log("*" * 20);
-      // log("monster status");
-      // log("status: " + request.statusCode.toString());
-      // log("body: " + request.body.toString());
-      // log("*" * 20);
+      log("*" * 20);
+      log("monster status");
+      log("status: " + request.statusCode.toString());
+      log("body: " + request.body.toString());
+      log("*" * 20);
       if (request.statusCode == 200) {
         Map<String, dynamic> monsterSkin = jsonDecode(request.body);
         return Future.value(monsterSkin);
@@ -83,8 +83,8 @@ class MonsterRepository implements MonsterApiDataSource {
         headers: {'Content-type': 'application/json'},
         body: json.encode(monster),
       );
-      log("modify statusCode: " + request.statusCode.toString());
-      log("modify body: " + request.body.toString());
+      log("modifySkin statusCode: " + request.statusCode.toString());
+      log("modifySkin body: " + request.body.toString());
       if (request.statusCode == 200) {
         return request.body;
       } else {
