@@ -266,7 +266,7 @@ class _historyAnnoyanceChat extends State<historyAnnoyanceChat> {
               data == 1 ? MainAxisAlignment.end : MainAxisAlignment.start,
           children: [
             data == 0
-                //左方巴古頭貼
+                //左方怪獸頭貼
                 ? Container(
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,

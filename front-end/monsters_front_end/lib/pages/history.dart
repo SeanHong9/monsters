@@ -856,7 +856,6 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
           "result $index",
           () => {
             'id': value.data.elementAt(index).id,
-            'avatar': value.data.elementAt(index).monsterId,
             'content': value.data.elementAt(index).content,
             'type': type,
             'monsterId': value.data.elementAt(index).monsterId,

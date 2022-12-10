@@ -138,10 +138,10 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
             'avatar': value.data.elementAt(index).monsterId,
             'content': value.data.elementAt(index).content,
             'time': value.data.elementAt(index).time,
+            'mood': value.data.elementAt(index).mood,
             // 'avatar': 1,
             // 'type': type,
             // 'solve': value.data.elementAt(index).solve?.toInt(),
-            // 'mood': value.data.elementAt(index).mood,
             // 'index': value.data.elementAt(index).index,
             // 'share': value.data.elementAt(index).share,
           },
@@ -382,6 +382,8 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
                                               monsterNamesList[
                                                   snapshot.data["result $index"]
                                                       ["avatar"]],
+                                              snapshot.data["result $index"]
+                                                  ["mood"],
                                             ),
                                             child: Stack(
                                               children: [
@@ -872,7 +874,8 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
   }
 
   Future<dynamic> showComment(
-      int id, String name, String content, String time, String monsterId) {
+      int id, String name, String content, String time,
+      String monsterId, String mood) {
     print(id);
     return showDialog(
         context: context,
