@@ -296,7 +296,7 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
                               ),
                               onTap: () {
                                 if (selectionTab_type != 4) {
-                                selectionTab_type = 4;
+                                  selectionTab_type = 4;
                                   setState(() {});
                                 }
                               }),
@@ -371,19 +371,7 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
                                           //社群內容 點擊觸發留言功能
                                           GestureDetector(
                                             onTap: () => showComment(
-                                              snapshot.data["result $index"]
-                                                  ["id"],
-                                              snapshot.data["result $index"]
-                                                  ["nickName"],
-                                              snapshot.data["result $index"]
-                                                  ["content"],
-                                              snapshot.data["result $index"]
-                                                  ["time"],
-                                              monsterNamesList[
-                                                  snapshot.data["result $index"]
-                                                      ["avatar"]],
-                                              snapshot.data["result $index"]
-                                                  ["mood"],
+                                                snapshot.data["result $index"]
                                             ),
                                             child: Stack(
                                               children: [
@@ -873,10 +861,7 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
         ));
   }
 
-  Future<dynamic> showComment(
-      int id, String name, String content, String time,
-      String monsterId, String mood) {
-    print(id);
+  showComment(var data) {
     return showDialog(
         context: context,
         builder: (BuildContext context) {
@@ -907,7 +892,8 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
                             child: CircleAvatar(
                               radius: 30,
                               backgroundImage:
-                                  AssetImage(getMonsterAvatarPath(monsterId)),
+                                  AssetImage(getMonsterAvatarPath(
+                                  monsterNamesList[data["avatar"]])),
                             ),
                           ),
                         ),
@@ -919,7 +905,7 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
                             child: SingleChildScrollView(
                               scrollDirection: Axis.horizontal,
                               child: Text(
-                                name,
+                                data["nickName"],
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   fontFamily: 'Segoe UI',
@@ -938,7 +924,7 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Text(
-                                time,
+                                data["time"],
                                 style: TextStyle(
                                   fontFamily: 'Segoe UI',
                                   fontSize: 16,
@@ -969,7 +955,7 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
                       child: SingleChildScrollView(
                         scrollDirection: Axis.vertical,
                         child: Text(
-                          content,
+                          data["content"],
                           style: TextStyle(
                             fontFamily: 'Segoe UI',
                             fontSize: 22,
@@ -1036,25 +1022,6 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
                         mainAxisAlignment: MainAxisAlignment.start,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
-                          // Expanded(
-                          //   flex: 2,
-                          //   child: Container(
-                          //     decoration: BoxDecoration(
-                          //       color: BackgroundColorLight,
-                          //       borderRadius: BorderRadius.all(
-                          //           Radius.elliptical(9999.0, 9999.0)),
-                          //       border: Border.all(
-                          //           width: 1, color: const Color(0xffa0522d)),
-                          //     ),
-                          //     margin: EdgeInsets.only(left: 15.0),
-                          //     child: CircleAvatar(
-                          //       radius: 30,
-                          //       backgroundImage: AssetImage(
-                          //           getMonsterAvatarPath(
-                          //               getRandomMonsterName())),
-                          //     ),
-                          //   ),
-                          // ),
                           Expanded(
                             flex: 8,
                             child: Container(
