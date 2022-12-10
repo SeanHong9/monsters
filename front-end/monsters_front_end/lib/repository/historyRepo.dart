@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 
 import 'annoyanceRepo.dart';
 
+
 class HistoryRepository implements HistoryApiDataSource {
   final client = http.Client();
   @override
@@ -32,6 +33,11 @@ class HistoryRepository implements HistoryApiDataSource {
     }
 
     return _searchHistoryByType(Uri.parse('$domain/history/$searchType'));
+  }
+  @override
+  Future<Map<String, dynamic>?> searchIndexByType(int type) {
+    return _searchIndexByType(
+        Uri.parse('$domain/history/index/$userAccount/$type'));
   }
 
   Future<Map<String, dynamic>?> searchAnnoyanceByAccount(String account) {
@@ -59,4 +65,23 @@ class HistoryRepository implements HistoryApiDataSource {
       return null;
     }
   }
+  
+  Future<Map<String, dynamic>?> _searchIndexByType(Uri url) async {
+    try {
+      final request =
+          await client.get(url, headers: {'Content-type': 'application/json'});
+      if (request.statusCode == 200) {
+        Map<String, dynamic> index = jsonDecode(request.body);
+        return Future.value(index);
+      } else {
+        Map<String, dynamic> index = jsonDecode(request.body);
+        return index;
+      }
+    } catch (e) {
+      print(e.toString());
+      return null;
+    }
+  }
+
+
 }
