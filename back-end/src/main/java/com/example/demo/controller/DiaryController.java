@@ -59,6 +59,10 @@ public class DiaryController {
                         diarybean.setContent(contentPath.toString());
                         System.out.println(diarybean.getContent());
                     }
+
+                    if (diarybean.getMood().equals("是")) {
+                        diarybean.setMood(diarybean.getMood());
+                    }
                     List<AllMonsterBean> allMonster = allMonsterService.searchAll();
                     // 抽1~100為機率
                     probability = (int) (Math.random() * 100);
