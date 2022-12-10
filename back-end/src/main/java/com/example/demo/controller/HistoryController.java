@@ -210,6 +210,9 @@ public class HistoryController {
     @ResponseBody
     @GetMapping(path = "/index/{account}/{type}")
     public ResponseEntity searchIndex(@PathVariable(name = "account") String account, @PathVariable(name = "type") Integer type) {
+//        1: annoyance
+//        2: diary
+
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode result = mapper.createObjectNode();
         ArrayNode dataNode = result.putArray("data");
