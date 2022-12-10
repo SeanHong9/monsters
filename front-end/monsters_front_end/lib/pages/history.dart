@@ -320,12 +320,14 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                                   dense: true,
                                   visualDensity: VisualDensity(vertical: 3),
                                   leading: Container(
-                                    width: 80,
+                                    width: 60,
                                     decoration: BoxDecoration(
+                                      color: const Color(0xffffffff),
                                       shape: BoxShape.circle,
                                       border: Border.all(
-                                          width: 1,
-                                          color: const Color(0xffa0522d)),
+                                        width: 1,
+                                        color: const Color(0xffa0522d),
+                                      ),
                                     ),
                                     child: CircleAvatar(
                                       minRadius: 40,
