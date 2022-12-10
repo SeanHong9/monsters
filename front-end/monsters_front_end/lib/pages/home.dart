@@ -91,6 +91,7 @@ class _MainPageState extends State<MainPage>
   // String showImage2 = getMonsterAnimationPath(monsterName2, "left");
   @override
   Widget build(BuildContext context) {
+    // monsterName = getRandomMonsterName();
     if (!visited) {
       visited = true;
       _scaffoldKEy = GlobalKey<ScaffoldState>();
