@@ -1,5 +1,6 @@
 // ignore_for_file: use_key_in_widget_constructors, unnecessary_string_interpolations, prefer_const_constructors, file_names, avoid_unnecessary_containers, sized_box_for_whitespace, non_constant_identifier_names
 
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'package:bubble/bubble.dart';
@@ -806,7 +807,14 @@ class _AnnoyanceChat extends State<AnnoyanceChat> with WidgetsBindingObserver {
             lastSpeaking = true;
             reply("解決煩惱請馬上跟我說！我已經迫不及待想吃飯了！");
             reply("（歷史記錄點擊單一煩惱後按下完成按鈕！）");
+
             
+            String _mood = userAnswers[2];
+            if (moodFile != null) {
+              File file = moodFile!;
+              List<int> bytes = file.readAsBytesSync();
+              _mood = base64.encode(bytes);
+            }
             Future<Data> requestBody = annoyanceRepository
                 .createAnnoyance(Annoyance(
                   id: 0, //0
@@ -814,13 +822,13 @@ class _AnnoyanceChat extends State<AnnoyanceChat> with WidgetsBindingObserver {
                   content: userAnswers[1], //"文字內容"
                   type: userAnswers[0], //0~5
                   monsterId: 1, //1
-                  mood: userAnswers[2], //"否"
+                  mood: _mood, //"否"
                   index: userAnswers[3], //1~5
                   time: '',
                   solve: 0,
                   share: userAnswers[4], //0
-                  contentFile: contentFile, //null
-                  moodFile: moodFile, //null
+                  contentFile: null, //null
+                  moodFile: null, //null
                 ))
                 .then((value) => Data.fromJson(value!));
             await requestBody.then((value) {

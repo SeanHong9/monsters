@@ -1,5 +1,6 @@
 // ignore_for_file: use_key_in_widget_constructors, unnecessary_string_interpolations, prefer_const_constructors, file_names, avoid_unnecessary_containers, sized_box_for_whitespace, non_constant_identifier_names, camel_case_types
 import 'dart:async';
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 
@@ -53,10 +54,10 @@ class _historyAnnoyanceChat extends State<historyAnnoyanceChat> {
     response();
     response(data["type"]);
     response(data["content"]);
-    if (data["mood"] != null) {
-      response("是");
-    } else {
+    if (data["mood"] == "否") {
       response("否");
+    } else {
+      response("是");
     }
     response(data["index"].toString());
 
@@ -525,7 +526,7 @@ class _historyAnnoyanceChat extends State<historyAnnoyanceChat> {
                         ),
                         Flexible(
                             child: Container(
-                                child: Image.file(moodFile!,
+                                child: Image.memory(base64Decode(message),
                                     width: 200,
                                     height: 200,
                                     filterQuality: FilterQuality.medium))),
@@ -613,9 +614,9 @@ class _historyAnnoyanceChat extends State<historyAnnoyanceChat> {
         reply("早上好啊！\n發生甚麼事情都可以跟我說"); //5~12點
       } else if (hourNow < 14) {
         reply("中午好啊！\n午餐吃了嗎？發生任何事都可以找我聊聊"); //12~14點
-      } else if (hourNow < 18){
+      } else if (hourNow < 18) {
         reply("下午好，快下班了吧？正在煩惱什麼事情嗎?"); //14~18點
-      }else {
+      } else {
         reply("晚上好，今天過得如何呀？希望你有愉快的一天！"); //18~24點
       }
       reply("什麼樣子的煩惱呢？");
@@ -636,6 +637,9 @@ class _historyAnnoyanceChat extends State<historyAnnoyanceChat> {
         //取得是否畫心情
         if (chatRound == 3) {
           insert(text!);
+          if (text == "是") {
+            messages.insert(0, {"data": 5, "message": data["mood"]});
+          }
           reply("給煩惱程度打一個分數～");
         }
         //取得心情分數
@@ -769,44 +773,43 @@ class _PresentWidget extends State<PresentWidget> {
       Navigator.of(context).pop();
     });
     return Material(
-        type: MaterialType.transparency,
-        child: Center(
-          child: Container(
-            height: 350,
-            width: MediaQuery.of(context).size.width * 0.8,
-            decoration: BoxDecoration(
-              color: BackgroundColorLight,
-              border: Border.all(width: 5, color: BackgroundColorWarm),
-              borderRadius: BorderRadius.circular(22.0),
-            ),
-            child: Center(
-              child: Column(
-                children: [
-                  Container(
-                    height: 240,
-                    alignment: Alignment.center,
-                    margin: const EdgeInsets.only(left: 35, right: 30),
-                    width: MediaQuery.of(context).size.width * 0.8,
-                    decoration: const BoxDecoration(
-                      color: BackgroundColorLight,
-                      image: DecorationImage(
-                        image:
-                            AssetImage('assets/image/animatedImage/eating.gif'),
-                        fit: BoxFit.scaleDown,
-                      ),
+      type: MaterialType.transparency,
+      child: Center(
+        child: Container(
+          height: 350,
+          width: MediaQuery.of(context).size.width * 0.8,
+          decoration: BoxDecoration(
+            color: BackgroundColorLight,
+            border: Border.all(width: 5, color: BackgroundColorWarm),
+            borderRadius: BorderRadius.circular(22.0),
+          ),
+          child: Center(
+            child: Column(
+              children: [
+                Container(
+                  height: 240,
+                  alignment: Alignment.center,
+                  margin: const EdgeInsets.only(left: 35, right: 30),
+                  width: MediaQuery.of(context).size.width * 0.8,
+                  decoration: const BoxDecoration(
+                    color: BackgroundColorLight,
+                    image: DecorationImage(
+                      image:
+                          AssetImage('assets/image/animatedImage/eating.gif'),
+                      fit: BoxFit.scaleDown,
                     ),
                   ),
-                  Center(
-                    child: Text(
+                ),
+                Center(
+                  child: Text(
                     "太好了，煩惱解決了！\n接下來就交給我吧！",
-                      style:
-                          TextStyle(color: BackgroundColorWarm, fontSize: 22),
-                    ),
+                    style: TextStyle(color: BackgroundColorWarm, fontSize: 22),
+                  ),
                 )
-                ],
-              ),
+              ],
             ),
           ),
+        ),
       ),
     );
   }
