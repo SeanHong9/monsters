@@ -1,7 +1,10 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.bean.PersonalInfoBean;
+import com.example.demo.dao.AllMonsterDAO;
 import com.example.demo.dao.PersonalInfoDAO;
+import com.example.demo.dao.PersonalMonsterDAO;
+import com.example.demo.entity.AllMonster;
 import com.example.demo.entity.PersonalInfo;
 import com.example.demo.service.PersonalInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,19 +12,23 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
 @Service
 public class PersonalInfoServiceImpl extends BaseServiceImplement<PersonalInfoDAO, PersonalInfo, PersonalInfoBean> implements PersonalInfoService {
     @Autowired
     private final PersonalInfoDAO personalInfoDAO;
+    private final AllMonsterDAO allMonsterDAO;
+    private final PersonalMonsterDAO personalMonsterDAO;
     private final PasswordEncoder passwordEncoder;
 
-    public PersonalInfoServiceImpl(PersonalInfoDAO personalInfoDAO, PasswordEncoder passwordEncoder) {
+    public PersonalInfoServiceImpl(PersonalInfoDAO personalInfoDAO, AllMonsterDAO allMonsterDAO, PersonalMonsterDAO personalMonsterDAO, PasswordEncoder passwordEncoder) {
         super(personalInfoDAO);
         this.personalInfoDAO = personalInfoDAO;
+        this.allMonsterDAO = allMonsterDAO;
+        this.personalMonsterDAO = personalMonsterDAO;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -34,11 +41,12 @@ public class PersonalInfoServiceImpl extends BaseServiceImplement<PersonalInfoDA
         bean = createBean(personalInfo);
         return bean;
     }
+
     @Override
-    public List<PersonalInfoBean> searchPersonalInfoByAccount(String account){
+    public List<PersonalInfoBean> searchPersonalInfoByAccount(String account) {
         List<PersonalInfo> userList = personalInfoDAO.findByAccount(account);
         List<PersonalInfoBean> personalInfoBeanList = new ArrayList<>();
-        for(PersonalInfo personalInfo : userList){
+        for (PersonalInfo personalInfo : userList) {
             personalInfoBeanList.add(createBean(personalInfo));
         }
         return personalInfoBeanList;
@@ -47,10 +55,17 @@ public class PersonalInfoServiceImpl extends BaseServiceImplement<PersonalInfoDA
 
     @Override
     public void updateDailyTest(String account) {
+        int index = 0;
         Optional<PersonalInfo> personalInfoOptional = personalInfoDAO.getByPK(account);
-        if(personalInfoOptional.isPresent()){
+        if (personalInfoOptional.isPresent()) {
             PersonalInfo personalInfo = personalInfoOptional.get();
             personalInfo.setDailyTest(personalInfoOptional.get().getDailyTest() + 1);
+            if (personalInfo.getDailyTest() == 7) {
+                personalInfo.setDailyTest(0);
+                List<AllMonster> allMonsterList = allMonsterDAO.searchAll();
+                index = (int) Math.random() * allMonsterList.size();
+                personalMonsterDAO.findMonsterIdByMonsterGroupByAccount(account, allMonsterList.get(index).getGroup());
+            }
             personalInfoDAO.update(personalInfo);
             createBean(personalInfo);
         }
@@ -59,9 +74,15 @@ public class PersonalInfoServiceImpl extends BaseServiceImplement<PersonalInfoDA
     @Override
     public void updateInfomation(String account, PersonalInfoBean personalInfoBean) {
         Optional<PersonalInfo> personalInfoOptional = personalInfoDAO.getByPK(account);
-        if (personalInfoOptional.isPresent()){
+        if (personalInfoOptional.isPresent()) {
             PersonalInfo personalInfo = personalInfoOptional.get();
-            personalInfoBean.setPhoto(personalInfo.getPhoto());
+            if (personalInfoBean.getPhoto() == null) {
+                personalInfoBean.setPhoto(personalInfo.getPhoto());
+            }
+            if (personalInfoBean.getPassword() != null) {
+                personalInfoBean.setPassword(passwordEncoder.encode(personalInfoBean.getPassword()));
+            }
+            System.out.println(personalInfoBean);
             copy(personalInfoBean, personalInfo);
         }
     }

@@ -13,9 +13,10 @@ public class AnnoyanceSocial {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(name = "account", nullable = false)
+    private String account;
+
     @Column(name = "annoyance_id", nullable = false)
     private Integer annoyanceId;
 
-    @Column(name = "account", nullable = false)
-    private String account;
 }
