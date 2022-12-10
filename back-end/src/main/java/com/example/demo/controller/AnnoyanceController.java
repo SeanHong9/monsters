@@ -45,6 +45,7 @@ public class AnnoyanceController {
     @PostMapping("/create")
     public ResponseEntity createAnnoyance(@RequestBody AnnoyanceBean annoyanceBean) {
         int index = 0;
+        int probability=0;
         boolean isAddMonster = true;
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode result = mapper.createObjectNode();
@@ -64,17 +65,30 @@ public class AnnoyanceController {
                         annoyanceBean.setContent(contentPath.toString());
                     }
                     if (annoyanceBean.getMood().equals("是")) {
-                        byte[] moodBytes = annoyanceBean.getMoodFile().getBytes();
-                        Path moodPath = Paths.get(MOOD_FILE + LocalDateTime.now().format(DateTimeFormatter.ofPattern("MMdd")) + annoyanceBean.getMoodFile().getOriginalFilename());
-                        Files.write(moodPath, moodBytes);
-                        annoyanceBean.setMood(moodPath.toString());
+                        annoyanceBean.setMood(annoyanceBean.getMood());
                     }
                     List<AllMonsterBean> allMonster = allMonsterService.searchAll();
+                    // 抽1~100為機率
+                    probability = (int) (Math.random() * 100);
                     index = (int) (Math.random() * 20);
+                    if(probability<50){
+                        index = (int) (Math.random() * 10);
+                    }else if (probability<85){
+                        index = (int) (Math.random() * 5)+10;
+                    }else{
+                        index = (int) (Math.random() * 5)+15;
+                    }
                     index*=4;
 
                     while (allMonster.get(index).getMain() != 1) {
                         index = (int) (Math.random() * 20);
+                        if(probability<50){
+                            index = (int) (Math.random() * 10);
+                        }else if (probability<85){
+                            index = (int) (Math.random() * 5)+10;
+                        }else{
+                            index = (int) (Math.random() * 5)+15;
+                        }
                         index*=4;
                     }
                     annoyanceBean.setMonsterId(allMonster.get(index).getId());

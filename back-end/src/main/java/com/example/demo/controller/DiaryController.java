@@ -40,6 +40,7 @@ public class DiaryController {
     @PostMapping("/create")
     public ResponseEntity createDiary(@RequestBody DiaryBean diarybean) {
         int index = 0;
+        int probability=0;
         boolean isAddMonster = true;
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode result = mapper.createObjectNode();
@@ -59,11 +60,27 @@ public class DiaryController {
                         System.out.println(diarybean.getContent());
                     }
                     List<AllMonsterBean> allMonster = allMonsterService.searchAll();
+                    // 抽1~100為機率
+                    probability = (int) (Math.random() * 100);
                     index = (int) (Math.random() * 20);
+                    if(probability<50){
+                        index = (int) (Math.random() * 10);
+                    }else if (probability<85){
+                        index = (int) (Math.random() * 5)+10;
+                    }else{
+                        index = (int) (Math.random() * 5)+15;
+                    }
                     index*=4;
                     
                     while (allMonster.get(index).getMain() != 1) {
                         index = (int) (Math.random() * 20);
+                        if(probability<50){
+                            index = (int) (Math.random() * 10);
+                        }else if (probability<85){
+                            index = (int) (Math.random() * 5)+10;
+                        }else{
+                            index = (int) (Math.random() * 5)+15;
+                        }
                         index*=4;
                     }
                     diarybean.setMonsterId(allMonster.get(index).getId());
