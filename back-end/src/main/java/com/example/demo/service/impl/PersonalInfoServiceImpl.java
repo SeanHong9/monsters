@@ -46,14 +46,26 @@ public class PersonalInfoServiceImpl extends BaseServiceImplement<PersonalInfoDA
 
 
     @Override
-    @Transactional(readOnly = false)
-    public void dailyTest(String account, PersonalInfoBean personalInfoBean) {
-        PersonalInfo personalInfo = createVO(personalInfoBean);
+    public void updateDailyTest(String account) {
         Optional<PersonalInfo> personalInfoOptional = personalInfoDAO.getByPK(account);
-        personalInfo.setDailyTest(personalInfoOptional.get().getDailyTest() + 1);
-        personalInfoDAO.update(personalInfo);
-        createBean(personalInfo);
+        if(personalInfoOptional.isPresent()){
+            PersonalInfo personalInfo = personalInfoOptional.get();
+            personalInfo.setDailyTest(personalInfoOptional.get().getDailyTest() + 1);
+            personalInfoDAO.update(personalInfo);
+            createBean(personalInfo);
+        }
     }
+
+    @Override
+    public void updateInfomation(String account, PersonalInfoBean personalInfoBean) {
+        Optional<PersonalInfo> personalInfoOptional = personalInfoDAO.getByPK(account);
+        if (personalInfoOptional.isPresent()){
+            PersonalInfo personalInfo = personalInfoOptional.get();
+            personalInfoBean.setPhoto(personalInfo.getPhoto());
+            copy(personalInfoBean, personalInfo);
+        }
+    }
+
     @Override
     protected PersonalInfo createVO(PersonalInfoBean bean) {
         PersonalInfo entity = new PersonalInfo();

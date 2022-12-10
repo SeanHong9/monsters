@@ -11,11 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
-import java.time.format.DateTimeFormatter;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
+import java.util.Optional;
 @AllArgsConstructor
 @RestController
 @RequestMapping(value = "/member")
@@ -97,7 +94,7 @@ public class PersonalInfoController {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode result = mapper.createObjectNode();
         System.out.println(personalInfoBean.toString());
-        personalInfoService.update(account, personalInfoBean);
+        personalInfoService.updateInfomation(account, personalInfoBean);
         result.put("result", true) ;
         result.put("errorCode", "200");
         result.put("message", "修改成功");
@@ -110,7 +107,7 @@ public class PersonalInfoController {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode result = mapper.createObjectNode();
         Optional<PersonalInfoBean> personalInfoBeanOptional = personalInfoService.getByPK(account);
-        personalInfoService.dailyTest(personalInfoBeanOptional.get().getAccount(), personalInfoBeanOptional.get());
+        personalInfoService.updateDailyTest(personalInfoBeanOptional.get().getAccount());
         result.put("result", true) ;
         result.put("errorCode", "200");
         result.put("message", "修改成功");
