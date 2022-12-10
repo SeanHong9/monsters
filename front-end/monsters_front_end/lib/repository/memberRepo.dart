@@ -8,7 +8,6 @@ import '../main.dart';
 import '../model/memberModel.dart';
 import 'package:http/http.dart' as http;
 
-
 class MemberRepository implements MemberApiDataSource {
   final client = http.Client();
   final String domain = "http://10.0.2.2:8080";
@@ -52,13 +51,13 @@ class MemberRepository implements MemberApiDataSource {
     Member member,
   ) async {
     try {
-      log("2");
+      // log("2");
       final request = await client.post(url,
           headers: {'Content-type': 'application/json'},
           body: json.encode(member));
 
-      log(request.statusCode.toString());
-      log(request.body.toString());
+      // log(request.statusCode.toString());
+      // log(request.body.toString());
       if (request.statusCode == 200) {
         return request.body;
       } else {
@@ -74,19 +73,19 @@ class MemberRepository implements MemberApiDataSource {
     Uri url,
     Member member,
   ) async {
-    log("testter");
-    log(json.encode(member).toString());
+    log("_modifyPersonalInfo");
     try {
       final request = await client.patch(
         url,
         headers: {'Content-type': 'application/json'},
         body: json.encode(member),
       );
-      log(request.statusCode.toString());
+      log("statusCode: " + request.statusCode.toString());
+      log("body: " + request.body.toString());
       if (request.statusCode == 200) {
         return request.body;
       } else {
-        return Future.value(request.body) ;
+        return Future.value(request.body);
       }
     } catch (e) {
       return e.toString();
@@ -103,11 +102,11 @@ class MemberRepository implements MemberApiDataSource {
     try {
       final request =
           await client.get(url, headers: {'Content-type': 'application/json'});
-      log("*" * 20);
-      log("member status");
-      log("status: " + request.statusCode.toString());
-      log("body: " + request.body.toString());
-      log("*" * 20);
+      // log("*" * 20);
+      // log("member status");
+      // log("status: " + request.statusCode.toString());
+      // log("body: " + request.body.toString());
+      // log("*" * 20);
       if (request.statusCode == 200) {
         Map<String, dynamic> personalInfo = jsonDecode(request.body);
         return Future.value(personalInfo);

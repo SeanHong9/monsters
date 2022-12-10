@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'dart:async';
+import 'dart:convert';
 import 'dart:math';
 import 'dart:developer' as dv;
 import 'package:flutter/material.dart';
@@ -347,7 +348,8 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
                                           Pinned.fromPins(
                                             Pin(size: 53.0, start: 9.0),
                                             Pin(size: 53.0, start: 9.0),
-                                            child: Container(
+                                            child: 
+                                            Container(
                                               decoration: BoxDecoration(
                                                 color: const Color(0xffffffff),
                                                 shape: BoxShape.circle,
@@ -965,10 +967,23 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
                       ),
                     ),
                   ),
+                  Container(
+                      height: 150,
+                      alignment: Alignment.center,
+                      decoration: const BoxDecoration(
+                        // color: Colors.white,
+                        // color: BackgroundColorSoft,
+                        color: BackgroundColorLight,
+                        border: Border(
+                          top: BorderSide(width: 1, color: BackgroundColorWarm),
+                        ),
+                      ),
+                      child: Image.memory(base64Decode(data["mood"]),
+                          filterQuality: FilterQuality.high)),
                   //貼文的相關留言
                   Container(
                       alignment: Alignment.center,
-                      height: 300,
+                      height: 150,
                       decoration: const BoxDecoration(
                           color: Colors.white,
                           border: Border.symmetric(
