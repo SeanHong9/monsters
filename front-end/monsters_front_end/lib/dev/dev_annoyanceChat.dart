@@ -219,7 +219,7 @@ class _dev_annoyanceChatState extends State<dev_annoyanceChat> {
                                 MediaQuery.of(context).size.height)
                             ? 240
                             : 162,
-                        filterQuality: FilterQuality.medium),
+                        filterQuality: FilterQuality.high),
                   ),
                 */
                 ),

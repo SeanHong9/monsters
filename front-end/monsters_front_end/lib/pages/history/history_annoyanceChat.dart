@@ -359,7 +359,7 @@ class _historyAnnoyanceChat extends State<historyAnnoyanceChat> {
                                             MediaQuery.of(context).size.height)
                                         ? 240
                                         : 162,
-                                    filterQuality: FilterQuality.medium))),
+                                    filterQuality: FilterQuality.high))),
                         SizedBox(
                           width: 3.0,
                         ),
@@ -529,7 +529,9 @@ class _historyAnnoyanceChat extends State<historyAnnoyanceChat> {
                                 child: Image.memory(base64Decode(message),
                                     width: 200,
                                     height: 200,
-                                    filterQuality: FilterQuality.medium))),
+                                filterQuality: FilterQuality.high),
+                          ),
+                        ),
                         SizedBox(
                           width: 3.0,
                         ),
