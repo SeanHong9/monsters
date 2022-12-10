@@ -34,8 +34,6 @@ class _dev_moodLine extends State<dev_moodLine> {
         .searchIndexByType(1)
         .then((value) => Data.fromJson(value!));
     Map indexMapResult = {};
-
-    // await indexMap.then((value) => log(value.data.first.toString()));
     await indexMap.then((value) {
       var indexList = [];
       var timeList = [];

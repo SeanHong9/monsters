@@ -147,7 +147,7 @@ class _MoodLineChartState extends State<MoodLineChart> {
                                           width: 40.0,
                                           height: 30.0,
                                           child: Text(
-                                            totalCount[0].toString() + '天',
+                                            totalCount[0].toString() + '次',
                                             style: const TextStyle(
                                               fontFamily: 'Segoe UI',
                                               fontSize: 20,
@@ -178,7 +178,7 @@ class _MoodLineChartState extends State<MoodLineChart> {
                                           width: 40.0,
                                           height: 30.0,
                                           child: Text(
-                                            totalCount[1].toString() + '天',
+                                            totalCount[1].toString() + '次',
                                             style: const TextStyle(
                                               fontFamily: 'Segoe UI',
                                               fontSize: 20,
@@ -209,7 +209,7 @@ class _MoodLineChartState extends State<MoodLineChart> {
                                           width: 40.0,
                                           height: 30.0,
                                           child: Text(
-                                            totalCount[2].toString() + '天',
+                                            totalCount[2].toString() + '次',
                                             style: const TextStyle(
                                               fontFamily: 'Segoe UI',
                                               fontSize: 20,
@@ -240,7 +240,7 @@ class _MoodLineChartState extends State<MoodLineChart> {
                                           width: 40.0,
                                           height: 30.0,
                                           child: Text(
-                                            totalCount[3].toString() + '天',
+                                            totalCount[3].toString() + '次',
                                             style: const TextStyle(
                                               fontFamily: 'Segoe UI',
                                               fontSize: 20,
@@ -271,7 +271,7 @@ class _MoodLineChartState extends State<MoodLineChart> {
                                           width: 40.0,
                                           height: 30.0,
                                           child: Text(
-                                            totalCount[4].toString() + '天',
+                                            totalCount[4].toString() + '次',
                                             style: const TextStyle(
                                               fontFamily: 'Segoe UI',
                                               fontSize: 20,
