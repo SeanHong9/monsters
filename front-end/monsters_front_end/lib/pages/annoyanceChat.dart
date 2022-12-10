@@ -531,7 +531,9 @@ class _AnnoyanceChat extends State<AnnoyanceChat> with WidgetsBindingObserver {
                                       _videoPlayerController.value.isInitialized
                                           ? VideoPlayer(_videoPlayerController)
                                           : Container(),
-                                ))),
+                            ),
+                          ),
+                        ),
                         SizedBox(
                           width: 3.0,
                         ),
