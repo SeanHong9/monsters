@@ -1,4 +1,5 @@
 // ignore_for_file: use_key_in_widget_constructors, unnecessary_string_interpolations, prefer_const_constructors, file_names, avoid_unnecessary_containers, sized_box_for_whitespace, non_constant_identifier_names, camel_case_types
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'package:bubble/bubble.dart';
@@ -125,7 +126,7 @@ class _diaryChat extends State<diaryChat> with WidgetsBindingObserver {
       reply("畫心情失敗，請通知官方平台");
     } else {
       final imageTemporary = File(moodImage.path);
-      this.moodFile = imageTemporary;
+      moodFile = imageTemporary;
       messages.insert(0, {"data": 5, "image": moodFile});
     }
 
@@ -792,6 +793,14 @@ class _diaryChat extends State<diaryChat> with WidgetsBindingObserver {
             }
             lastSpeaking = true;
             reply("我幫你記錄下來囉，想回顧的時候隨時跟我說！");
+            
+            String _mood = userAnswers[1];
+            log(moodFile.toString());
+            if (moodFile != null) {
+              File file = moodFile!;
+              List<int> bytes = file.readAsBytesSync();
+              _mood = base64.encode(bytes);
+            }
 
             Future<Data> requestBody = diaryRepository
                 .createDiary(
@@ -802,18 +811,21 @@ class _diaryChat extends State<diaryChat> with WidgetsBindingObserver {
                     index: userAnswers[2], //3
                     share: userAnswers[3], //0
                     time: '',
-                    contentFile: contentFile,
-                    moodFile: moodFile,
+                    contentFile: null,
+                    moodFile: null,
                     monsterId: 1,
-                    mood: userAnswers[1], //"否"
+                    mood: _mood, //"否"
                   ),
                 )
                 .then((value) => Data.fromJson(value!));
+
+
             await requestBody.then((value) {
               if (value.data.first.newMonster == true) {
                 popUp(context, value.data.first.newMonsterId!);
               }
             });
+            
             setState(() {});
             log("--完成分享");
           } else {

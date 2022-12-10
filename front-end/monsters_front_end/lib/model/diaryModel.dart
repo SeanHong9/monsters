@@ -1,7 +1,6 @@
 // ignore_for_file: file_names
 
 import 'dart:convert';
-
 import 'dart:io';
 
 Data diaryFromJson(String str) => Data.fromJson(json.decode(str));
@@ -9,6 +8,10 @@ Data diaryFromJson(String str) => Data.fromJson(json.decode(str));
 String diaryToJson(Data data) => json.encode(data.toJson());
 
 class Data {
+  List<Diary> data;
+  bool result;
+  String errorCode;
+  String message;
   Data({
     required this.data,
     required this.result,
@@ -16,10 +19,6 @@ class Data {
     required this.message,
   });
 
-  List<Diary> data;
-  bool result;
-  String errorCode;
-  String message;
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
         data: List<Diary>.from(json["data"].map((x) => Diary.fromJson(x))),
@@ -39,9 +38,9 @@ class Data {
 class Diary {
   int? id;
   String? account;
+  String? content;
   int? monsterId;
   String? mood;
-  String? content;
   int? index;
   String? time;
   int? share;

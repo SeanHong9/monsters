@@ -44,7 +44,7 @@ class DiaryRepository implements DiaryApiDataSource {
         return Future.value(diary);
       } else {
         Map<String, dynamic> diary = jsonDecode(request.body);
-        return Future.value(diary);
+        return diary;
       }
     } catch (e) {
       print(e);
