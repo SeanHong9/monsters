@@ -24,6 +24,7 @@ class _Daily_testState extends State<Daily_test> {
   var daily_D = "choose D";
   var correctChoice = 0;
   var learn = "";
+  String web = "";
 
   checkAnswer(int userChoice, String userAnswer) async {
     int unlockProgress = 1;
@@ -41,7 +42,7 @@ class _Daily_testState extends State<Daily_test> {
       print(lastTryDay);
       print("解鎖進度 :" + unlockProgress.toString());
       Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (context) => DailyTest_correct(learn)));
+          MaterialPageRoute(builder: (context) => DailyTest_correct(learn,web)));
     } else {
       var showChoice;
       var showAnswer;
@@ -68,7 +69,7 @@ class _Daily_testState extends State<Daily_test> {
           context,
           MaterialPageRoute(
               builder: (context) =>
-                  DailyTest_wrong(showChoice, showAnswer, learn)));
+                  DailyTest_wrong(showChoice, showAnswer, learn,web)));
     }
   }
 
@@ -224,6 +225,7 @@ class _Daily_testState extends State<Daily_test> {
         daily_D = value.optionFour;
         correctChoice = value.answer;
         learn = value.learn;
+        web = value.web;
       },
     ).then((value) => setState(() {}));
   }

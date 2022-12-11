@@ -68,6 +68,7 @@ public class InteractionController {
             dailyTestNode.put("optionFour", dailyTestsList.get(index).getOptionFour());
             dailyTestNode.put("answer", dailyTestsList.get(index).getAnswer());
             dailyTestNode.put("learn", dailyTestsList.get(index).getLearn());
+            dailyTestNode.put("web", dailyTestsList.get(index).getWeb());
 
             result.put("result", true);
             result.put("errorCode", "200");

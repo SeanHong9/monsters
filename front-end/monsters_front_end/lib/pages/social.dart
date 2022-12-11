@@ -140,10 +140,10 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
             'content': value.data.elementAt(index).content,
             'time': value.data.elementAt(index).time,
             'mood': value.data.elementAt(index).mood,
+            'moodPoint': value.data.elementAt(index).index,
             // 'avatar': 1,
             // 'type': type,
             // 'solve': value.data.elementAt(index).solve?.toInt(),
-            // 'index': value.data.elementAt(index).index,
             // 'share': value.data.elementAt(index).share,
           },
         );
@@ -967,7 +967,24 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
                       ),
                     ),
                   ),
-                  Container(
+                  //中間多媒體區
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Expanded(
+                          flex: 1,
+                          child: Container(
+                              height: 150,
+                              color: Colors.white,
+                              child: Image(
+                                image: AssetImage(
+                                  'assets/image/mood/moodPoint_${data["moodPoint"]}.png',
+                                ),
+                                fit: BoxFit.scaleDown,
+                              ))),
+                      Expanded(
+                        flex: 1,
+                        child: Container(
                       height: 150,
                       alignment: Alignment.center,
                       decoration: const BoxDecoration(
@@ -975,11 +992,27 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
                         // color: BackgroundColorSoft,
                         color: BackgroundColorLight,
                         border: Border(
-                          top: BorderSide(width: 1, color: BackgroundColorWarm),
+                                  // top: BorderSide(width: 1, color: BackgroundColorWarm),
                         ),
                       ),
-                      child: Image.memory(base64Decode(data["mood"]),
-                          filterQuality: FilterQuality.high)),
+                            child: (data["mood"] == "否")
+                                ? Container()
+                                : Image.memory(base64Decode(data["mood"]),
+                                    filterQuality: FilterQuality.high)),
+                      ),
+                      Expanded(
+                          flex: 1,
+                          child: Container(
+                              height: 150,
+                              color: Colors.white,
+                              child: Image(
+                                image: AssetImage(
+                                  'assets/image/mood/moodPoint_${data["moodPoint"]}.png',
+                                ),
+                                fit: BoxFit.scaleDown,
+                              ))),
+                    ],
+                  ),
                   //貼文的相關留言
                   Container(
                       alignment: Alignment.center,

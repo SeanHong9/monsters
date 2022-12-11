@@ -202,6 +202,7 @@ class _Monster_detailState extends State<Monster_detail> {
         .then((value) => Data.fromJson(value!));
 
     await skins.then((value) {
+      log("userAccount: " + userAccount);
       log("Use skin from DB: " + value.data.first.use.toString());
       String temp = jsonDecode(value.data.first.ownSkin!).toString();
       temp = temp.substring(1, temp.length - 1);

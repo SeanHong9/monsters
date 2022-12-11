@@ -1,22 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:monsters_front_end/pages/settings/style.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class DailyTest_wrong extends StatefulWidget {
   String correctChoice;
   String answer;
   String learn;
-  DailyTest_wrong(this.correctChoice, this.answer, this.learn);
+  String web;
+  DailyTest_wrong(this.correctChoice, this.answer, this.learn, this.web);
   @override
   _DailyTest_wrongState createState() =>
-      _DailyTest_wrongState(correctChoice, answer, learn);
+      _DailyTest_wrongState(correctChoice, answer, learn, web);
 }
 
 class _DailyTest_wrongState extends State<DailyTest_wrong> {
   var learn;
   var showChoice;
   var showAnswer;
+  var web;
 
-  _DailyTest_wrongState(this.showChoice, this.showAnswer, this.learn);
+  _DailyTest_wrongState(this.showChoice, this.showAnswer, this.learn, this.web);
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -107,7 +110,7 @@ class _DailyTest_wrongState extends State<DailyTest_wrong> {
           ),
           //解釋
           Expanded(
-            flex: 60,
+            flex: 50,
             child: Container(
               margin: const EdgeInsets.fromLTRB(20, 20, 20, 30),
               decoration: BoxDecoration(
@@ -129,6 +132,25 @@ class _DailyTest_wrongState extends State<DailyTest_wrong> {
                         ),
                       ))),
             ),
+          ),
+
+          Expanded(
+            flex: 10,
+            child: GestureDetector(
+                onTap: () {
+                  launchUrlString(web);
+                },
+                child: const Padding(
+                  padding: EdgeInsets.only(bottom: 10.0),
+                  child: Text(
+                    "前往閱讀文章！",
+                    style: TextStyle(
+                      color: BackgroundColorWarm,
+                      fontSize: 22,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                )),
           ),
         ],
       ),
