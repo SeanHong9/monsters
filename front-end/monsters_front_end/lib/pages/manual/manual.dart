@@ -79,7 +79,37 @@ class _ManualState extends State<Manual> with SingleTickerProviderStateMixin {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     //標題 完成
-                    Expanded(flex: 10, child: mainAppBarTitleContainer("圖鑑")),
+                    Expanded(
+                      flex: 10,
+                      child: Stack(children: [
+                        mainAppBarTitleContainer("圖鑑"),
+                        GestureDetector(
+                          child: Container(
+                              margin: const EdgeInsets.fromLTRB(20, 20, 0, 15),
+                              width: 45,
+                              height: 45,
+                              decoration: BoxDecoration(
+                                  border: Border.all(
+                                      color: BackgroundColorWarm,
+                                      width: 2,
+                                      style: BorderStyle.solid),
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(10))),
+                              child: Center(
+                                child: Container(
+                                  width: 35,
+                                  height: 35,
+                                  child: SvgPicture.string(
+                                    _svg_bx5ln,
+                                    allowDrawingOutsideViewBox: true,
+                                    fit: BoxFit.fill,
+                                  ),
+                                ),
+                              )),
+                          onTap: () => showAlertDialog(context),
+                        ),
+                      ]),
+                    ),
                     //標籤
                     Expanded(
                         flex: 5,
@@ -733,6 +763,53 @@ class CircularButton extends StatelessWidget {
       child: IconButton(icon: icon, onPressed: onClick, enableFeedback: true),
     );
   }
+}
+
+showAlertDialog(BuildContext context) {
+  AlertDialog dialog = AlertDialog(
+    //backgroundColor: const Color(0xfffffed4),
+    title: const Text(
+      "怪獸獲得機率",
+      style: TextStyle(
+        fontFamily: 'Segoe UI',
+        fontSize: 30,
+        color: Color.fromRGBO(160, 82, 45, 1),
+      ),
+      softWrap: true,
+    ),
+    content: Text(
+      "稀有度：\n⭐️1星(共10隻)：\n　 獲得機率50%\n⭐️2星(共5隻)：\n　 獲得機率35%\n⭐️3星(共5隻)：\n　 獲得機率15%",
+      style: TextStyle(
+        fontFamily: 'Segoe UI',
+        fontSize: 25,
+        color: Colors.black,
+      ),
+      softWrap: true,
+    ),
+    actions: [
+      RaisedButton(
+          color: const Color.fromRGBO(160, 82, 45, 1),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(22.0)),
+          child: const Text(
+            "OK",
+            style: TextStyle(
+              fontFamily: 'Segoe UI',
+              fontSize: 15,
+              color: Color.fromRGBO(255, 255, 255, 1),
+            ),
+            softWrap: true,
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          })
+    ],
+  );
+  showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return dialog;
+      });
 }
 
 const String _svg_xvbnb =
