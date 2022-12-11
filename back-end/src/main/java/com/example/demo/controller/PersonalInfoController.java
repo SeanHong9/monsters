@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import com.example.demo.bean.PersonalInfoBean;
+import com.example.demo.bean.PersonalMonsterBean;
 import com.example.demo.service.PersonalInfoService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
@@ -106,8 +107,15 @@ public class PersonalInfoController {
     public ResponseEntity dailyTest(@PathVariable(name = "account") String account){
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode result = mapper.createObjectNode();
+        ArrayNode dataNode = result.putArray("data");
         Optional<PersonalInfoBean> personalInfoBeanOptional = personalInfoService.getByPK(account);
-        personalInfoService.updateDailyTest(personalInfoBeanOptional.get().getAccount());
+        List<PersonalMonsterBean> personalMonsterBeanList = personalInfoService.updateDailyTest(
+                personalInfoBeanOptional.get().getAccount());
+        for (PersonalMonsterBean personalMonsterBean : personalMonsterBeanList){
+            ObjectNode personalMonsterNode = dataNode.addObject();
+            personalMonsterNode.put("monsterId", personalMonsterBean.getMonsterId());
+            personalMonsterNode.put("monsterGroup", personalMonsterBean.getMonsterGroup());
+        }
         result.put("result", true) ;
         result.put("errorCode", "200");
         result.put("message", "修改成功");
