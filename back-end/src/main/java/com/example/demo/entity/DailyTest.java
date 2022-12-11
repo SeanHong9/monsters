@@ -33,4 +33,7 @@ public class DailyTest {
 
     @Column(name = "learn", nullable = false)
     private  String learn;
+
+    @Column(name = "web", nullable = false)
+    private  String web;
 }
