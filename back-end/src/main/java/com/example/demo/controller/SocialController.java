@@ -30,8 +30,8 @@ public class SocialController {
     private final PersonalInfoServiceImpl personalInfoService;
 
     @ResponseBody
-    @GetMapping(path = "/{type}", produces = "application/json; charset=UTF-8")
-    public ResponseEntity SearchSocialAll(@PathVariable(name = "type") Integer type) {
+    @GetMapping(path = "/all/{type}", produces = "application/json; charset=UTF-8")
+    public ResponseEntity searchSocialAll(@PathVariable(name = "type") Integer type) {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode result = mapper.createObjectNode();
         ArrayNode dataNode = result.putArray("data");
