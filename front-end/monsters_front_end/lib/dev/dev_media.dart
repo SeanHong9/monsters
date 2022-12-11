@@ -75,7 +75,7 @@ class _dev_mediaState extends State<dev_media> {
                 ));
               }
               return Image.memory(base64Decode(snapshot.data["mood"]),
-                  width: 200, height: 200, filterQuality: FilterQuality.medium);
+                  width: 200, height: 200, filterQuality: FilterQuality.high);
             })
         // body: Column(
         //   children: [

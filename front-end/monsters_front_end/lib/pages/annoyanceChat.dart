@@ -467,7 +467,7 @@ class _AnnoyanceChat extends State<AnnoyanceChat> with WidgetsBindingObserver {
                                             MediaQuery.of(context).size.height)
                                         ? 240
                                         : 162,
-                                    filterQuality: FilterQuality.medium))),
+                                    filterQuality: FilterQuality.high))),
                         SizedBox(
                           width: 3.0,
                         ),
@@ -639,7 +639,7 @@ class _AnnoyanceChat extends State<AnnoyanceChat> with WidgetsBindingObserver {
                                 child: Image.file(moodFile!,
                                     width: 200,
                                     height: 200,
-                                    filterQuality: FilterQuality.medium))),
+                                    filterQuality: FilterQuality.high))),
                         SizedBox(
                           width: 3.0,
                         ),

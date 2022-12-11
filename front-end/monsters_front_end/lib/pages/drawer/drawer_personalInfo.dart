@@ -66,27 +66,20 @@ class _Drawer_personalInfoState extends State<Drawer_personalInfo> {
         List<String> monsterResult = temp.split(",");
         final List<int> monsterList =
             monsterResult.map((e) => int.parse(e)).toList();
-        log("monsterList:" + monsterList.toString());
+        // log("monsterList:" + monsterList.toString());
         personalInfoResult.putIfAbsent("ownList", () => monsterList);
       });
     });
 
-    log("personalInfoResult:" + personalInfoResult.toString());
-  
-    return personalInfoResult;
-    
-  }
+    // log("personalInfoResult:" + personalInfoResult.toString());
 
-  void modifyPersonalInfo() {
-    memberRepository.modifyPersonalInfo(
-      Member(account: userAccount, photo: 1),
-    );
+    return personalInfoResult;
   }
 
   @override
   Widget build(BuildContext context) {
     _future = getPersonalInfo();
-    
+
     setState(() {});
     return Scaffold(
         backgroundColor: Colors.white,
@@ -329,7 +322,6 @@ class _AvatarWidget extends State<AvatarWidget> {
                       itemCounter,
                       ((index) => GestureDetector(
                             onTap: () {
-                              // selected = monsterNamesList[index];
                               selected = monsterNamesList[ownList[index]];
                               setState(() {});
                             },
@@ -337,7 +329,6 @@ class _AvatarWidget extends State<AvatarWidget> {
                               alignment: Alignment.center,
                               height: 50,
                               width: 50,
-                              // decoration: (selected == monsterNamesList[index])
                               decoration: (selected ==
                                       monsterNamesList[ownList[index]])
                                   ? BoxDecoration(
@@ -408,6 +399,7 @@ class _AvatarWidget extends State<AvatarWidget> {
 
             final MemberRepository memberRepository = MemberRepository();
             int modifyAvatar = monsterNamesList.indexOf(choosenAvatar);
+            log("modifyAvatar :" + modifyAvatar.toString());
             memberRepository.modifyPersonalInfo(
               Member(
                 account: userAccount,
