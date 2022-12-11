@@ -11,6 +11,7 @@ class DailyTest {
   final String optionFour;
   final int answer;
   final String learn;
+  final String web;
 
   DailyTest(
       {required this.id,
@@ -20,7 +21,9 @@ class DailyTest {
       required this.optionThree,
       required this.optionFour,
       required this.answer,
-      required this.learn});
+    required this.learn,
+    required this.web,
+  });
 
   DailyTest copyWith(
       {int? id,
@@ -30,7 +33,8 @@ class DailyTest {
       String? optionThree,
       String? optionFour,
       int? answer,
-      String? learn}) {
+      String? learn,
+      String? web}) {
     return DailyTest(
         id: id ?? this.id,
         question: question ?? this.question,
@@ -39,7 +43,9 @@ class DailyTest {
         optionThree: optionThree ?? this.optionThree,
         optionFour: optionFour ?? this.optionFour,
         answer: answer ?? this.answer,
-        learn: learn ?? this.learn);
+      learn: learn ?? this.learn,
+      web: web ?? this.web,
+    );
   }
 
   Map<String, dynamic> toMap() {
@@ -51,7 +57,8 @@ class DailyTest {
       'optionThree': optionThree,
       'optionFour': optionFour,
       'answer': answer,
-      'learn': learn
+      'learn': learn,
+      'web': web
     };
   }
 
@@ -64,7 +71,9 @@ class DailyTest {
         optionThree: map['optionThree'],
         optionFour: map['optionFour'],
         answer: map['answer'],
-        learn: map['learn']);
+      learn: map['learn'],
+      web: map['web'],
+    );
   }
 
   String toJson() {
@@ -76,7 +85,7 @@ class DailyTest {
 
   @override
   String toString() =>
-      'DailyTest(id: $id, question: $question, optionOne: $optionOne, optionTwo: $optionTwo, optionThree: $optionThree, optionFour: $optionFour, answer: $answer, learn: $learn)';
+      'DailyTest(id: $id, question: $question, optionOne: $optionOne, optionTwo: $optionTwo, optionThree: $optionThree, optionFour: $optionFour, answer: $answer, learn: $learn, web: $web)';
 
   @override
   bool operator ==(Object other) {
@@ -90,7 +99,8 @@ class DailyTest {
         other.optionThree == optionThree &&
         other.optionFour == optionFour &&
         other.answer == answer &&
-        other.learn == learn;
+        other.learn == learn &&
+        other.web == web;
   }
 
   @override
@@ -102,5 +112,6 @@ class DailyTest {
       optionThree.hashCode ^
       optionFour.hashCode ^
       answer.hashCode ^
-      learn.hashCode;
+      learn.hashCode ^
+      web.hashCode;
 }

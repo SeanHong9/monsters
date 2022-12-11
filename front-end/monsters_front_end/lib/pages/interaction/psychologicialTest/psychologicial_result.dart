@@ -4,6 +4,7 @@ import 'package:monsters_front_end/pages/interaction/destressWays/destressWay_de
 import 'package:monsters_front_end/pages/interaction/mindGame/mind_game.dart';
 
 import 'package:monsters_front_end/pages/settings/style.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 class Psychologicial_result extends StatefulWidget {
@@ -18,13 +19,13 @@ class _Psychologicial_result extends State<Psychologicial_result> {
   late YoutubePlayerController controller;
   int total;
   _Psychologicial_result(this.total);
+  final url = "https://www.youtube.com/watch?v=ycXMqLOHZGA";
   //take the total score
 
   @override
   void initState() {
     super.initState();
 
-    const url = "https://www.youtube.com/watch?v=ycXMqLOHZGA";
     controller = YoutubePlayerController(
         initialVideoId: YoutubePlayer.convertUrlToId(url)!,
         flags: const YoutubePlayerFlags(
@@ -67,7 +68,29 @@ class _Psychologicial_result extends State<Psychologicial_result> {
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   Container(child: player),
-                  suggestion(),
+                  Stack(
+                    children: [
+                      suggestion(),
+                      GestureDetector(
+                        onTap: () {
+                          launchUrlString(url);
+                        },
+                        child: Container(
+                          alignment: Alignment.topRight,
+                          margin: const EdgeInsets.only(top: 10, right: 10),
+                          child: const Text(
+                            "前往觀看影片",
+                            style: TextStyle(
+                              color: BackgroundColorWarm,
+                              fontSize: 18,
+                            ),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+
                   const SizedBox(
                     height: 15,
                   ),
