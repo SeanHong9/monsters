@@ -18,8 +18,14 @@ public class Diary {
     @Column(name = "`account`", nullable = false, length = 45)
     private String account;
 
-    @Column(name = "`content`", nullable = false)
+    @Column(name = "`content`")
     private String content;
+
+    @Column(name = "image_content")
+    private String imageContent;
+
+    @Column(name = "audio_content")
+    private String audioContent;
 
     @Column(name = "`monster_Id`", nullable = false)
     private int monsterId;
@@ -33,6 +39,6 @@ public class Diary {
     @Column(name = "`time`", nullable = false)
     private LocalDateTime time;
 
-    @Column(name = "`share`",nullable = false)
+    @Column(name = "`share`", nullable = false)
     private Integer share;
 }

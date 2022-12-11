@@ -10,6 +10,8 @@ public class DiaryBean extends BaseBean {
     private Integer id;
     private String account;
     private String content;
+    private String imageContent;
+    private String audioContent;
     private int monsterId;
     private String mood;
     private Integer index;

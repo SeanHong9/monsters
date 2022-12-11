@@ -76,7 +76,7 @@ public class DiaryController {
                     }
                     index*=4;
                     
-                    while (allMonster.get(index).getMain() != 1) {
+                    while (allMonster.get(index).getMain() != 0) {
                         index = (int) (Math.random() * 20);
                         if(probability<50){
                             index = (int) (Math.random() * 10);

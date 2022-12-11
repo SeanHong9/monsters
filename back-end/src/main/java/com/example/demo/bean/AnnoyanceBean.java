@@ -10,6 +10,8 @@ public class AnnoyanceBean extends BaseBean {
     private Integer id;
     private String account;
     private String content;
+    private String imageContent;
+    private String audioContent;
     private Integer type;
     private int monsterId;
     private String mood;

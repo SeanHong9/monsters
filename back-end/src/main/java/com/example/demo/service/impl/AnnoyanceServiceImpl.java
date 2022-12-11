@@ -3,7 +3,6 @@ package com.example.demo.service.impl;
 import com.example.demo.bean.AnnoyanceBean;
 import com.example.demo.dao.AnnoyanceDAO;
 import com.example.demo.entity.Annoyance;
-import com.example.demo.entity.enumerate.AnnoyanceTypeEnum;
 import com.example.demo.service.AnnoyanceService;
 import org.apache.ibatis.javassist.NotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +30,6 @@ public class AnnoyanceServiceImpl extends BaseServiceImplement<AnnoyanceDAO, Ann
     public AnnoyanceBean createAndReturnBean(AnnoyanceBean bean) {
         Annoyance annoyance = createVO(bean);
         annoyance.setTime(LocalDateTime.now());
-        AnnoyanceTypeEnum annoyanceTypeEnum = AnnoyanceTypeEnum.check(bean.getType().toString());
-//        annoyance.setType(annoyanceTypeEnum);
         annoyanceDAO.insert(annoyance);
         bean = createBean(annoyance);
         return bean;
@@ -97,6 +94,8 @@ public class AnnoyanceServiceImpl extends BaseServiceImplement<AnnoyanceDAO, Ann
         entity.setId(bean.getId());
         entity.setAccount(bean.getAccount());
         entity.setContent(bean.getContent());
+        entity.setImageContent(bean.getImageContent());
+        entity.setAudioContent(bean.getAudioContent());
         entity.setType(bean.getType());
         entity.setMonsterId(bean.getMonsterId());
         entity.setMood(bean.getMood());
@@ -113,6 +112,8 @@ public class AnnoyanceServiceImpl extends BaseServiceImplement<AnnoyanceDAO, Ann
         bean.setId(entity.getId());
         bean.setAccount(entity.getAccount());
         bean.setContent(entity.getContent());
+        bean.setImageContent(entity.getImageContent());
+        bean.setAudioContent(entity.getAudioContent());
         bean.setType(entity.getType());
         bean.setMonsterId(entity.getMonsterId());
         bean.setMood(entity.getMood());
