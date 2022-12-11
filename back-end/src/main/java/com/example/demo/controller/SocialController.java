@@ -13,10 +13,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
@@ -33,8 +30,8 @@ public class SocialController {
     private final PersonalInfoServiceImpl personalInfoService;
 
     @ResponseBody
-    @GetMapping(path = "", produces = "application/json; charset=UTF-8")
-    public ResponseEntity SearchSocialAll() {
+    @GetMapping(path = "/{type}", produces = "application/json; charset=UTF-8")
+    public ResponseEntity SearchSocialAll(@PathVariable(name = "type") Integer type) {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode result = mapper.createObjectNode();
         ArrayNode dataNode = result.putArray("data");
@@ -54,119 +51,69 @@ public class SocialController {
                         return o2.getTime().compareTo(o1.getTime());
                     }
                 });
-                for (AnnoyanceBean annoyanceBean : annoyanceList) {
-                    ObjectNode annoyanceNode = dataNode.addObject();
-                    Optional<PersonalInfoBean> personalInfo = personalInfoService.getByPK(annoyanceBean.getAccount());
-                    String nickName = personalInfo.get().getNickName();
-                    annoyanceNode.put("id", annoyanceBean.getId());
-                    annoyanceNode.put("nickName", nickName);
-                    annoyanceNode.put("content", annoyanceBean.getContent());
-                    annoyanceNode.put("type", annoyanceBean.getType());
-                    annoyanceNode.put("monsterId", annoyanceBean.getMonsterId()/4);
-                    annoyanceNode.put("mood", annoyanceBean.getMood());
-                    annoyanceNode.put("index", annoyanceBean.getIndex());
-                    annoyanceNode.put("time", annoyanceBean.getTime().format(DateTimeFormatter.ofPattern("MM/dd")));
-                    annoyanceNode.put("solve", annoyanceBean.getSolve());
-                    annoyanceNode.put("share", annoyanceBean.getShare());
-                }
-                for (DiaryBean diaryBean : diaryList) {
-                    ObjectNode diaryNode = dataNode.addObject();
-                    Optional<PersonalInfoBean> personalInfo = personalInfoService.getByPK(diaryBean.getAccount());
-                    String nickName = personalInfo.get().getNickName();
-                    diaryNode.put("id", diaryBean.getId());
-                    diaryNode.put("nickName", nickName);
-                    diaryNode.put("content", diaryBean.getContent());
-                    diaryNode.put("monsterId", diaryBean.getMonsterId()/4);
-                    diaryNode.put("mood", diaryBean.getMood());
-                    diaryNode.put("index", diaryBean.getIndex());
-                    diaryNode.put("time", diaryBean.getTime().format(DateTimeFormatter.ofPattern("MM/dd")));
-                    diaryNode.put("share", diaryBean.getShare());
-                }
-                result.put("result", true);
-                result.put("errorCode", "200");
-                result.put("message", "查詢成功");
-            } else {
-                result.put("result", false);
-                result.put("errorCode", "");
-                result.put("message", "查詢失敗");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return ResponseEntity.status(HttpStatus.CREATED).body(result);
-    }
-
-    @ResponseBody
-    @GetMapping(path = "/annoyance", produces = "application/json; charset=UTF-8")
-    public ResponseEntity SearchSocialByAnnoyance() {
-        ObjectMapper mapper = new ObjectMapper();
-        ObjectNode result = mapper.createObjectNode();
-        ArrayNode dataNode = result.putArray("data");
-        try {
-            List<AnnoyanceBean> annoyanceList = annoyanceService.searchAnnoyanceByShare();
-            if (annoyanceList.size() != 0) {
-                Collections.sort(annoyanceList, new Comparator<AnnoyanceBean>() {
-                    @Override
-                    public int compare(AnnoyanceBean o1, AnnoyanceBean o2) {
-                        return o2.getTime().compareTo(o1.getTime());
-                    }
-                });
-                for (AnnoyanceBean annoyanceBean : annoyanceList) {
-                    ObjectNode annoyanceNode = dataNode.addObject();
-                    Optional<PersonalInfoBean> personalInfo = personalInfoService.getByPK(annoyanceBean.getAccount());
-                    String nickName = personalInfo.get().getNickName();
-                    annoyanceNode.put("id", annoyanceBean.getId());
-                    annoyanceNode.put("content", annoyanceBean.getContent());
-                    annoyanceNode.put("nickName", nickName);
-                    annoyanceNode.put("type", annoyanceBean.getType());
-                    annoyanceNode.put("monsterId", annoyanceBean.getMonsterId()/4);
-                    annoyanceNode.put("mood", annoyanceBean.getMood());
-                    annoyanceNode.put("index", annoyanceBean.getIndex());
-                    annoyanceNode.put("time", annoyanceBean.getTime().format(DateTimeFormatter.ofPattern("MM/dd")));
-                    annoyanceNode.put("solve", annoyanceBean.getSolve());
-                    annoyanceNode.put("share", annoyanceBean.getShare());
-                }
-                result.put("result", true);
-                result.put("errorCode", "200");
-                result.put("message", "查詢成功");
-            } else {
-                result.put("result", false);
-                result.put("errorCode", "");
-                result.put("message", "查詢失敗");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return ResponseEntity.status(HttpStatus.CREATED).body(result);
-    }
-
-    @ResponseBody
-    @GetMapping(path = "/diary", produces = "application/json; charset=UTF-8")
-    public ResponseEntity SearchSocialByDiary() {
-        ObjectMapper mapper = new ObjectMapper();
-        ObjectNode result = mapper.createObjectNode();
-        ArrayNode dataNode = result.putArray("data");
-        try {
-            List<DiaryBean> diaryList = diaryServiceimpl.searchAnnoyanceByShare();
-            if (diaryList.size() != 0) {
-                Collections.sort(diaryList, new Comparator<DiaryBean>() {
-                    @Override
-                    public int compare(DiaryBean o1, DiaryBean o2) {
-                        return o2.getTime().compareTo(o1.getTime());
-                    }
-                });
-                for (DiaryBean diaryBean : diaryList) {
-                    ObjectNode diaryNode = dataNode.addObject();
-                    Optional<PersonalInfoBean> personalInfo = personalInfoService.getByPK(diaryBean.getAccount());
-                    String nickName = personalInfo.get().getNickName();
-                    diaryNode.put("id", diaryBean.getId());
-                    diaryNode.put("nickName", nickName);
-                    diaryNode.put("content", diaryBean.getContent());
-                    diaryNode.put("mood", diaryBean.getMood());
-                    diaryNode.put("monsterId", diaryBean.getMonsterId()/4);
-                    diaryNode.put("index", diaryBean.getIndex());
-                    diaryNode.put("time", diaryBean.getTime().format(DateTimeFormatter.ofPattern("MM/dd")));
-                    diaryNode.put("share", diaryBean.getShare());
+                switch (type) {
+                    case 1:
+                        for (AnnoyanceBean annoyanceBean : annoyanceList) {
+                            ObjectNode annoyanceNode = dataNode.addObject();
+                            Optional<PersonalInfoBean> personalInfo = personalInfoService.getByPK(annoyanceBean.getAccount());
+                            String nickName = personalInfo.get().getNickName();
+                            annoyanceNode.put("id", annoyanceBean.getId());
+                            annoyanceNode.put("nickName", nickName);
+                            annoyanceNode.put("content", annoyanceBean.getContent());
+                            annoyanceNode.put("type", annoyanceBean.getType());
+                            annoyanceNode.put("monsterId", annoyanceBean.getMonsterId());
+                            annoyanceNode.put("mood", annoyanceBean.getMood());
+                            annoyanceNode.put("index", annoyanceBean.getIndex());
+                            annoyanceNode.put("time", annoyanceBean.getTime().format(DateTimeFormatter.ofPattern("MM/dd")));
+                            annoyanceNode.put("solve", annoyanceBean.getSolve());
+                            annoyanceNode.put("share", annoyanceBean.getShare());
+                        }
+                        break;
+                    case 2:
+                        for (DiaryBean diaryBean : diaryList) {
+                            ObjectNode diaryNode = dataNode.addObject();
+                            Optional<PersonalInfoBean> personalInfo = personalInfoService.getByPK(diaryBean.getAccount());
+                            String nickName = personalInfo.get().getNickName();
+                            diaryNode.put("id", diaryBean.getId());
+                            diaryNode.put("nickName", nickName);
+                            diaryNode.put("content", diaryBean.getContent());
+                            diaryNode.put("monsterId", diaryBean.getMonsterId());
+                            diaryNode.put("index", diaryBean.getIndex());
+                            diaryNode.put("time", diaryBean.getTime().format(DateTimeFormatter.ofPattern("MM/dd")));
+                            diaryNode.put("share", diaryBean.getShare());
+                        }
+                        break;
+                    case 3:
+                        for (AnnoyanceBean annoyanceBean : annoyanceList) {
+                            ObjectNode annoyanceNode = dataNode.addObject();
+                            Optional<PersonalInfoBean> personalInfo = personalInfoService.getByPK(annoyanceBean.getAccount());
+                            String nickName = personalInfo.get().getNickName();
+                            annoyanceNode.put("id", annoyanceBean.getId());
+                            annoyanceNode.put("nickName", nickName);
+                            annoyanceNode.put("content", annoyanceBean.getContent());
+                            annoyanceNode.put("type", annoyanceBean.getType());
+                            annoyanceNode.put("monsterId", annoyanceBean.getMonsterId());
+                            annoyanceNode.put("mood", annoyanceBean.getMood());
+                            annoyanceNode.put("index", annoyanceBean.getIndex());
+                            annoyanceNode.put("time", annoyanceBean.getTime().format(DateTimeFormatter.ofPattern("MM/dd")));
+                            annoyanceNode.put("solve", annoyanceBean.getSolve());
+                            annoyanceNode.put("share", annoyanceBean.getShare());
+                        }
+                        for (DiaryBean diaryBean : diaryList) {
+                            ObjectNode diaryNode = dataNode.addObject();
+                            Optional<PersonalInfoBean> personalInfo = personalInfoService.getByPK(diaryBean.getAccount());
+                            String nickName = personalInfo.get().getNickName();
+                            diaryNode.put("id", diaryBean.getId());
+                            diaryNode.put("nickName", nickName);
+                            diaryNode.put("content", diaryBean.getContent());
+                            diaryNode.put("monsterId", diaryBean.getMonsterId());
+                            diaryNode.put("index", diaryBean.getIndex());
+                            diaryNode.put("time", diaryBean.getTime().format(DateTimeFormatter.ofPattern("MM/dd")));
+                            diaryNode.put("share", diaryBean.getShare());
+                        }
+                        break;
+                    default:
+                        break;
                 }
                 result.put("result", true);
                 result.put("errorCode", "200");
@@ -184,7 +131,7 @@ public class SocialController {
 
     @ResponseBody
     @GetMapping(path = "/{account}", produces = "application/json; charset=UTF-8")
-    public ResponseEntity SearchSocialbyAccount(@PathVariable(name = "account") String account) {
+    public ResponseEntity searchSocialByAccount(@PathVariable(name = "account") String account) {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode result = mapper.createObjectNode();
         ArrayNode dataNode = result.putArray("data");
@@ -212,7 +159,7 @@ public class SocialController {
                     annoyanceNode.put("content", annoyanceBean.getContent());
                     annoyanceNode.put("nickName", nickName);
                     annoyanceNode.put("type", annoyanceBean.getType());
-                    annoyanceNode.put("monsterId", annoyanceBean.getMonsterId()/4);
+                    annoyanceNode.put("monsterId", annoyanceBean.getMonsterId() / 4);
                     annoyanceNode.put("mood", annoyanceBean.getMood());
                     annoyanceNode.put("index", annoyanceBean.getIndex());
                     annoyanceNode.put("time", annoyanceBean.getTime().format(DateTimeFormatter.ofPattern("MM/dd")));
@@ -227,7 +174,7 @@ public class SocialController {
                     diaryNode.put("nickName", nickName);
                     diaryNode.put("content", diaryBean.getContent());
                     diaryNode.put("mood", diaryBean.getMood());
-                    diaryNode.put("monsterId", diaryBean.getMonsterId()/4);
+                    diaryNode.put("monsterId", diaryBean.getMonsterId() / 4);
                     diaryNode.put("index", diaryBean.getIndex());
                     diaryNode.put("time", diaryBean.getTime().format(DateTimeFormatter.ofPattern("MM/dd")));
                     diaryNode.put("share", diaryBean.getShare());
@@ -244,6 +191,14 @@ public class SocialController {
             e.printStackTrace();
         }
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
+    }
+
+    @ResponseBody
+    @PostMapping(path = "/comment/{id}/{account}")
+    public ResponseEntity comment(@PathVariable(name = "id") Integer id,
+                                  @PathVariable(name = "account") String
+            account) {
+        return null;
     }
 
 }

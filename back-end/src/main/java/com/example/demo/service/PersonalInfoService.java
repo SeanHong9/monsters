@@ -10,7 +10,7 @@ public interface PersonalInfoService extends BaseService<PersonalInfoBean>{
     void updateDailyTest(String account);
 
     @Transactional(readOnly = false)
-    void updateInfomation(String account, PersonalInfoBean personalInfoBean);
+    void updateInformation(String account, PersonalInfoBean personalInfoBean);
 
     List<PersonalInfoBean> searchPersonalInfoByAccount(String account);
 }

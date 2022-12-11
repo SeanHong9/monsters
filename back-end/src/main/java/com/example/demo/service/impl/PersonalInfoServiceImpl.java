@@ -72,7 +72,7 @@ public class PersonalInfoServiceImpl extends BaseServiceImplement<PersonalInfoDA
     }
 
     @Override
-    public void updateInfomation(String account, PersonalInfoBean personalInfoBean) {
+    public void updateInformation(String account, PersonalInfoBean personalInfoBean) {
         Optional<PersonalInfo> personalInfoOptional = personalInfoDAO.getByPK(account);
         if (personalInfoOptional.isPresent()) {
             PersonalInfo personalInfo = personalInfoOptional.get();

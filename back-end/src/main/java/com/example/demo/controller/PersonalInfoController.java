@@ -94,7 +94,7 @@ public class PersonalInfoController {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode result = mapper.createObjectNode();
         System.out.println(personalInfoBean.toString());
-        personalInfoService.updateInfomation(account, personalInfoBean);
+        personalInfoService.updateInformation(account, personalInfoBean);
         result.put("result", true) ;
         result.put("errorCode", "200");
         result.put("message", "修改成功");

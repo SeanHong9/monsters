@@ -123,15 +123,15 @@ public class MonsterController {
         ArrayNode dataNode = result.putArray("data");
         try {
             List<PersonalMonsterBean> personalMonsterBeanList = personalMonsterService.findMonsterIdByMonsterGroupByAccount(monsterGroup,account);
-            PersonalMonsterUseBean personalMonsterUseBean = personalMonsterUseService.findByAccountAndMonsterGroup(account, monsterGroup);
+            Optional<PersonalMonsterUseBean> personalMonsterUseBean = personalMonsterUseService.findByAccountAndMonsterGroup(account, monsterGroup);
             ObjectNode personalMonsterNode = dataNode.addObject();
             ArrayList monsterSkinArray = new ArrayList();
             for(PersonalMonsterBean personalMonsterBean : personalMonsterBeanList){
                 monsterSkinArray.add(personalMonsterBean.getMonsterId()%4);
             }
             int usingSkin=0;
-            if(personalMonsterUseBean.getUse()!=null){
-                usingSkin= personalMonsterUseBean.getUse()%4;
+            if(personalMonsterUseBean.get().getUse() != null){
+                usingSkin= personalMonsterUseBean.get().getUse()%4;
             }
             personalMonsterNode.put("ownSkin", monsterSkinArray.toString());
             personalMonsterNode.put("use", usingSkin);

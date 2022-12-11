@@ -25,6 +25,7 @@ import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author linwe
@@ -43,9 +44,9 @@ public class AnnoyanceController {
 
     @ResponseBody
     @PostMapping("/create")
-    public ResponseEntity createAnnoyance(@RequestBody AnnoyanceBean annoyanceBean) {
+    public ResponseEntity createAnnoyance(@ModelAttribute AnnoyanceBean annoyanceBean) {
         int index = 0;
-        int probability=0;
+        int probability = 0;
         boolean isAddMonster = true;
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode result = mapper.createObjectNode();
@@ -71,25 +72,30 @@ public class AnnoyanceController {
                     // 抽1~100為機率
                     probability = (int) (Math.random() * 100);
                     index = (int) (Math.random() * 20);
-                    if(probability<50){
+                    if (probability < 50) {
                         index = (int) (Math.random() * 10);
-                    }else if (probability<85){
-                        index = (int) (Math.random() * 5)+10;
-                    }else{
-                        index = (int) (Math.random() * 5)+15;
+                    } else if (probability < 85) {
+                        index = (int) (Math.random() * 5) + 10;
+                    } else {
+                        index = (int) (Math.random() * 5) + 15;
                     }
-                    index*=4;
+                    index *= 4;
 
                     while (allMonster.get(index).getMain() != 1) {
                         index = (int) (Math.random() * 20);
-                        if(probability<50){
+                        if (probability < 50) {
                             index = (int) (Math.random() * 10);
-                        }else if (probability<85){
-                            index = (int) (Math.random() * 5)+10;
-                        }else{
-                            index = (int) (Math.random() * 5)+15;
+                        } else if (probability < 85) {
+                            index = (int) (Math.random() * 5) + 10;
+                        } else {
+                            index = (int) (Math.random() * 5) + 15;
                         }
-                        index*=4;
+                        index *= 4;
+                        index *= 4;
+                    }
+                    while (allMonster.get(index).getMain() != 1) {
+                        index = (int) (Math.random() * 20);
+                        index *= 4;
                     }
                     annoyanceBean.setMonsterId(allMonster.get(index).getId());
                     annoyanceService.createAndReturnBean(annoyanceBean);
@@ -97,50 +103,46 @@ public class AnnoyanceController {
                     PersonalMonsterUseBean personalMonsterUseBean = new PersonalMonsterUseBean();
                     List<PersonalMonsterBean> personalMonsterList = personalMonsterService.findByAccount(annoyanceBean.getAccount());
                     for (PersonalMonsterBean personalMonster : personalMonsterList) {
-                        System.out.println(personalMonster.getMonsterId() + "/" + allMonster.get(index).getGroup());
-                        if (personalMonster.getMonsterId().equals(allMonster.get(index).getGroup())) {
+                        System.out.println(personalMonster.getMonsterId() + "/" + allMonster.get(index).getId());
+                        if (personalMonster.getMonsterId().equals(allMonster.get(index).getId())) {
                             isAddMonster = false;
                             break;
                         }
                     }
                     System.out.println(isAddMonster);
-                    if(isAddMonster){
+                    personalMonsterUseBean.setAccount(annoyanceBean.getAccount());
+                    personalMonsterUseBean.setMonsterGroup(allMonster.get(index).getGroup());
+                    personalMonsterUseBean.setUse(0);
+                    Optional<PersonalMonsterUseBean> personalMonsterUseBeanOptional = personalMonsterUseService.findByAccountAndMonsterGroup(personalMonsterUseBean.getAccount(), personalMonsterUseBean.getMonsterGroup());
+                    System.out.println(personalMonsterUseBeanOptional.isPresent());
+                    if (!personalMonsterUseBeanOptional.isPresent()) {
+                        personalMonsterUseService.createAndReturnBean(personalMonsterUseBean);
+                    }
+                    if (isAddMonster) {
                         personalMonsterBean.setAccount(annoyanceBean.getAccount());
                         personalMonsterBean.setMonsterId(allMonster.get(index).getId());
                         personalMonsterBean.setMonsterGroup(allMonster.get(index).getGroup());
-                        personalMonsterUseBean.setAccount(annoyanceBean.getAccount());
-                        personalMonsterUseBean.setMonsterGroup(allMonster.get(index).getGroup());
-                        personalMonsterUseBean.setUse(0);
                         ObjectNode personalMonsterNode = dataNode.addObject();
                         personalMonsterNode.put("newMonster", true);
                         personalMonsterNode.put("use", personalMonsterUseBean.getUse());
                         personalMonsterNode.put("newMonsterId", allMonster.get(index).getGroup());
                         personalMonsterService.createAndReturnBean(personalMonsterBean);
-                        personalMonsterUseService.createAndReturnBean(personalMonsterUseBean);
-                    }else {
-                        personalMonsterUseBean.setAccount(annoyanceBean.getAccount());
-                        personalMonsterUseBean.setMonsterGroup(allMonster.get(index).getGroup());
-                        personalMonsterUseBean.setUse(0);
+                    } else {
                         ObjectNode personalMonsterNode = dataNode.addObject();
                         personalMonsterNode.put("newMonster", false);
-                        personalMonsterNode.put("newMonsterId", allMonster.get(index).getGroup());
                         personalMonsterNode.put("use", personalMonsterUseBean.getUse());
-                        personalMonsterUseService.createAndReturnBean(personalMonsterUseBean);
+                        personalMonsterNode.put("newMonsterId", allMonster.get(index).getGroup());
                     }
                     result.put("result", true);
                     result.put("errorCode", "200");
                     result.put("message", "新增成功");
                 } catch (IOException e) {
-                    System.out.println(annoyanceBean.toString());
-                    System.out.println(e);
                     result.put("result", false);
                     result.put("errorCode", "");
                     result.put("message", "新增失敗");
                 }
             }
         } catch (Exception e) {
-            System.out.println(annoyanceBean.toString());
-            System.out.println(e);
             result.put("result", false);
             result.put("errorCode", "");
             result.put("message", "新增失敗");
@@ -150,7 +152,7 @@ public class AnnoyanceController {
 
     @ResponseBody
     @PatchMapping("/modify/{id}/{account}")
-    public ResponseEntity modifyAnnoyance(@PathVariable(name = "id") int id,@PathVariable(name = "account") String account,@RequestBody AnnoyanceBean annoyanceBean) throws NotFoundException {
+    public ResponseEntity modifyAnnoyance(@PathVariable(name = "id") int id, @PathVariable(name = "account") String account, @RequestBody AnnoyanceBean annoyanceBean) throws NotFoundException {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode result = mapper.createObjectNode();
         annoyanceService.updateAnnoyance(id, account, annoyanceBean);

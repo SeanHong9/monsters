@@ -93,36 +93,30 @@ public class DiaryController {
                     PersonalMonsterUseBean personalMonsterUseBean = new PersonalMonsterUseBean();
                     List<PersonalMonsterBean> personalMonsterList = personalMonsterService.findByAccount(diarybean.getAccount());
                     for (PersonalMonsterBean personalMonster : personalMonsterList) {
-                        System.out.println(personalMonster.getMonsterId() + "/" + allMonster.get(index).getGroup());
-                        if (personalMonster.getMonsterId().equals(allMonster.get(index).getGroup())) {
+                        if (personalMonster.getMonsterId().equals(allMonster.get(index).getId())) {
                             isAddMonster = false;
                             break;
                         }
                     }
+                    personalMonsterUseBean.setAccount(diarybean.getAccount());
+                    personalMonsterUseBean.setMonsterGroup(allMonster.get(index).getGroup());
+                    personalMonsterUseBean.setUse(0);
+                    personalMonsterUseService.createAndReturnBean(personalMonsterUseBean);
                     System.out.println(isAddMonster);
+                    ObjectNode personalMonsterNode = dataNode.addObject();
                     if(isAddMonster){
                         personalMonsterBean.setAccount(diarybean.getAccount());
                         personalMonsterBean.setMonsterId(allMonster.get(index).getId());
                         personalMonsterBean.setMonsterGroup(allMonster.get(index).getGroup());
-                        personalMonsterUseBean.setAccount(diarybean.getAccount());
-                        personalMonsterUseBean.setMonsterGroup(allMonster.get(index).getGroup());
-                        personalMonsterUseBean.setUse(0);
-                        ObjectNode personalMonsterNode = dataNode.addObject();
                         personalMonsterNode.put("newMonster", true);
-                        personalMonsterNode.put("use", personalMonsterUseBean.getUse());
-                        personalMonsterNode.put("newMonsterId", allMonster.get(index).getGroup());
                         personalMonsterService.createAndReturnBean(personalMonsterBean);
-                        personalMonsterUseService.createAndReturnBean(personalMonsterUseBean);
                     }else {
-                        personalMonsterUseBean.setAccount(diarybean.getAccount());
-                        personalMonsterUseBean.setMonsterGroup(allMonster.get(index).getGroup());
-                        personalMonsterUseBean.setUse(0);
-                        ObjectNode personalMonsterNode = dataNode.addObject();
                         personalMonsterNode.put("newMonster", false);
                         personalMonsterNode.put("use", personalMonsterUseBean.getUse());
                         personalMonsterNode.put("newMonsterId", allMonster.get(index).getGroup());
-                        personalMonsterUseService.createAndReturnBean(personalMonsterUseBean);
                     }
+                    personalMonsterNode.put("use", personalMonsterUseBean.getUse());
+                    personalMonsterNode.put("newMonsterId", allMonster.get(index).getGroup());
                     result.put("result", true);
                     result.put("errorCode", "200");
                     result.put("message", "新增成功");
