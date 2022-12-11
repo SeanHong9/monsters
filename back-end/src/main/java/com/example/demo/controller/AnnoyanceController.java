@@ -91,11 +91,6 @@ public class AnnoyanceController {
                             index = (int) (Math.random() * 5) + 15;
                         }
                         index *= 4;
-                        index *= 4;
-                    }
-                    while (allMonster.get(index).getMain() != 1) {
-                        index = (int) (Math.random() * 20);
-                        index *= 4;
                     }
                     annoyanceBean.setMonsterId(allMonster.get(index).getId());
                     annoyanceService.createAndReturnBean(annoyanceBean);
