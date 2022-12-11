@@ -118,6 +118,7 @@ class _historyAnnoyanceChat extends State<historyAnnoyanceChat> {
                                     Annoyance(
                                       id: data["id"],
                                       solve: 1,
+                                      index: data["moodIndex"],
                                     ),
                                   );
                                   popUp(context);
@@ -178,6 +179,7 @@ class _historyAnnoyanceChat extends State<historyAnnoyanceChat> {
                                         Annoyance(
                                           id: data["id"],
                                           share: _share,
+                                          index: data["moodIndex"],
                                         ),
                                       );
                                       data["share"] = _share;
@@ -228,6 +230,7 @@ class _historyAnnoyanceChat extends State<historyAnnoyanceChat> {
                                     Annoyance(
                                       id: data["id"],
                                       share: _share,
+                                      index: data["moodIndex"],
                                     ),
                                   );
                                   data["share"] = _share;

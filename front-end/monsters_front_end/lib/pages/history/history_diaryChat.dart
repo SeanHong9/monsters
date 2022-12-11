@@ -123,6 +123,7 @@ class _historyDiaryChat extends State<historyDiaryChat> {
                               Diary(
                                 id: data["id"],
                                 share: _share,
+                                index: data["moodIndex"],
                               ),
                             );
                             data["share"] = _share;

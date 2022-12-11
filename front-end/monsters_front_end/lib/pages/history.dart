@@ -216,13 +216,10 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                             ),
                             onTap: () {
                               if (selectionTab_type != 3) {
-                                
-                              
                                 selectionTab_type = 3;
                                 selectionTab_solve_enabled = false;
                                 selectionTab_solve = 0;
-                                setState(() {
-                              });
+                                setState(() {});
                               }
                             }),
                         //未解決標籤 selectionTab_solve == 1
@@ -349,13 +346,30 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                                           : Container(),
                                     ),
                                   ),
-                                  title: SingleChildScrollView(
-                                    scrollDirection: Axis.vertical,
-                                    child: Text(
-                                      snapshot.data["result $index"]["content"],
-                                      style: TextStyle(fontSize: BodyTextSize),
-                                      textAlign: TextAlign.left,
-                                    ),
+                                  title: Row(
+                                    children: [
+                                      Expanded(
+                                        flex: 8,
+                                        child: SingleChildScrollView(
+                                          scrollDirection: Axis.vertical,
+                                          child: Text(
+                                            snapshot.data["result $index"]
+                                                ["content"],
+                                            style: TextStyle(
+                                                fontSize: BodyTextSize),
+                                            textAlign: TextAlign.left,
+                                          ),
+                                        ),
+                                      ),
+                                      Expanded(
+                                        flex: 2,
+                                        child: CircleAvatar(
+                                          radius: 19,
+                                          backgroundImage: AssetImage(
+                                              'assets/image/mood/moodPoint_${snapshot.data["result $index"]["moodIndex"]}.png'),
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                   trailing: (snapshot.data["result $index"]
                                               ["type"]
@@ -379,33 +393,29 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                                           mainAxisSize: MainAxisSize.max,
                                           children: [
                                             Expanded(
-                                                flex: 59,
-                                                child: Container(
-                                                  width: 55,
-                                                  decoration: BoxDecoration(
-                                                    color: Color.fromARGB(
-                                                        255, 174, 108, 32),
-                                                    borderRadius:
-                                                        const BorderRadius.all(
-                                                            Radius.elliptical(
-                                                                10.0, 10.0)),
-                                                  ),
-                                                  child: Center(
-                                                    child: Text(
+                                              flex: 59,
+                                              child: Container(
+                                                width: 55,
+                                                decoration: BoxDecoration(
+                                                  color: Color.fromARGB(
+                                                      255, 174, 108, 32),
+                                                  borderRadius:
+                                                      const BorderRadius.all(
+                                                          Radius.elliptical(
+                                                              10.0, 10.0)),
+                                                ),
+                                                child: Center(
+                                                  child: Text(
                                                       snapshot
                                                           .data["result $index"]
                                                               ["type"]
                                                           .toString(),
                                                       style: TextStyle(
                                                           fontSize: 18,
-                                                          color: Color.fromARGB(
-                                                              255,
-                                                              255,
-                                                              255,
-                                                              255)),
-                                                    ),
-                                                  ),
-                                                )),
+                                                          color: Colors.white)),
+                                                ),
+                                              ),
+                                            ),
                                             Expanded(
                                               flex: 5,
                                               child: SizedBox(),
@@ -864,7 +874,7 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
             'time': value.data.elementAt(index).time,
             'solve': value.data.elementAt(index).solve?.toInt(),
             'mood': value.data.elementAt(index).mood,
-            'index': value.data.elementAt(index).index,
+            'moodIndex': value.data.elementAt(index).index,
             'share': value.data.elementAt(index).share,
           },
         );
