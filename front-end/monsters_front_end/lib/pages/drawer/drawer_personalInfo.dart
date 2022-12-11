@@ -408,7 +408,7 @@ class _AvatarWidget extends State<AvatarWidget> {
             );
             Navigator.pop(context);
           }
-        });
+        },);
   }
 }
 
