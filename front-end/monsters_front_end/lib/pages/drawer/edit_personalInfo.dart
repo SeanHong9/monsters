@@ -109,7 +109,7 @@ class _Edit_personalInfoState extends State<Edit_personalInfo> {
                                         ),
                                         softWrap: false,
                                       ),
-                                      onPressed: () {
+                                      onPressed: () async {
                                         final isValidForm =
                                             _formKey.currentState!.validate();
                                         if (isValidForm) {
@@ -117,11 +117,24 @@ class _Edit_personalInfoState extends State<Edit_personalInfo> {
                                               memberRepository =
                                               MemberRepository();
 
+                                          int _photo = 0;
+                                          Future<Data> personalInfo =
+                                              memberRepository
+                                                  .searchPersonalInfoByAccount()
+                                                  .then((value) =>
+                                                      Data.fromJson(value!));
+
+                                          await personalInfo
+                                              .then((value) async {
+                                            _photo = value.data.first.photo!;
+                                          });
+
                                           memberRepository.modifyPersonalInfo(
                                             Member(
                                               account: userAccount,
                                               nickName: _nicknameController.text
                                                   .toString(),
+                                              photo: _photo,
                                             ),
                                           );
 

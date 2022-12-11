@@ -45,7 +45,7 @@ class _Drawer_personalInfoState extends State<Drawer_personalInfo> {
     Map personalInfoResult = {};
     // print("doing...getPersonalInfo()");
     Future<Data> personalInfo = memberRepository
-        .searchPersonalInfoByAccount(userAccount)
+        .searchPersonalInfoByAccount()
         .then((value) => Data.fromJson(value!));
 
     await personalInfo.then((value) async {
@@ -372,43 +372,56 @@ class _AvatarWidget extends State<AvatarWidget> {
 
   GestureDetector avatarButton(bool save) {
     return GestureDetector(
-        child: Container(
-          width: 100,
-          height: 50,
-          margin: save
-              ? const EdgeInsets.only(right: 20)
-              : const EdgeInsets.only(left: 20),
-          decoration: const BoxDecoration(
-            color: Color(0xffa0522d),
-            borderRadius: BorderRadius.all(Radius.elliptical(80, 80)),
-          ),
-          child: Center(
-            child: Text(
-              (save == false) ? "取消" : "確定",
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 20, color: Colors.white),
-            ),
+      child: Container(
+        width: 100,
+        height: 50,
+        margin: save
+            ? const EdgeInsets.only(right: 20)
+            : const EdgeInsets.only(left: 20),
+        decoration: const BoxDecoration(
+          color: Color(0xffa0522d),
+          borderRadius: BorderRadius.all(Radius.elliptical(80, 80)),
+        ),
+        child: Center(
+          child: Text(
+            (save == false) ? "取消" : "確定",
+            textAlign: TextAlign.center,
+            style: const TextStyle(fontSize: 20, color: Colors.white),
           ),
         ),
-        onTap: () {
-          if (save == false) {
-            Navigator.pop(context);
-          } else {
-            choosenAvatar = selected;
-            log("selected: " + selected);
+      ),
+      onTap: () async {
+        if (save == false) {
+          Navigator.pop(context);
+        } else {
+          choosenAvatar = selected;
+          log("selected: " + selected);
 
-            final MemberRepository memberRepository = MemberRepository();
-            int modifyAvatar = monsterNamesList.indexOf(choosenAvatar);
-            log("modifyAvatar :" + modifyAvatar.toString());
-            memberRepository.modifyPersonalInfo(
-              Member(
-                account: userAccount,
-                photo: modifyAvatar,
-              ),
-            );
-            Navigator.pop(context);
-          }
-        },);
+          final MemberRepository memberRepository = MemberRepository();
+          int modifyAvatar = monsterNamesList.indexOf(choosenAvatar);
+          log("modifyAvatar :" + modifyAvatar.toString());
+
+          Future<Data> personalInfo = memberRepository
+              .searchPersonalInfoByAccount()
+              .then((value) => Data.fromJson(value!));
+
+          String _nickName = "";
+
+          await personalInfo.then((value) async {
+            _nickName = value.data.first.nickName!;
+          });
+
+          memberRepository.modifyPersonalInfo(
+            Member(
+              account: userAccount,
+              photo: modifyAvatar,
+              nickName: _nickName,
+            ),
+          );
+          Navigator.pop(context);
+        }
+      },
+    );
   }
 }
 

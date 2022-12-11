@@ -566,7 +566,7 @@ class _MainPageState extends State<MainPage>
   Future getPhoto() async {
     Map personalInfoMap = {};
     Future<Data> personalInfo = memberRepository
-        .searchPersonalInfoByAccount(userAccount)
+        .searchPersonalInfoByAccount()
         .then((value) => Data.fromJson(value!));
 
     await personalInfo.then((value) async {

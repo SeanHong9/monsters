@@ -50,8 +50,9 @@ class _AnswerbookPageState extends State<AnswerbookPage> {
                 Pinned.fromPins(
                   Pin(size: 136.0, middle: 0.5),
                   Pin(size: 64.0, end: 73.0),
+                  // ignore: deprecated_member_use
                   child: FlatButton(
-                    color: Color.fromRGBO(255, 237, 151, 1),
+                    color: const Color.fromRGBO(255, 237, 151, 1),
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(9999.0)),
                     onPressed: () {
@@ -63,21 +64,24 @@ class _AnswerbookPageState extends State<AnswerbookPage> {
                     },
                     //是否第一次按(按鈕文字)
                     child: pressed == false
-                        ? Text(
+                        ? const Text(
                             '解答',
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               fontFamily: 'Segoe UI',
                               fontSize: 30,
-                              color: const Color(0xffa0522d),
+                              color: Color(0xffa0522d),
                             ),
                             softWrap: false,
                           )
-                        : Text('再一次',
+                        : const Text(
+                            '再一次',
                             style: TextStyle(
                                 fontFamily: 'Segoe UI',
                                 fontSize: 30,
-                                color: Color(0xffa0522d))),
+                              color: Color(0xffa0522d),
+                            ),
+                          ),
                   ),
                 ),
               ],
@@ -98,7 +102,7 @@ class _AnswerbookPageState extends State<AnswerbookPage> {
                   child: Center(
                     child: Text(
                       answer,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontFamily: 'Segoe UI',
                         fontSize: 25,
                         color: Color(0xffa0522d),
@@ -126,7 +130,7 @@ class _AnswerbookPageState extends State<AnswerbookPage> {
             child:
                 // Adobe XD layer: 'book-png-transparen…' (shape)
                 Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 image: DecorationImage(
                   image:
                       AssetImage('assets/image/background_answerBook_logo.png'),
