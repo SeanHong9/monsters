@@ -40,6 +40,9 @@ class AnnoyanceRepository implements AnnoyanceApiDataSource {
       var body = json.encode(annoyance);
       var request = await client.post(url,
           headers: {'Content-type': 'application/json'}, body: body);
+      log("dev_annoyanceChat");
+      log("statue: " + request.statusCode.toString());
+      log("body: " + request.body.toString());
 
       if (request.statusCode == 201) {
         Map<String, dynamic> annoyance = jsonDecode(request.body);

@@ -52,13 +52,13 @@ class MemberRepository implements MemberApiDataSource {
     Member member,
   ) async {
     try {
-      // log("2");
+      log("_login");
       final request = await client.post(url,
           headers: {'Content-type': 'application/json'},
           body: json.encode(member));
 
-      // log(request.statusCode.toString());
-      // log(request.body.toString());
+      log("status: " + request.statusCode.toString());
+      log("body: " + request.body.toString());
       if (request.statusCode == 200) {
         return request.body;
       } else {

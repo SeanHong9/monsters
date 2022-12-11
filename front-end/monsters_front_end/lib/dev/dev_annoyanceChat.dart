@@ -24,8 +24,11 @@ class _dev_annoyanceChatState extends State<dev_annoyanceChat> {
   final AnnoyanceRepository annoyanceRepository = AnnoyanceRepository();
   final timerController = TimerController();
   final player = AudioPlayer();
+  File? contentFile;
+  File? moodFile;
+  File? imageFile;
+  File? audioFile;
   File? _contentFile;
-  File? _moodFile;
 
   int _type = 1;
   String _content = "測試";
@@ -111,7 +114,7 @@ class _dev_annoyanceChatState extends State<dev_annoyanceChat> {
                   ),
                 ],
               ),
-              (_moodFile == null)
+              (moodFile == null)
                   ? Container(
                       height: 100,
                       width: 300,
@@ -142,7 +145,7 @@ class _dev_annoyanceChatState extends State<dev_annoyanceChat> {
                           ),
                         ),
                         onPressed: () {
-                          _moodFile = null;
+                          moodFile = null;
                           setState(() {});
                         },
                       ),
@@ -171,15 +174,35 @@ class _dev_annoyanceChatState extends State<dev_annoyanceChat> {
                     } else {
                       pushContent = null;
                     }
-                    if (_moodFile == null) {
+                    if (moodFile == null) {
                       _mood = "否";
                     } else {
                       _mood = "是";
                     }
-                    
-                    File file = _contentFile!;
-                    List<int> bytes = file.readAsBytesSync();
-                    String base64String = base64.encode(bytes);
+                    String _imageFile = "";
+                    String _audioFile = "";
+                    if (moodFile != null) {
+                      File file = moodFile!;
+                      List<int> bytes = file.readAsBytesSync();
+                      _mood = base64.encode(bytes);
+                    }
+
+                    if (imageFile != null) {
+                      File file = imageFile!;
+                      List<int> bytes = file.readAsBytesSync();
+                      _imageFile = base64.encode(bytes);
+                      log(_imageFile);
+                    }
+
+                    if (audioFile != null) {
+                      File file = audioFile!;
+                      List<int> bytes = file.readAsBytesSync();
+                      _audioFile = base64.encode(bytes);
+                    }
+
+                    // File file = _contentFile!;
+                    // List<int> bytes = file.readAsBytesSync();
+                    // String base64String = base64.encode(bytes);
                     annoyanceRepository.createAnnoyance(
                       Annoyance(
                         id: 0,
@@ -187,13 +210,13 @@ class _dev_annoyanceChatState extends State<dev_annoyanceChat> {
                         content: "123", //"純文字不分享無多媒體"
                         type: 1,
                         monsterId: 0,
-                        mood: base64String, //
+                        mood: _mood, //
                         index: 2, //3
                         time: "",
                         solve: 0,
                         share: 0, //0
-                        moodFile: null, //null
-                        contentFile: null, //null
+                        imageContent: _imageFile,
+                        audioContent: _audioFile,
                       ),
                     );
                   },
@@ -237,7 +260,7 @@ class _dev_annoyanceChatState extends State<dev_annoyanceChat> {
                         _contentFile.toString() +
                         "\n\n\n"
                             "_moodFile: \n" +
-                        _moodFile.toString() +
+                        moodFile.toString() +
                         "\n\n\n",
                     style: const TextStyle(fontSize: 20, color: Colors.white),
                   ),
@@ -254,9 +277,9 @@ class _dev_annoyanceChatState extends State<dev_annoyanceChat> {
   takePhoto() async {
     final media = await ImagePicker().pickImage(source: ImageSource.camera);
     if (media == null) return;
-    final imageTemporary = File(media.path);
+    imageFile = File(media.path);
+    _contentFile = imageFile;
 
-    _contentFile = imageTemporary;
     setState(() {});
   }
 
@@ -265,7 +288,7 @@ class _dev_annoyanceChatState extends State<dev_annoyanceChat> {
     XFile? recordedVideo = await ImagePicker().pickVideo(
         source: ImageSource.camera, maxDuration: const Duration(seconds: 15));
     if (recordedVideo == null) return;
-    _contentFile = File(recordedVideo.path);
+    // _contentFile = File(recordedVideo.path);
     setState(() {});
   }
 
@@ -277,8 +300,8 @@ class _dev_annoyanceChatState extends State<dev_annoyanceChat> {
     );
 
     if (media == null) return;
-    final audioTemporary = File(media);
-    _contentFile = audioTemporary;
+    audioFile = File(media);
+    _contentFile = audioFile;
     setState(() {});
   }
 
@@ -291,8 +314,7 @@ class _dev_annoyanceChatState extends State<dev_annoyanceChat> {
     if (moodImage == null) {
       log("畫心情失敗");
     } else {
-      final imageTemporary = File(moodImage.path);
-      _moodFile = imageTemporary;
+      moodFile = File(moodImage.path);
     }
 
     setState(() {});

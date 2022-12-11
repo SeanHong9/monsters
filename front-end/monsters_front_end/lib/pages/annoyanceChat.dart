@@ -42,6 +42,8 @@ class _AnnoyanceChat extends State<AnnoyanceChat> with WidgetsBindingObserver {
   var userAnswers = [];
   File? contentFile;
   File? moodFile;
+  File? imageFile;
+  File? audioFile;
 
   @override
   void dispose() {
@@ -57,12 +59,11 @@ class _AnnoyanceChat extends State<AnnoyanceChat> with WidgetsBindingObserver {
   takePhoto() async {
     final media = await ImagePicker().pickImage(source: ImageSource.camera);
     if (media == null) return;
-    final imageTemporary = File(media.path);
+    final imageFile = File(media.path);
 
-    contentFile = imageTemporary;
-    if (contentFile != null) {
-      messages.insert(0, {"data": 2, "image": contentFile});
-      response(null, contentFile);
+    if (imageFile != null) {
+      messages.insert(0, {"data": 2, "image": imageFile});
+      response(null, imageFile);
     }
     setState(() {});
   }
@@ -114,18 +115,17 @@ class _AnnoyanceChat extends State<AnnoyanceChat> with WidgetsBindingObserver {
   //錄音功能
   recordAudio(BuildContext context) async {
     //TODO: Level 2
-    ///ADD HERO https://youtu.be/1xipg02Wu8s?t=657
+    //ADD HERO https://youtu.be/1xipg02Wu8s?t=657
     final media = await Navigator.push(
       context,
       MaterialPageRoute(builder: (context) => AudioMainPage()),
     );
 
     if (media == null) return;
-    final audioTemporary = File(media);
-    this.contentFile = audioTemporary;
-    if (contentFile != null) {
-      messages.insert(0, {"data": 4, "audio": contentFile});
-      response(null, contentFile);
+    final audioFile = File(media);
+    if (audioFile != null) {
+      messages.insert(0, {"data": 4, "audio": audioFile});
+      response(null, audioFile);
     }
     setState(() {});
   }
@@ -141,8 +141,7 @@ class _AnnoyanceChat extends State<AnnoyanceChat> with WidgetsBindingObserver {
     if (moodImage == null) {
       reply("畫心情失敗，請通知官方平台");
     } else {
-      final imageTemporary = File(moodImage.path);
-      this.moodFile = imageTemporary;
+      final moodFile = File(moodImage.path);
       messages.insert(0, {"data": 5, "image": moodFile});
     }
 
@@ -345,14 +344,12 @@ class _AnnoyanceChat extends State<AnnoyanceChat> with WidgetsBindingObserver {
                           ),
                         ),
                         onPressed: () async {
-                          
                           Navigator.pushReplacement(
                               //TODO: Level 2
                               //ADD HERO https://youtu.be/1xipg02Wu8s?t=657
                               context,
                               MaterialPageRoute(
                                   builder: (context) => History()));
-
                         },
                       ),
                     ),
@@ -507,31 +504,25 @@ class _AnnoyanceChat extends State<AnnoyanceChat> with WidgetsBindingObserver {
                           width: 3.0,
                         ),
                         Flexible(
-                            child: Container(
-                                width:
-                                    (_videoPlayerController.value.size.width >
-                                            _videoPlayerController
-                                                .value.size.height)
-                                        ? 288
-                                        : 162,
-                                height:
-                                    (_videoPlayerController.value.size.width >
-                                            _videoPlayerController
-                                                .value.size.height)
-                                        ? 162
-                                        : 288,
-                                alignment: Alignment.centerRight,
-                                child: AspectRatio(
-                                  aspectRatio:
-                                      (_videoPlayerController.value.size.width >
-                                              _videoPlayerController
-                                                  .value.size.height)
-                                          ? 16 / 9
-                                          : 9 / 16,
-                                  child:
-                                      _videoPlayerController.value.isInitialized
-                                          ? VideoPlayer(_videoPlayerController)
-                                          : Container(),
+                          child: Container(
+                            width: (_videoPlayerController.value.size.width >
+                                    _videoPlayerController.value.size.height)
+                                ? 288
+                                : 162,
+                            height: (_videoPlayerController.value.size.width >
+                                    _videoPlayerController.value.size.height)
+                                ? 162
+                                : 288,
+                            alignment: Alignment.centerRight,
+                            child: AspectRatio(
+                              aspectRatio: (_videoPlayerController
+                                          .value.size.width >
+                                      _videoPlayerController.value.size.height)
+                                  ? 16 / 9
+                                  : 9 / 16,
+                              child: _videoPlayerController.value.isInitialized
+                                  ? VideoPlayer(_videoPlayerController)
+                                  : Container(),
                             ),
                           ),
                         ),
@@ -808,13 +799,26 @@ class _AnnoyanceChat extends State<AnnoyanceChat> with WidgetsBindingObserver {
             reply("解決煩惱請馬上跟我說！我已經迫不及待想吃飯了！");
             reply("（歷史記錄點擊單一煩惱後按下完成按鈕！）");
 
-            
             String _mood = userAnswers[2];
+            String _imageFile="";
+            String _audioFile="";
             if (moodFile != null) {
               File file = moodFile!;
               List<int> bytes = file.readAsBytesSync();
               _mood = base64.encode(bytes);
             }
+
+            if (imageFile != null) {
+              File file = imageFile!;
+              List<int> bytes = file.readAsBytesSync();
+              _imageFile = base64.encode(bytes);
+            }
+            if (audioFile != null) {
+              File file = audioFile!;
+              List<int> bytes = file.readAsBytesSync();
+              _audioFile = base64.encode(bytes);
+            }
+            
             Future<Data> requestBody = annoyanceRepository
                 .createAnnoyance(Annoyance(
                   id: 0, //0
@@ -827,8 +831,8 @@ class _AnnoyanceChat extends State<AnnoyanceChat> with WidgetsBindingObserver {
                   time: '',
                   solve: 0,
                   share: userAnswers[4], //0
-                  contentFile: null, //null
-                  moodFile: null, //null
+                  imageContent: _imageFile, //null
+                  audioContent: _audioFile, //null
                 ))
                 .then((value) => Data.fromJson(value!));
             await requestBody.then((value) {

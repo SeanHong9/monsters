@@ -44,15 +44,16 @@ class Member {
   int? photo;
   int? dailyTest;
 
-  Member(
-      {required this.account,
-      this.password,
-      this.birthday,
-      this.mail,
-      this.nickName,
-      this.lock,
-      this.photo,
-      this.dailyTest});
+  Member({
+    required this.account,
+    this.password,
+    this.birthday,
+    this.mail,
+    this.nickName,
+    this.lock,
+    this.photo,
+    this.dailyTest,
+  });
 
   factory Member.fromJson(Map<String, dynamic> json) => Member(
         account: json['account'],
