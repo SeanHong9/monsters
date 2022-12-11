@@ -3,6 +3,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
+import 'package:http/http.dart' as http;
 import 'dart:developer' as dv;
 import 'package:flutter/material.dart';
 import 'package:adobe_xd/pinned.dart';
@@ -17,6 +18,7 @@ import 'package:monsters_front_end/pages/manual/manual.dart';
 import 'package:monsters_front_end/pages/settings/style.dart';
 import 'package:monsters_front_end/state/drawer.dart';
 
+import '../main.dart';
 import '../model/socialModel.dart';
 import '../repository/socialRepo.dart';
 import 'annoyanceChat.dart';
@@ -140,7 +142,7 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
             'content': value.data.elementAt(index).content,
             'time': value.data.elementAt(index).time,
             'mood': value.data.elementAt(index).mood,
-            'moodPoint': value.data.elementAt(index).index,
+            'moodIndex': value.data.elementAt(index).index,
             // 'avatar': 1,
             // 'type': type,
             // 'solve': value.data.elementAt(index).solve?.toInt(),
@@ -348,8 +350,7 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
                                           Pinned.fromPins(
                                             Pin(size: 53.0, start: 9.0),
                                             Pin(size: 53.0, start: 9.0),
-                                            child: 
-                                            Container(
+                                            child: Container(
                                               decoration: BoxDecoration(
                                                 color: const Color(0xffffffff),
                                                 shape: BoxShape.circle,
@@ -373,8 +374,9 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
                                           //社群內容 點擊觸發留言功能
                                           GestureDetector(
                                             onTap: () => showComment(
-                                                snapshot.data["result $index"]
-                                            ),
+                                                snapshot.data["result $index"]),
+                                            onLongPress: () => showReport(
+                                                snapshot.data["result $index"]),
                                             child: Stack(
                                               children: [
                                                 //暱稱
@@ -863,6 +865,100 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
         ));
   }
 
+  showReport(var data) {
+    return showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Material(
+            type: MaterialType.transparency,
+            child: Center(
+                child: Container(
+              height: 200,
+              width: MediaQuery.of(context).size.width * 0.8,
+              decoration: BoxDecoration(
+                color: BackgroundColorLight,
+                border: Border.all(width: 5, color: BackgroundColorWarm),
+                borderRadius: BorderRadius.circular(22.0),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Center(
+                      child: Text(
+                    "確定要檢舉${data["nickName"]}嗎？",
+                    style: TextStyle(fontSize: 26, color: BackgroundColorWarm),
+                  )),
+                  SizedBox(
+                    height: 20,
+                  ),
+                  Row(
+                    children: [
+                      GestureDetector(
+                        onTap: () => Navigator.pop(context),
+                        child: Container(
+                          width: 105,
+                          height: 45,
+                          margin: const EdgeInsets.only(
+                            left: 30,
+                            bottom: 3,
+                          ),
+                          alignment: Alignment.centerLeft,
+                          decoration: BoxDecoration(
+                              color: BackgroundColorWarm,
+                              border: Border.all(
+                                  color: BackgroundColorWarm, width: 2),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(50.0))),
+                          child: Center(
+                            child: Text(
+                              "取消",
+                              style:
+                                  TextStyle(fontSize: 20, color: Colors.white),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Spacer(),
+                      GestureDetector(
+                        onTap: () {
+                          sendEmail(data);
+                          Navigator.pop(context);
+                        },
+                        child: Container(
+                          width: 105,
+                          height: 45,
+                          margin: const EdgeInsets.only(
+                            right: 30,
+                            bottom: 3,
+                          ),
+                          alignment: Alignment.centerLeft,
+                          decoration: BoxDecoration(
+                              color: BackgroundColorWarm,
+                              border: Border.all(
+                                  color: BackgroundColorWarm, width: 2),
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(50.0))),
+                          child: Center(
+                            child: Text(
+                              "確認",
+                              style:
+                                  TextStyle(fontSize: 20, color: Colors.white),
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 15,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            )),
+          );
+        });
+  }
+
   showComment(var data) {
     return showDialog(
         context: context,
@@ -893,8 +989,7 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
                             ),
                             child: CircleAvatar(
                               radius: 30,
-                              backgroundImage:
-                                  AssetImage(getMonsterAvatarPath(
+                              backgroundImage: AssetImage(getMonsterAvatarPath(
                                   monsterNamesList[data["avatar"]])),
                             ),
                           ),
@@ -972,45 +1067,50 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Expanded(
-                          flex: 1,
+                          flex: 2,
                           child: Container(
                               height: 150,
                               color: Colors.white,
                               child: Image(
                                 image: AssetImage(
-                                  'assets/image/mood/moodPoint_${data["moodPoint"]}.png',
+                                  'assets/image/mood/moodPoint_${data["moodIndex"]}.png',
+                                ),
+                                fit: BoxFit.scaleDown,
+                              ))),
+                      //改為多媒體
+                      Expanded(
+                          flex: 4,
+                          child: Container(
+                              height: 150,
+                              color: Colors.white,
+                              child: Image(
+                                image: AssetImage(
+                                  'assets/image/mood/moodPoint_${data["moodIndex"]}.png',
                                 ),
                                 fit: BoxFit.scaleDown,
                               ))),
                       Expanded(
-                        flex: 1,
+                        flex: 4,
                         child: Container(
-                      height: 150,
-                      alignment: Alignment.center,
-                      decoration: const BoxDecoration(
-                        // color: Colors.white,
-                        // color: BackgroundColorSoft,
-                        color: BackgroundColorLight,
-                        border: Border(
-                                  // top: BorderSide(width: 1, color: BackgroundColorWarm),
+                          height: 150,
+                          alignment: Alignment.center,
+                          decoration: const BoxDecoration(
+                            // color: Colors.white,
+                            // color: BackgroundColorSoft,
+                            color: BackgroundColorLight,
+                            border: Border(
+                                // top: BorderSide(width: 1, color: BackgroundColorWarm),
+                                ),
+                          ),
+                          child: (data["mood"] == "否")
+                              ? Container()
+                              : Container(
+                                  height: 150,
+                                  child: Image.memory(
+                                      base64Decode(data["mood"]),
+                                      filterQuality: FilterQuality.high)),
                         ),
                       ),
-                            child: (data["mood"] == "否")
-                                ? Container()
-                                : Image.memory(base64Decode(data["mood"]),
-                                    filterQuality: FilterQuality.high)),
-                      ),
-                      Expanded(
-                          flex: 1,
-                          child: Container(
-                              height: 150,
-                              color: Colors.white,
-                              child: Image(
-                                image: AssetImage(
-                                  'assets/image/mood/moodPoint_${data["moodPoint"]}.png',
-                                ),
-                                fit: BoxFit.scaleDown,
-                              ))),
                     ],
                   ),
                   //貼文的相關留言
@@ -1126,6 +1226,58 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
                 ],
               ));
         });
+  }
+
+  Future sendEmail(var data) async {
+    String email = "tony960281@gmail.com"; //userEmail
+    String name = userAccount; //userAccount
+    const serviceId = "service_iexyh7q";
+    const templateId = "template_00dj57j";
+    const userId = "x0TtUpsa7W7aHFIbl";
+    final url = Uri.parse('https://api.emailjs.com/api/v1.0/email/send');
+    var message = "id: " + data["id"].toString() + "\n";
+    message += "nickName: " + data["nickName"] + "\n";
+    message += "content: " + data["content"] + "\n";
+    if (data["solve"].toString() == "1" || data["solve"].toString() == "0") {
+      message += "post type: annoyance";
+    } else {
+      message += "post type: diary";
+    }
+    print(message);
+    final response = await http.post(url,
+        headers: {
+          'origin': 'http://localhost',
+          'Content-Type': 'application/json'
+        },
+        body: json.encode({
+          'service_id': serviceId,
+          'template_id': templateId,
+          'user_id': userId,
+          'accessToken': "9OoipUoZgha107DzjjE3w",
+          'template_params': {
+            'user_name': name,
+            'user_email': email,
+            'user_message': message
+          }
+        }));
+    setState(() {});
+    if (response.body == "OK") {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          duration: Duration(seconds: 1),
+          backgroundColor: BackgroundColorWarm,
+          content: Text(
+            "檢舉成功",
+            style: TextStyle(color: Colors.white, fontSize: 30),
+          )));
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          duration: Duration(seconds: 1),
+          backgroundColor: BackgroundColorWarm,
+          content: Text(
+            "檢舉失敗",
+            style: TextStyle(color: Colors.white, fontSize: 30),
+          )));
+    }
   }
 }
 
