@@ -229,14 +229,14 @@ class _ManualState extends State<Manual> with SingleTickerProviderStateMixin {
 
                                     (snapshot.data["route"][index] >= 0)
                                         ? Pinned.fromPins(
-                                            Pin(size: 30.0, end: 5.0),
-                                            Pin(size: 30.0, middle: 0.75),
+                                            Pin(size: 32.0, end: 5.0),
+                                            Pin(size: 32.0, middle: 0.75),
                                             child:
                                                 // Adobe XD layer: 'Icon awesome-star' (shape)
                                                 SvgPicture.string(
                                               _svg_bx5ln,
                                               allowDrawingOutsideViewBox: true,
-                                              fit: BoxFit.fill,
+                                              fit: BoxFit.scaleDown,
                                             ),
                                           )
                                         : Container(),
@@ -245,14 +245,14 @@ class _ManualState extends State<Manual> with SingleTickerProviderStateMixin {
                                         ?
                                         //star level2
                                         Pinned.fromPins(
-                                            Pin(size: 30.0, end: 40.0),
-                                            Pin(size: 30.0, middle: 0.75),
+                                            Pin(size: 32.0, end: 40.0),
+                                            Pin(size: 32.0, middle: 0.75),
                                             child:
                                                 // Adobe XD layer: 'Icon awesome-star' (shape)
                                                 SvgPicture.string(
                                               _svg_bx5ln,
                                               allowDrawingOutsideViewBox: true,
-                                              fit: BoxFit.fill,
+                                              fit: BoxFit.scaleDown,
                                             ),
                                           )
                                         : Container(),
@@ -261,16 +261,16 @@ class _ManualState extends State<Manual> with SingleTickerProviderStateMixin {
                                         ?
                                         //star level3
                                         Pinned.fromPins(
-                                            Pin(size: 30.0, end: 75.0),
-                                            Pin(size: 30.0, middle: 0.75),
+                                            Pin(size: 32.0, end: 75.0),
+                                            Pin(size: 32.0, middle: 0.75),
                                             child:
                                                 // Adobe XD layer: 'Icon awesome-star' (shape)
                                                 SvgPicture.string(
                                               _svg_bx5ln,
                                               allowDrawingOutsideViewBox: true,
-                                              fit: BoxFit.fill,
+                                              fit: BoxFit.scaleDown,
                                             ),
-                                          )
+                                          ) 
                                         : Container(),
 
                                     snapshot.data["route"][index] < 10

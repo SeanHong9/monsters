@@ -14,21 +14,21 @@ class SocialRepository implements SocialApiDataSource {
   final client = http.Client();
   @override
   Future<Map<String, dynamic>?> searchSocialByType(int type) {
-    String searchType = "";
+    String searchType = "3";
     if (type == 1) {
-      searchType = "";
+      searchType = "3";
     }
     if (type == 2) {
-      searchType = "/annoyance";
+      searchType = "1";
     }
     if (type == 3) {
-      searchType = "/diary";
+      searchType = "2";
     }
     if (type == 4) {
-      searchType = "/$userAccount";
+      return _searchSocialByType(Uri.parse('$domain/social/$userAccount'));
     }
 
-    return _searchSocialByType(Uri.parse('$domain/social$searchType'));
+    return _searchSocialByType(Uri.parse('$domain/social/all/$searchType'));
   }
 
   Future<Map<String, dynamic>?> _searchSocialByType(Uri url) async {

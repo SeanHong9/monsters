@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:adobe_xd/pinned.dart';
 import 'package:monsters_front_end/main.dart';
@@ -148,6 +150,7 @@ class _loginState extends State<LoginPage> {
 
   Future<GoogleSignInAccount?> signIn() async {
     final user = await GoogleSignInApi.signin();
+    log("google sign in ");
     if (user == null) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           duration: Duration(seconds: 1),
@@ -163,11 +166,9 @@ class _loginState extends State<LoginPage> {
       print("doing signIn()...");
       var result = await memberRepository
           .login(Member(account: user.email, password: ""));
-      print("get Result: " + result.contains("result").toString() + "\n");
       print("result: " + result + "\n");
-      if (result.contains("result") == true) {
+      if (result.contains("true")) {
         saveGoogleLogin(user.email);
-
         Navigator.of(context).pushReplacement(
             MaterialPageRoute(builder: (context) => MainPage()));
       } else {

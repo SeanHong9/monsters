@@ -18,7 +18,7 @@ class _DailyTest_correctState extends State<DailyTest_correct> {
   late Future _future;
   var learn, web;
   _DailyTest_correctState(this.learn, this.web);
-  int unlockProgress = 7;
+  late int unlockProgress;
 
   @override
   void initState() {
@@ -71,7 +71,7 @@ class _DailyTest_correctState extends State<DailyTest_correct> {
           ),
 
           Expanded(
-              flex: 22,
+              flex: 26,
               child: FutureBuilder<dynamic>(
                   future: _future,
                   builder:
@@ -92,14 +92,14 @@ class _DailyTest_correctState extends State<DailyTest_correct> {
                             alignment: Alignment.topLeft,
                             child: unlockProgress < 7
                                 ? Text(
-                                    "每天只有第一次能挑戰獎勵進度，\n再答對${7 - unlockProgress}次就可以解鎖隱藏獎勵！\n目前解鎖進度 ：",
+                                    "每天只有第一次能挑戰獎勵進度，\n再成功${7 - unlockProgress}次就可以解鎖隱藏獎勵！\n目前解鎖進度 ：",
                                     style: const TextStyle(
                                         fontSize: 20,
                                         color: BackgroundColorWarm),
                                   )
                                 : const Center(
                                     child: Text(
-                                      "恭喜解鎖隱藏獎勵！",
+                                      "解鎖怪獸造型！",
                                       style: TextStyle(
                                           fontSize: 22,
                                           color: BackgroundColorWarm),
@@ -143,7 +143,6 @@ class _DailyTest_correctState extends State<DailyTest_correct> {
             ),
           ),
 
-          
           Expanded(
             flex: 10,
             child: GestureDetector(
@@ -240,6 +239,10 @@ class _DailyTest_correctState extends State<DailyTest_correct> {
   }
 
   Future<bool> getUserDailyTestProgress() async {
+    unlockProgress = 3;
+    //上面這行unlockProgress用sharepref替代
+
+    // unlockProgress=SharedPreferences...
     return true;
   }
 

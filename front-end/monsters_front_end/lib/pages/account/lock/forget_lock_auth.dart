@@ -110,7 +110,7 @@ class _Forget_Lock_AuthState extends State<Forget_Lock_Auth> {
     print("doing...");
     final MemberRepository memberRepository = MemberRepository();
     Future<Data> personalInfo = memberRepository
-        .searchPersonalInfoByAccount(userAccount)
+        .searchPersonalInfoByAccount()
         .then((value) => Data.fromJson(value!));
 
     await personalInfo.then((value) async {

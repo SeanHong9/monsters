@@ -338,7 +338,7 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                                           ? Container(
                                               alignment: Alignment.bottomRight,
                                               child: CircleAvatar(
-                                                radius: 13,
+                                                radius: 10,
                                                 backgroundImage: AssetImage(
                                                     'assets/image/done.png'),
                                               ),
