@@ -1,11 +1,13 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.bean.PersonalInfoBean;
+import com.example.demo.bean.PersonalMonsterBean;
 import com.example.demo.dao.AllMonsterDAO;
 import com.example.demo.dao.PersonalInfoDAO;
 import com.example.demo.dao.PersonalMonsterDAO;
 import com.example.demo.entity.AllMonster;
 import com.example.demo.entity.PersonalInfo;
+import com.example.demo.entity.PersonalMonster;
 import com.example.demo.service.PersonalInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,12 +26,15 @@ public class PersonalInfoServiceImpl extends BaseServiceImplement<PersonalInfoDA
     private final PersonalMonsterDAO personalMonsterDAO;
     private final PasswordEncoder passwordEncoder;
 
-    public PersonalInfoServiceImpl(PersonalInfoDAO personalInfoDAO, AllMonsterDAO allMonsterDAO, PersonalMonsterDAO personalMonsterDAO, PasswordEncoder passwordEncoder) {
+    private final PersonalMonsterServiceImpl personalMonsterService;
+
+    public PersonalInfoServiceImpl(PersonalInfoDAO personalInfoDAO, AllMonsterDAO allMonsterDAO, PersonalMonsterDAO personalMonsterDAO, PasswordEncoder passwordEncoder, PersonalMonsterServiceImpl personalMonsterService) {
         super(personalInfoDAO);
         this.personalInfoDAO = personalInfoDAO;
         this.allMonsterDAO = allMonsterDAO;
         this.personalMonsterDAO = personalMonsterDAO;
         this.passwordEncoder = passwordEncoder;
+        this.personalMonsterService = personalMonsterService;
     }
 
     @Transactional
@@ -54,21 +59,42 @@ public class PersonalInfoServiceImpl extends BaseServiceImplement<PersonalInfoDA
 
 
     @Override
-    public void updateDailyTest(String account) {
-        int index = 0;
+    public List<PersonalMonsterBean> updateDailyTest(String account) {
         Optional<PersonalInfo> personalInfoOptional = personalInfoDAO.getByPK(account);
+        List<PersonalMonsterBean> personalMonsterBean = new ArrayList<>();
         if (personalInfoOptional.isPresent()) {
             PersonalInfo personalInfo = personalInfoOptional.get();
             personalInfo.setDailyTest(personalInfoOptional.get().getDailyTest() + 1);
             if (personalInfo.getDailyTest() == 7) {
                 personalInfo.setDailyTest(0);
                 List<AllMonster> allMonsterList = allMonsterDAO.searchAll();
-                index = (int) Math.random() * allMonsterList.size();
-                personalMonsterDAO.findMonsterIdByMonsterGroupByAccount(account, allMonsterList.get(index).getGroup());
+                int index = (int) (Math.random() * allMonsterList.size());
+                while (allMonsterList.get(index).getMain() == 0) {
+                    index = (int) (Math.random() * allMonsterList.size());
+                }
+                List<PersonalMonster> personalInfoList = personalMonsterDAO.
+                        findMonsterIdByMonsterGroupByAccount(account, allMonsterList.get(index).getGroup());
+                while (personalInfoList.isEmpty()) {
+                    index = (int) (Math.random() * allMonsterList.size());
+                    personalInfoList = personalMonsterDAO.
+                            findMonsterIdByMonsterGroupByAccount(account, allMonsterList.get(index).getGroup());
+                }
+                for (PersonalMonster personalMonster : personalInfoList) {
+                    if (personalMonster.getMonsterId().equals(allMonsterList.get(index).getId())) {
+                        index = (int) (Math.random() * allMonsterList.size());
+                    }
+                }
+                PersonalMonster personalMonster = new PersonalMonster();
+                personalMonster.setAccount(account);
+                personalMonster.setMonsterId(allMonsterList.get(index).getId());
+                personalMonster.setMonsterGroup(allMonsterList.get(index).getGroup());
+                personalMonsterDAO.insert(personalMonster);
+                personalMonsterBean.add(personalMonsterService.createBean(personalMonster));
             }
             personalInfoDAO.update(personalInfo);
             createBean(personalInfo);
         }
+        return personalMonsterBean;
     }
 
     @Override
