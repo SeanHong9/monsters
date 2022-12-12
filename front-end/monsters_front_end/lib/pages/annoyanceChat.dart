@@ -87,12 +87,11 @@ class _AnnoyanceChat extends State<AnnoyanceChat> with WidgetsBindingObserver {
   pickPhoto() async {
     final media = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (media == null) return;
-    final imageTemporary = File(media.path);
-
-    contentFile = imageTemporary;
-    if (contentFile != null) {
-      messages.insert(0, {"data": 2, "image": contentFile});
-      response(null, contentFile);
+    log("media:" + media.path.toString());
+    imageFile = File(media.path);
+    if (imageFile != null) {
+      messages.insert(0, {"data": 2, "image": imageFile});
+      response(null, imageFile);
     }
     setState(() {});
   }
@@ -348,7 +347,6 @@ class _AnnoyanceChat extends State<AnnoyanceChat> with WidgetsBindingObserver {
                           ),
                         ),
                         onPressed: () async {
-
                           Navigator.pushReplacement(
                               //TODO: Level 2
                               //ADD HERO https://youtu.be/1xipg02Wu8s?t=657
@@ -804,7 +802,6 @@ class _AnnoyanceChat extends State<AnnoyanceChat> with WidgetsBindingObserver {
             reply("解決煩惱請馬上跟我說！我已經迫不及待想吃飯了！");
             reply("（歷史記錄點擊單一煩惱後按下完成按鈕！）");
 
-            
             String _mood = userAnswers[2];
             String? _imageFile;
             String? _audioFile;
@@ -852,9 +849,6 @@ class _AnnoyanceChat extends State<AnnoyanceChat> with WidgetsBindingObserver {
                 popUp(context, value.data.first.newMonsterId!);
               }
             });
-
-
-
             log("--完成分享");
           } else {
             cannotRead();
