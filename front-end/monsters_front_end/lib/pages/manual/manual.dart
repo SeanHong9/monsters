@@ -70,7 +70,7 @@ class _ManualState extends State<Manual> with SingleTickerProviderStateMixin {
                 if (snapshot.data == null) {
                   return Center(
                       child: Text(
-                    "還沒有圖鑑嗎？\n先去新增煩惱或日記吧！",
+                    "Loading...",
                     style: TextStyle(fontSize: 30),
                   ));
                 }
@@ -778,7 +778,7 @@ showAlertDialog(BuildContext context) {
       softWrap: true,
     ),
     content: Text(
-      "1.新增煩惱/日記後將隨機獲得一隻怪獸，已擁有的怪獸有機率會重複獲得。\n2.機率公開如下：\n稀有度⭐️(共10隻)：50%\n稀有度⭐️⭐️(共5隻)：35%\n稀有度⭐️⭐️⭐️(共5隻)：15%",
+      "1.新增煩惱/日記後將隨機獲得一隻怪獸，已擁有的怪獸有機率會重複獲得。\n\n2.機率公開如下：\n⭐️(共10隻)：50%\n⭐️⭐️(共5隻)：35%\n⭐️⭐️⭐️(共5隻)：15%",
       style: TextStyle(
         fontFamily: 'Segoe UI',
         fontSize: 20,
