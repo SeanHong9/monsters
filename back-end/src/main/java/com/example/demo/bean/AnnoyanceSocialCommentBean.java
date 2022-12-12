@@ -9,6 +9,6 @@ public class AnnoyanceSocialCommentBean extends BaseBean{
     private Integer id;
     private String commentUser;
     private Integer annoyanceId;
-    private String content;
+    private String commentContent;
     private LocalDateTime date = LocalDateTime.now();
 }

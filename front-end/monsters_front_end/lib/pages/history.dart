@@ -312,8 +312,6 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                               )),
                             ),
                             child: ListTile(
-                                // dense: true,
-                                // visualDensity: VisualDensity(vertical: 3),
                                 leading: SizedBox(
                                   child: Container(
                                     width: 60,
@@ -369,7 +367,6 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                                                   base64Decode(snapshot
                                                           .data["result $index"]
                                                       ["imageContent"]),
-                                                  width: 140,
                                                   height: 120,
                                                   filterQuality:
                                                       FilterQuality.high),

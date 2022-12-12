@@ -21,8 +21,7 @@ class Data {
   String message;
 
   factory Data.fromJson(Map<String, dynamic> json) => Data(
-        data: List<Social>.from(
-            json["data"].map((x) => Social.fromJson(x))),
+        data: List<Social>.from(json["data"].map((x) => Social.fromJson(x))),
         result: json["result"],
         errorCode: json["errorCode"],
         message: json["message"],
@@ -38,7 +37,6 @@ class Data {
 
 class Social {
   int? id;
-  // String? account;
   String? nickName;
   String? content;
   int? type;
@@ -52,26 +50,36 @@ class Social {
   String? audioContent;
   File? contentFile;
   File? moodFile;
-  Social(
-      {this.id,
-      // this.account,
-      this.nickName,
-      this.content,
-      this.type,
-      this.monsterId,
-      this.mood,
-      this.index,
-      this.time,
-      this.solve,
-      this.share,
-      this.imageContent,
-      this.audioContent,
-      this.contentFile,
-      this.moodFile});
+  String? commentUser;
+  String? commentContent;
+  int? annoyanceId;
+  int? diaryId;
+  String? photo;
+
+  Social({
+    this.id,
+    this.nickName,
+    this.content,
+    this.type,
+    this.monsterId,
+    this.mood,
+    this.index,
+    this.time,
+    this.solve,
+    this.share,
+    this.imageContent,
+    this.audioContent,
+    this.contentFile,
+    this.moodFile,
+    this.commentUser,
+    this.commentContent,
+    this.annoyanceId,
+    this.diaryId,
+    this.photo,
+  });
 
   factory Social.fromJson(Map<String, dynamic> json) => Social(
         id: json['id'],
-        // account: json['account'],
         nickName: json['nickName'],
         content: json['content'],
         type: json['type'],
@@ -85,11 +93,15 @@ class Social {
         audioContent: json['audioContent'],
         contentFile: json['contentFile'],
         moodFile: json['moodFile'],
+        commentUser: json['commentUser'],
+        commentContent: json['commentContent'],
+        annoyanceId: json['annoyanceId'],
+        diaryId: json['diaryId'],
+        photo: json['photo'],
       );
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
     data['id'] = id;
-    // data['account'] = account;
     data['nickName'] = nickName;
     data['content'] = content;
     data['type'] = type;
@@ -103,6 +115,11 @@ class Social {
     data['audioContent'] = audioContent;
     data['contentFile'] = contentFile;
     data['moodFile'] = moodFile;
+    data['commentUser'] = commentUser;
+    data['commentContent'] = commentContent;
+    data['annoyanceId'] = annoyanceId;
+    data['diaryId'] = diaryId;
+    data['photo'];
     return data;
   }
 }

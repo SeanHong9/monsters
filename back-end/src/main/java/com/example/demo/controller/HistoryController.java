@@ -149,6 +149,8 @@ public class HistoryController {
                     annoyanceNode.put("time", annoyanceBean.getTime().format(DateTimeFormatter.ofPattern("MM/dd")));
                     annoyanceNode.put("solve", annoyanceBean.getSolve());
                     annoyanceNode.put("share", annoyanceBean.getShare());
+                    annoyanceNode.put("imageContent", annoyanceBean.getImageContent());
+                    annoyanceNode.put("audioContent", annoyanceBean.getAudioContent());
                 }
                 result.put("result", true);
                 result.put("errorCode", "200");
