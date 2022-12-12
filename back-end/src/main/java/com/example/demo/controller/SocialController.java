@@ -62,6 +62,8 @@ public class SocialController {
                             annoyanceNode.put("id", annoyanceBean.getId());
                             annoyanceNode.put("nickName", nickName);
                             annoyanceNode.put("content", annoyanceBean.getContent());
+                            annoyanceNode.put("imageContent", annoyanceBean.getImageContent());
+                            annoyanceNode.put("audioContent", annoyanceBean.getAudioContent());
                             annoyanceNode.put("type", annoyanceBean.getType());
                             annoyanceNode.put("monsterId", annoyanceBean.getMonsterId() / 4);
                             annoyanceNode.put("mood", annoyanceBean.getMood());
@@ -93,6 +95,8 @@ public class SocialController {
                             annoyanceNode.put("id", annoyanceBean.getId());
                             annoyanceNode.put("nickName", nickName);
                             annoyanceNode.put("content", annoyanceBean.getContent());
+                            annoyanceNode.put("imageContent", annoyanceBean.getImageContent());
+                            annoyanceNode.put("audioContent", annoyanceBean.getAudioContent());
                             annoyanceNode.put("type", annoyanceBean.getType());
                             annoyanceNode.put("monsterId", annoyanceBean.getMonsterId() / 4);
                             annoyanceNode.put("mood", annoyanceBean.getMood());
@@ -159,6 +163,8 @@ public class SocialController {
                     String nickName = personalInfo.get().getNickName();
                     annoyanceNode.put("id", annoyanceBean.getId());
                     annoyanceNode.put("content", annoyanceBean.getContent());
+                    annoyanceNode.put("imageContent", annoyanceBean.getImageContent());
+                    annoyanceNode.put("audioContent", annoyanceBean.getAudioContent());
                     annoyanceNode.put("nickName", nickName);
                     annoyanceNode.put("type", annoyanceBean.getType());
                     annoyanceNode.put("monsterId", annoyanceBean.getMonsterId() / 4);
@@ -175,6 +181,8 @@ public class SocialController {
                     diaryNode.put("id", diaryBean.getId());
                     diaryNode.put("nickName", nickName);
                     diaryNode.put("content", diaryBean.getContent());
+                    annoyanceNode.put("imageContent", annoyanceBean.getImageContent());
+                    annoyanceNode.put("audioContent", annoyanceBean.getAudioContent());
                     diaryNode.put("mood", diaryBean.getMood());
                     diaryNode.put("monsterId", diaryBean.getMonsterId() / 4);
                     diaryNode.put("index", diaryBean.getIndex());

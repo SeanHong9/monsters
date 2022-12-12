@@ -1,7 +1,6 @@
 package com.example.demo.bean;
 
 import lombok.Data;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 
@@ -17,5 +16,4 @@ public class DiaryBean extends BaseBean {
     private Integer index;
     private LocalDateTime time = LocalDateTime.now();
     private Integer share;
-    private MultipartFile contentFile;
 }
