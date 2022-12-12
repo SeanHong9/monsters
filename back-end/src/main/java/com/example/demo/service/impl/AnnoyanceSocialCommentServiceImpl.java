@@ -45,7 +45,7 @@ public class AnnoyanceSocialCommentServiceImpl extends BaseServiceImplement<Anno
         entity.setId(bean.getId());
         entity.setCommentUser(bean.getCommentUser());
         entity.setAnnoyanceId(bean.getAnnoyanceId());
-        entity.setContent(bean.getContent());
+        entity.setContent(bean.getCommentContent());
         entity.setDate(bean.getDate());
         return entity;
     }
@@ -56,7 +56,7 @@ public class AnnoyanceSocialCommentServiceImpl extends BaseServiceImplement<Anno
         bean.setId(entity.getId());
         bean.setCommentUser(entity.getCommentUser());
         bean.setAnnoyanceId(entity.getAnnoyanceId());
-        bean.setContent(entity.getContent());
+        bean.setCommentContent(entity.getContent());
         bean.setDate(entity.getDate());
         return bean;
     }

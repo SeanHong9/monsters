@@ -287,11 +287,13 @@ public class SocialController {
                             ObjectNode commentNode = dataNode.addObject();
                             Optional<PersonalInfoBean> personalInfo = personalInfoService.getByPK(annoyanceSocialCommentBean.getCommentUser());
                             String nickName = personalInfo.get().getNickName();
+                            String photo = personalInfo.get().getPhoto();
                             commentNode.put("id", annoyanceSocialCommentBean.getId());
-                            commentNode.put("nickName", nickName);
+                            commentNode.put("commentUser", nickName);
+                            commentNode.put("photo", photo);
                             commentNode.put("annoyanceId", annoyanceSocialCommentBean.getAnnoyanceId());
-                            commentNode.put("content", annoyanceSocialCommentBean.getContent());
-                            commentNode.put("date", annoyanceSocialCommentBean.getDate().format(DateTimeFormatter.ofPattern("MM/dd")));
+                            commentNode.put("commentContent", annoyanceSocialCommentBean.getCommentContent());
+                            commentNode.put("time", annoyanceSocialCommentBean.getDate().format(DateTimeFormatter.ofPattern("MM/dd")));
                         }
                         break;
                     case 2:
@@ -299,11 +301,13 @@ public class SocialController {
                             ObjectNode commentNode = dataNode.addObject();
                             Optional<PersonalInfoBean> personalInfo = personalInfoService.getByPK(diarySocialCommentBean.getCommentUser());
                             String nickName = personalInfo.get().getNickName();
+                            String photo = personalInfo.get().getPhoto();
                             commentNode.put("id", diarySocialCommentBean.getId());
-                            commentNode.put("nickName", nickName);
+                            commentNode.put("commentUser", nickName);
+                            commentNode.put("photo", photo);
                             commentNode.put("diaryId", diarySocialCommentBean.getDiaryId());
-                            commentNode.put("content", diarySocialCommentBean.getContent());
-                            commentNode.put("date", diarySocialCommentBean.getDate().format(DateTimeFormatter.ofPattern("MM/dd")));
+                            commentNode.put("commentContent", diarySocialCommentBean.getCommentContent());
+                            commentNode.put("time", diarySocialCommentBean.getDate().format(DateTimeFormatter.ofPattern("MM/dd")));
                         }
                         break;
                     default:
