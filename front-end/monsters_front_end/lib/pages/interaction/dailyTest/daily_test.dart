@@ -27,22 +27,29 @@ class _Daily_testState extends State<Daily_test> {
   String web = "";
 
   checkAnswer(int userChoice, String userAnswer) async {
-    int unlockProgress = 1;
     SharedPreferences pref = await SharedPreferences.getInstance();
-    // await pref.setString("LastTryDate", "0");
+    //await pref.setInt("unlockProgress", 6);
+    var unlockProgress = pref.getInt("unlockProgress")?.toInt();
+    await pref.setString("LastTryDate", "0");
     var lastTryDay = pref.getString("LastTryDate");
     if (correctChoice == userChoice) {
+      //if等於7 or null，重新計算
+      if (unlockProgress == 7 || unlockProgress == null) {
+        unlockProgress = 0;
+      }
       //判斷是否跟上次作答正確同一天
       if (lastTryDay != DateTime.now().day.toString()) {
-        //if不同
-        //增加解鎖進度條
+        //if不同，增加解鎖進度條
         unlockProgress++;
       }
+      await pref.setInt("unlockProgress", unlockProgress);
       await pref.setString("LastTryDate", DateTime.now().day.toString());
       print(lastTryDay);
       print("解鎖進度 :" + unlockProgress.toString());
-      Navigator.pushReplacement(context,
-          MaterialPageRoute(builder: (context) => DailyTest_correct(learn,web)));
+      Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => DailyTest_correct(learn, web)));
     } else {
       var showChoice;
       var showAnswer;
@@ -62,6 +69,11 @@ class _Daily_testState extends State<Daily_test> {
         showChoice = "D";
         showAnswer = daily_D;
       }
+      //if等於7 or null，重新計算
+      if (unlockProgress == 7 || unlockProgress == null) {
+        unlockProgress = 0;
+        await pref.setInt("unlockProgress", unlockProgress);
+      }
       await pref.setString("LastTryDate", DateTime.now().day.toString());
       print(lastTryDay);
       print("解鎖進度 :" + unlockProgress.toString());
@@ -69,7 +81,7 @@ class _Daily_testState extends State<Daily_test> {
           context,
           MaterialPageRoute(
               builder: (context) =>
-                  DailyTest_wrong(showChoice, showAnswer, learn,web)));
+                  DailyTest_wrong(showChoice, showAnswer, learn, web)));
     }
   }
 
