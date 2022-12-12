@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_function_literals_in_foreach_calls, prefer_const_constructors
 
 import 'dart:async';
+import 'dart:convert';
 import 'dart:math';
 import 'dart:developer' as dv;
 import 'package:flutter/material.dart';
@@ -302,6 +303,7 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                           itemBuilder: (BuildContext context, int index) =>
                               Container(
                             height: 160,
+                            alignment: Alignment.center,
                             decoration: BoxDecoration(
                               border: Border(
                                   bottom: BorderSide(
@@ -309,17 +311,14 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                                 color: BackgroundColorWarm,
                               )),
                             ),
-                            alignment: Alignment.center,
-                            child: Container(
-                              height: 140,
-                              alignment: Alignment.center,
-                              child: ListTile(
-                                  dense: true,
-                                  visualDensity: VisualDensity(vertical: 3),
-                                  leading: Container(
+                            child: ListTile(
+                                // dense: true,
+                                // visualDensity: VisualDensity(vertical: 3),
+                                leading: SizedBox(
+                                  child: Container(
                                     width: 60,
                                     decoration: BoxDecoration(
-                                      color: const Color(0xffffffff),
+                                      color: Colors.white,
                                       shape: BoxShape.circle,
                                       border: Border.all(
                                         width: 1,
@@ -346,125 +345,131 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                                           : Container(),
                                     ),
                                   ),
-                                  title: Row(
-                                    children: [
-                                      Expanded(
-                                        flex: 8,
-                                        child: SingleChildScrollView(
-                                          scrollDirection: Axis.vertical,
+                                ),
+                                title: Container(
+                                  height: 140,
+                                  alignment: Alignment.topLeft,
+                                  child: SingleChildScrollView(
+                                    scrollDirection: Axis.vertical,
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: snapshot.data["result $index"]
+                                                  ["imageContent"] ==
+                                              null
+                                          ? Text(
+                                              snapshot.data["result $index"]
+                                                  ["content"],
+                                              style: TextStyle(
+                                                  fontSize: BodyTextSize),
+                                              textAlign: TextAlign.left,
+                                            )
+                                          : Container(
+                                              alignment: Alignment.centerLeft,
+                                              child: Image.memory(
+                                                  base64Decode(snapshot
+                                                          .data["result $index"]
+                                                      ["imageContent"]),
+                                                  width: 140,
+                                                  height: 120,
+                                                  filterQuality:
+                                                      FilterQuality.high),
+                                            ),
+                                    ),
+                                  ),
+                                ),
+                                trailing: (snapshot.data["result $index"]
+                                            ["type"]
+                                        .toString()
+                                        .isEmpty)
+                                    ? Container(
+                                        width: 55,
+                                        child: Center(
                                           child: Text(
                                             snapshot.data["result $index"]
-                                                ["content"],
+                                                    ["time"]
+                                                .toString(),
                                             style: TextStyle(
-                                                fontSize: BodyTextSize),
-                                            textAlign: TextAlign.left,
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w500,
+                                                color: BackgroundColorWarm),
                                           ),
                                         ),
-                                      ),
-                                      Expanded(
-                                        flex: 2,
-                                        child: CircleAvatar(
-                                          radius: 19,
-                                          backgroundImage: AssetImage(
-                                              'assets/image/mood/moodPoint_${snapshot.data["result $index"]["moodIndex"]}.png'),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  trailing: (snapshot.data["result $index"]
-                                              ["type"]
-                                          .toString()
-                                          .isEmpty)
-                                      ? SizedBox(
-                                          width: 55,
-                                          child: Center(
-                                            child: Text(
-                                              snapshot.data["result $index"]
-                                                      ["time"]
-                                                  .toString(),
-                                              style: TextStyle(
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.w500,
-                                                  color: BackgroundColorWarm),
+                                      )
+                                    : Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Expanded(
+                                            flex: 59,
+                                            child: Container(
+                                              width: 55,
+                                              decoration: BoxDecoration(
+                                                color: Color.fromARGB(
+                                                    255, 174, 108, 32),
+                                                borderRadius:
+                                                    const BorderRadius.all(
+                                                        Radius.elliptical(
+                                                            10.0, 10.0)),
+                                              ),
+                                              child: Center(
+                                                child: Text(
+                                                    snapshot
+                                                        .data["result $index"]
+                                                            ["type"]
+                                                        .toString(),
+                                                    style: TextStyle(
+                                                        fontSize: 18,
+                                                        color: Colors.white)),
+                                              ),
                                             ),
                                           ),
-                                        )
-                                      : Column(
-                                          mainAxisSize: MainAxisSize.max,
-                                          children: [
-                                            Expanded(
-                                              flex: 59,
-                                              child: Container(
-                                                width: 55,
-                                                decoration: BoxDecoration(
-                                                  color: Color.fromARGB(
-                                                      255, 174, 108, 32),
-                                                  borderRadius:
-                                                      const BorderRadius.all(
-                                                          Radius.elliptical(
-                                                              10.0, 10.0)),
-                                                ),
-                                                child: Center(
-                                                  child: Text(
-                                                      snapshot
-                                                          .data["result $index"]
-                                                              ["type"]
-                                                          .toString(),
-                                                      style: TextStyle(
-                                                          fontSize: 18,
-                                                          color: Colors.white)),
-                                                ),
+                                          Expanded(
+                                            flex: 5,
+                                            child: SizedBox(),
+                                          ),
+                                          Expanded(
+                                            flex: 39,
+                                            child: Container(
+                                              width: 55,
+                                              child: Center(
+                                                child: Text(
+                                                    snapshot
+                                                        .data["result $index"]
+                                                            ["time"]
+                                                        .toString(),
+                                                    style: TextStyle(
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.w500,
+                                                        color:
+                                                            BackgroundColorWarm)),
                                               ),
                                             ),
-                                            Expanded(
-                                              flex: 5,
-                                              child: SizedBox(),
-                                            ),
-                                            Expanded(
-                                              flex: 39,
-                                              child: Container(
-                                                width: 55,
-                                                child: Center(
-                                                  child: Text(
-                                                      snapshot
-                                                          .data["result $index"]
-                                                              ["time"]
-                                                          .toString(),
-                                                      style: TextStyle(
-                                                          fontSize: 16,
-                                                          fontWeight:
-                                                              FontWeight.w500,
-                                                          color:
-                                                              BackgroundColorWarm)),
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                  onTap: () async {
-                                    if (snapshot.data["result $index"]
-                                            ["solve"] !=
-                                        null) {
-                                      await Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  historyAnnoyanceChat(
-                                                      data: snapshot.data[
-                                                          "result $index"])));
-                                    } else {
-                                      await Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  historyDiaryChat(
-                                                      data: snapshot.data[
-                                                          "result $index"])));
-                                    }
+                                          ),
+                                        ],
+                                      ),
+                                onTap: () async {
+                                  if (snapshot.data["result $index"]["solve"] !=
+                                      null) {
+                                    await Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                historyAnnoyanceChat(
+                                                    data: snapshot.data[
+                                                        "result $index"])));
+                                  } else {
+                                    await Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) =>
+                                                historyDiaryChat(
+                                                    data: snapshot.data[
+                                                        "result $index"])));
+                                  }
 
-                                    setState(() {});
-                                  }),
-                            ),
+                                  setState(() {});
+                                }),
                           ),
                         );
                       })),
@@ -876,6 +881,8 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
             'mood': value.data.elementAt(index).mood,
             'moodIndex': value.data.elementAt(index).index,
             'share': value.data.elementAt(index).share,
+            'imageContent': value.data.elementAt(index).imageContent,
+            'audioContent': value.data.elementAt(index).audioContent,
           },
         );
       }
