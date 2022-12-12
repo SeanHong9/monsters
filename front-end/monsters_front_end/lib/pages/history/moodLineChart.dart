@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'dart:developer' as dv;
+import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
 import 'package:monsters_front_end/pages/settings/style.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -42,14 +43,17 @@ class _MoodLineChartState extends State<MoodLineChart> {
         indexList.add(value.data.elementAt(i).index);
         timeList.add(value.data.elementAt(i).time);
       }
-
+      for (int j = indexList.length; j < 7; j++) {
+        indexList.add(0);
+        timeList.add("_");
+      }
       indexMapResult.putIfAbsent("indexList", () => indexList);
       indexMapResult.putIfAbsent("timeList", () => timeList);
       dateTimeData = indexMapResult["timeList"];
       moodData = indexMapResult["indexList"];
       countDay();
-      dv.log(indexMapResult["indexList"].toString());
-      dv.log(indexMapResult["timeList"].toString());
+      dv.log("indexList" + indexMapResult["indexList"].toString());
+      dv.log("timeList" + indexMapResult["timeList"].toString());
     });
 
     return finalMap;
@@ -85,7 +89,7 @@ class _MoodLineChartState extends State<MoodLineChart> {
     totalCount[2] = notBad;
     totalCount[3] = notGood;
     totalCount[4] = bad;
-    dv.log(totalCount.toString());
+    dv.log("累積數" + totalCount.toString());
   }
 
   @override
@@ -100,7 +104,7 @@ class _MoodLineChartState extends State<MoodLineChart> {
         child: FutureBuilder<dynamic>(
             future: _future,
             builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
-              if (snapshot.data == null) {
+              if (snapshot.data == null || moodData.length < 7) {
                 return const Center(
                     child: Text(
                   "還沒有紀錄嗎？\n先去新增煩惱或日記吧！",
