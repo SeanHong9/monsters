@@ -55,7 +55,17 @@ public class AnnoyanceController {
             } else {
                 if (annoyanceBean.getMood().equals("是")) {
                     annoyanceBean.setMood(annoyanceBean.getMood());
+                    System.out.println("get Mood length: "+ annoyanceBean.getMood().length());
                 }
+                if(annoyanceBean.getAudioContent()!=null){
+                    annoyanceBean.setAudioContent(annoyanceBean.getAudioContent());
+                    System.out.println("get audioContent length: "+ annoyanceBean.getAudioContent().length());
+                }
+                if(annoyanceBean.getImageContent()!=null){
+                    annoyanceBean.setImageContent(annoyanceBean.getImageContent());
+                    System.out.println("get ImageContent length: "+ annoyanceBean.getImageContent().length());
+                }
+
                 List<AllMonsterBean> allMonster = allMonsterService.searchAll();
                 // 抽1~100為機率
                 probability = (int) (Math.random() * 100);
@@ -121,6 +131,7 @@ public class AnnoyanceController {
                 result.put("message", "新增成功");
             }
         } catch (Exception e) {
+            System.out.println(e);
             result.put("result", false);
             result.put("errorCode", "");
             result.put("message", "新增失敗");
