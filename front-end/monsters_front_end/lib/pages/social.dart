@@ -38,9 +38,9 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
   final _messageController = TextEditingController();
   StateSetter? animationState;
   var Comments = [
-    "如果是我也一樣",
+    "如果是我是我是我是我是我是我是我是我是我也一樣",
     "總是學不會",
-    "再聰明一點",
+    "再聰明一點再聰明一點再聰明一點再聰明一點再聰明一點再聰明一點再聰明一點再聰明一點再聰明一點",
     "...",
     "...",
   ];
@@ -143,6 +143,8 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
             'time': value.data.elementAt(index).time,
             'mood': value.data.elementAt(index).mood,
             'moodIndex': value.data.elementAt(index).index,
+            'imageContent': value.data.elementAt(index).imageContent,
+            'audioContent': value.data.elementAt(index).audioContent,
             // 'avatar': 1,
             // 'type': type,
             // 'solve': value.data.elementAt(index).solve?.toInt(),
@@ -972,7 +974,8 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
                   //分享者資料
                   Container(
                     color: BackgroundColorLight,
-                    height: 70,
+                    height: 80,
+                    padding: EdgeInsets.only(bottom: 20),
                     child: Row(
                       children: [
                         //頭貼
@@ -1041,188 +1044,189 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
                       ],
                     ),
                   ),
-                  //分享內容
+
+                  //中間多媒體區
                   Container(
-                    alignment: Alignment.topLeft,
+                    height: 600,
                     color: BackgroundColorLight,
-                    height: 130,
-                    child: Padding(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 35, vertical: 15),
-                      child: SingleChildScrollView(
-                        scrollDirection: Axis.vertical,
-                        child: Text(
-                          data["content"],
-                          style: TextStyle(
-                            fontFamily: 'Segoe UI',
-                            fontSize: 22,
-                            color: const Color(0xff707070),
-                          ),
-                        ),
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.vertical,
+                      child: Column(
+                        children: [
+                          (data["imageContent"] != null)
+                              ? Container(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.8,
+                                  alignment: Alignment.center,
+                                  padding: EdgeInsets.only(bottom: 5),
+                                  child: Image.memory(
+                                      base64Decode(data["imageContent"]),
+                                      filterQuality: FilterQuality.high),
+                                )
+                              :
+                              //分享內容
+                              Container(
+                                  alignment: Alignment.topLeft,
+                                  color: BackgroundColorLight,
+                                  height: 130,
+                                  child: Padding(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 35, vertical: 15),
+                                    child: SingleChildScrollView(
+                                      scrollDirection: Axis.vertical,
+                                      child: Text(
+                                        data["content"],
+                                        style: TextStyle(
+                                          fontFamily: 'Segoe UI',
+                                          fontSize: 22,
+                                          color: const Color(0xff707070),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                          (data["mood"] != "否")
+                              ? Container(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.8,
+                                  alignment: Alignment.center,
+                                  decoration: const BoxDecoration(
+                                    color: BackgroundColorLight,
+                                  ),
+                                  child: Image.memory(
+                                      base64Decode(data["mood"]),
+                                      filterQuality: FilterQuality.high),
+                                )
+                              : Container(),
+                          //貼文的相關留言
+                          Container(
+                              alignment: Alignment.center,
+                              height: 80 * Comments.length + 45,
+                              decoration: const BoxDecoration(
+                                  color: Colors.white,
+                                  border: Border.symmetric(
+                                    horizontal: BorderSide(
+                                        width: 2, color: BackgroundColorWarm),
+                                  )),
+                              child: ListView.builder(
+                                  physics: NeverScrollableScrollPhysics(),
+                                  itemCount: Comments.length,
+                                  itemBuilder: (context, int index) {
+                                    List tempList = [1, 2, 3, 4, 5];
+                                    return Card(
+                                      child: Container(
+                                        height: 80,
+                                        child: ListTile(
+                                          leading: Container(
+                                            decoration: BoxDecoration(
+                                              shape: BoxShape.circle,
+                                              border: Border.all(
+                                                  width: 1,
+                                                  color:
+                                                      const Color(0xffa0522d)),
+                                            ),
+                                            child: CircleAvatar(
+                                              radius: 30,
+                                              backgroundImage: AssetImage(
+                                                  getMonsterAvatarPath(
+                                                      monsterNamesList[
+                                                          tempList[index]])),
+                                            ),
+                                          ),
+                                          title: Text(
+                                            userNames[index],
+                                            style: TextStyle(fontSize: 20),
+                                          ),
+                                          subtitle: Container(
+                                            height: 50,
+                                            child: SingleChildScrollView(
+                                              scrollDirection: Axis.vertical,
+                                              child: Text(
+                                                Comments[index],
+                                                style: TextStyle(fontSize: 16),
+                                              ),
+                                            ),
+                                          ),
+                                          trailing: Text(
+                                            times[index],
+                                            style: TextStyle(
+                                                color: BackgroundColorWarm),
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  })),
+                          //使用者輸入留言區
+                          Container(
+                              height: 70,
+                              alignment: Alignment.centerLeft,
+                              color: BackgroundColorSoft,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Expanded(
+                                    flex: 8,
+                                    child: Container(
+                                      width: 70,
+                                      margin: EdgeInsets.only(
+                                          left: 15.0, top: 10, bottom: 10),
+                                      alignment: Alignment.bottomLeft,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(13)),
+                                        color: Colors.white,
+                                        border: Border.all(
+                                            width: 1,
+                                            color: BackgroundColorWarm),
+                                      ),
+                                      padding: const EdgeInsets.only(left: 10),
+                                      child: Center(
+                                        child: TextFormField(
+                                          textAlign: TextAlign.left,
+                                          controller: _messageController,
+                                          decoration: InputDecoration(
+                                            border: InputBorder.none,
+                                            hintText: "Enter a message...",
+                                            hintStyle:
+                                                TextStyle(color: Colors.grey),
+                                          ),
+                                          style: TextStyle(
+                                              fontSize: 16,
+                                              color: Colors.black),
+                                          onChanged: (value) {},
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  //傳送
+                                  Expanded(
+                                    flex: 2,
+                                    child: IconButton(
+                                        icon: Icon(
+                                          Icons.send,
+                                          size: 30.0,
+                                          color:
+                                              Color.fromARGB(255, 164, 78, 38),
+                                        ),
+                                        onPressed: () {
+                                          //TODO:新增一筆留言 接API
+                                          _messageController.clear();
+                                          FocusScopeNode currentFocus =
+                                              FocusScope.of(context);
+                                          if (!currentFocus.hasPrimaryFocus) {
+                                            currentFocus.unfocus();
+                                          }
+                                          setState(() {});
+                                        }),
+                                  ),
+                                ],
+                              )),
+                        
+                        ],
                       ),
                     ),
                   ),
-                  //中間多媒體區
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Expanded(
-                          flex: 2,
-                          child: Container(
-                              height: 150,
-                              color: Colors.white,
-                              child: Image(
-                                image: AssetImage(
-                                  'assets/image/mood/moodPoint_${data["moodIndex"]}.png',
-                                ),
-                                fit: BoxFit.scaleDown,
-                              ))),
-                      //改為多媒體
-                      Expanded(
-                          flex: 4,
-                          child: Container(
-                              height: 150,
-                              color: Colors.white,
-                              child: Image(
-                                image: AssetImage(
-                                  'assets/image/mood/moodPoint_${data["moodIndex"]}.png',
-                                ),
-                                fit: BoxFit.scaleDown,
-                              ))),
-                      Expanded(
-                        flex: 4,
-                        child: Container(
-                          height: 150,
-                          alignment: Alignment.center,
-                          decoration: const BoxDecoration(
-                            // color: Colors.white,
-                            // color: BackgroundColorSoft,
-                            color: BackgroundColorLight,
-                            border: Border(
-                                // top: BorderSide(width: 1, color: BackgroundColorWarm),
-                                ),
-                          ),
-                          child: (data["mood"] == "否")
-                              ? Container()
-                              : Container(
-                                  height: 150,
-                                  child: Image.memory(
-                                      base64Decode(data["mood"]),
-                                      filterQuality: FilterQuality.high)),
-                        ),
-                      ),
-                    ],
-                  ),
-                  //貼文的相關留言
-                  Container(
-                      alignment: Alignment.center,
-                      height: 150,
-                      decoration: const BoxDecoration(
-                          color: Colors.white,
-                          border: Border.symmetric(
-                            horizontal: BorderSide(
-                                width: 1, color: BackgroundColorWarm),
-                          )),
-                      child: ListView.builder(
-                          itemCount: Comments.length,
-                          itemBuilder: (context, int index) {
-                            List tempList = [1, 2, 3, 4, 5];
-                            return Card(
-                              child: ListTile(
-                                leading: Container(
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    border: Border.all(
-                                        width: 1,
-                                        color: const Color(0xffa0522d)),
-                                  ),
-                                  child: CircleAvatar(
-                                    radius: 30,
-                                    backgroundImage: AssetImage(
-                                        getMonsterAvatarPath(
-                                            monsterNamesList[tempList[index]])),
-                                  ),
-                                ),
-                                title: Text(
-                                  userNames[index],
-                                  style: TextStyle(fontSize: 20),
-                                ),
-                                subtitle: SingleChildScrollView(
-                                  scrollDirection: Axis.vertical,
-                                  child: Text(
-                                    Comments[index],
-                                    style: TextStyle(fontSize: 16),
-                                  ),
-                                ),
-                                trailing: Text(
-                                  times[index],
-                                  style: TextStyle(color: BackgroundColorWarm),
-                                ),
-                              ),
-                            );
-                          })),
-                  //使用者輸入留言區
-                  Container(
-                      alignment: Alignment.centerLeft,
-                      color: BackgroundColorSoft,
-                      height: 80,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Expanded(
-                            flex: 8,
-                            child: Container(
-                              width: 70,
-                              margin: EdgeInsets.only(
-                                  left: 15.0, top: 10, bottom: 10),
-                              alignment: Alignment.bottomLeft,
-                              decoration: BoxDecoration(
-                                borderRadius:
-                                    BorderRadius.all(Radius.circular(13)),
-                                color: Colors.white,
-                                border: Border.all(
-                                    width: 1, color: BackgroundColorWarm),
-                              ),
-                              padding: const EdgeInsets.only(left: 10),
-                              child: Center(
-                                child: TextFormField(
-                                  textAlign: TextAlign.left,
-                                  controller: _messageController,
-                                  decoration: InputDecoration(
-                                    border: InputBorder.none,
-                                    hintText: "Enter a message...",
-                                    hintStyle: TextStyle(color: Colors.grey),
-                                  ),
-                                  style: TextStyle(
-                                      fontSize: 16, color: Colors.black),
-                                  onChanged: (value) {},
-                                ),
-                              ),
-                            ),
-                          ),
-                          //傳送
-                          Expanded(
-                            flex: 2,
-                            child: IconButton(
-                                icon: Icon(
-                                  Icons.send,
-                                  size: 30.0,
-                                  color: Color.fromARGB(255, 164, 78, 38),
-                                ),
-                                onPressed: () {
-                                  //TODO:新增一筆留言 接API
-                                  _messageController.clear();
-                                  FocusScopeNode currentFocus =
-                                      FocusScope.of(context);
-                                  if (!currentFocus.hasPrimaryFocus) {
-                                    currentFocus.unfocus();
-                                  }
-                                  setState(() {});
-                                }),
-                          ),
-                        ],
-                      )),
                 ],
               ));
         });

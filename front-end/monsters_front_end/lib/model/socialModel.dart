@@ -48,6 +48,8 @@ class Social {
   String? time;
   int? solve;
   int? share;
+  String? imageContent;
+  String? audioContent;
   File? contentFile;
   File? moodFile;
   Social(
@@ -62,6 +64,8 @@ class Social {
       this.time,
       this.solve,
       this.share,
+      this.imageContent,
+      this.audioContent,
       this.contentFile,
       this.moodFile});
 
@@ -77,6 +81,8 @@ class Social {
         time: json['time'],
         solve: json['solve'],
         share: json['share'],
+        imageContent: json['imageContent'],
+        audioContent: json['audioContent'],
         contentFile: json['contentFile'],
         moodFile: json['moodFile'],
       );
@@ -93,6 +99,8 @@ class Social {
     data['time'] = time;
     data['solve'] = solve;
     data['share'] = share;
+    data['imageContent'] = imageContent;
+    data['audioContent'] = audioContent;
     data['contentFile'] = contentFile;
     data['moodFile'] = moodFile;
     return data;
