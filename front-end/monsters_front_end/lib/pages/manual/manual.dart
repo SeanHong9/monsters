@@ -300,7 +300,7 @@ class _ManualState extends State<Manual> with SingleTickerProviderStateMixin {
                                               allowDrawingOutsideViewBox: true,
                                               fit: BoxFit.scaleDown,
                                             ),
-                                          ) 
+                                          )
                                         : Container(),
 
                                     snapshot.data["route"][index] < 10
@@ -769,19 +769,19 @@ showAlertDialog(BuildContext context) {
   AlertDialog dialog = AlertDialog(
     //backgroundColor: const Color(0xfffffed4),
     title: const Text(
-      "怪獸獲得機率",
+      "怪獸獲得說明",
       style: TextStyle(
         fontFamily: 'Segoe UI',
-        fontSize: 30,
+        fontSize: 25,
         color: Color.fromRGBO(160, 82, 45, 1),
       ),
       softWrap: true,
     ),
     content: Text(
-      "稀有度：\n⭐️1星(共10隻)：\n　 獲得機率50%\n⭐️2星(共5隻)：\n　 獲得機率35%\n⭐️3星(共5隻)：\n　 獲得機率15%",
+      "1.新增煩惱/日記後將隨機獲得一隻怪獸，已擁有的怪獸有機率會重複獲得。\n2.機率公開如下：\n稀有度⭐️(共10隻)：50%\n稀有度⭐️⭐️(共5隻)：35%\n稀有度⭐️⭐️⭐️(共5隻)：15%",
       style: TextStyle(
         fontFamily: 'Segoe UI',
-        fontSize: 25,
+        fontSize: 20,
         color: Colors.black,
       ),
       softWrap: true,
