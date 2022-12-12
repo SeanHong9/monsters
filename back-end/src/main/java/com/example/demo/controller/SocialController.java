@@ -255,4 +255,72 @@ public class SocialController {
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 
+
+    @ResponseBody
+    @GetMapping(path = "comment/{type}/{id}")
+    public ResponseEntity searchComment(@PathVariable(name = "type") int type,
+                                        @PathVariable(name = "id") Integer id) {
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode result = mapper.createObjectNode();
+        ArrayNode dataNode = result.putArray("data");
+        List<AnnoyanceSocialCommentBean> annoyanceSocialCommentBeanList =
+                annoyanceSocialCommentService.findByAnnoyanceId(id);
+        List<DiarySocialCommentBean> diarySocialCommentBeanList =
+                diarySocialCommentService.findByDiaryId(id);
+        try {
+            if (annoyanceSocialCommentBeanList.size()!=0 || diarySocialCommentBeanList.size()!=0) {
+                Collections.sort(annoyanceSocialCommentBeanList, new Comparator<AnnoyanceSocialCommentBean>() {
+                    @Override
+                    public int compare(AnnoyanceSocialCommentBean o1, AnnoyanceSocialCommentBean o2) {
+                        return o2.getDate().compareTo(o1.getDate());
+                    }
+                });
+                Collections.sort(diarySocialCommentBeanList, new Comparator<DiarySocialCommentBean>() {
+                    @Override
+                    public int compare(DiarySocialCommentBean o1, DiarySocialCommentBean o2) {
+                        return o2.getDate().compareTo(o1.getDate());
+                    }
+                });
+                switch (type) {
+                    case 1:
+                        for (AnnoyanceSocialCommentBean annoyanceSocialCommentBean : annoyanceSocialCommentBeanList) {
+                            ObjectNode commentNode = dataNode.addObject();
+                            Optional<PersonalInfoBean> personalInfo = personalInfoService.getByPK(annoyanceSocialCommentBean.getCommentUser());
+                            String nickName = personalInfo.get().getNickName();
+                            commentNode.put("id", annoyanceSocialCommentBean.getId());
+                            commentNode.put("nickName", nickName);
+                            commentNode.put("annoyanceId", annoyanceSocialCommentBean.getAnnoyanceId());
+                            commentNode.put("content", annoyanceSocialCommentBean.getContent());
+                            commentNode.put("date", annoyanceSocialCommentBean.getDate().format(DateTimeFormatter.ofPattern("MM/dd")));
+                        }
+                        break;
+                    case 2:
+                        for (DiarySocialCommentBean diarySocialCommentBean : diarySocialCommentBeanList) {
+                            ObjectNode commentNode = dataNode.addObject();
+                            Optional<PersonalInfoBean> personalInfo = personalInfoService.getByPK(diarySocialCommentBean.getCommentUser());
+                            String nickName = personalInfo.get().getNickName();
+                            commentNode.put("id", diarySocialCommentBean.getId());
+                            commentNode.put("nickName", nickName);
+                            commentNode.put("diaryId", diarySocialCommentBean.getDiaryId());
+                            commentNode.put("content", diarySocialCommentBean.getContent());
+                            commentNode.put("date", diarySocialCommentBean.getDate().format(DateTimeFormatter.ofPattern("MM/dd")));
+                        }
+                        break;
+                    default:
+                        break;
+                }
+                result.put("result", true);
+                result.put("errorCode", "200");
+                result.put("message", "查詢成功");
+            } else {
+                result.put("result", false);
+                result.put("errorCode", "");
+                result.put("message", "查詢失敗");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return ResponseEntity.status(HttpStatus.CREATED).body(result);
+    }
+
 }

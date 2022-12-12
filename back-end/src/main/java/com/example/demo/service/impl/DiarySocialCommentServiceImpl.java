@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class DiarySocialCommentServiceImpl extends BaseServiceImplement<DiarySocialCommentDAO, DiarySocialComment, DiarySocialCommentBean> implements DiarySocialCommentService {
@@ -27,7 +29,15 @@ public class DiarySocialCommentServiceImpl extends BaseServiceImplement<DiarySoc
         diarySocialCommentDAO.insert(diarySocialComment);
         return createBean(diarySocialComment);
     }
-
+    @Override
+    public List<DiarySocialCommentBean> findByDiaryId(Integer diaryId) {
+        List<DiarySocialComment> userList = diarySocialCommentDAO.findByDiaryId(diaryId);
+        List<DiarySocialCommentBean> diarySocialCommentBeanList = new ArrayList<>();
+        for(DiarySocialComment diarySocialComment : userList){
+            diarySocialCommentBeanList.add(createBean(diarySocialComment));
+        }
+        return diarySocialCommentBeanList;
+    }
     @Override
     protected DiarySocialComment createVO(DiarySocialCommentBean bean) {
         DiarySocialComment entity = new DiarySocialComment();

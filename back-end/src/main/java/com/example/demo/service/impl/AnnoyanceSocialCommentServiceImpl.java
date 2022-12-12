@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class AnnoyanceSocialCommentServiceImpl extends BaseServiceImplement<AnnoyanceSocialCommentDAO, AnnoyanceSocialComment, AnnoyanceSocialCommentBean> implements AnnoyanceSocialCommentService {
@@ -29,6 +31,15 @@ public class AnnoyanceSocialCommentServiceImpl extends BaseServiceImplement<Anno
     }
 
     @Override
+    public List<AnnoyanceSocialCommentBean> findByAnnoyanceId(Integer annoyanceId) {
+        List<AnnoyanceSocialComment> userList = annoyanceSocialCommentDAO.findByAnnoyanceId(annoyanceId);
+        List<AnnoyanceSocialCommentBean> annoyanceSocialCommentBeanList = new ArrayList<>();
+        for(AnnoyanceSocialComment annoyanceSocialComment : userList){
+            annoyanceSocialCommentBeanList.add(createBean(annoyanceSocialComment));
+        }
+        return annoyanceSocialCommentBeanList;
+    }
+    @Override
     protected AnnoyanceSocialComment createVO(AnnoyanceSocialCommentBean bean) {
         AnnoyanceSocialComment entity = new AnnoyanceSocialComment();
         entity.setId(bean.getId());
@@ -49,4 +60,5 @@ public class AnnoyanceSocialCommentServiceImpl extends BaseServiceImplement<Anno
         bean.setDate(entity.getDate());
         return bean;
     }
+
 }
