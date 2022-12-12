@@ -28,9 +28,7 @@ class _Daily_testState extends State<Daily_test> {
 
   checkAnswer(int userChoice, String userAnswer) async {
     SharedPreferences pref = await SharedPreferences.getInstance();
-    //await pref.setInt("unlockProgress", 6);
     var unlockProgress = pref.getInt("unlockProgress")?.toInt();
-    await pref.setString("LastTryDate", "0");
     var lastTryDay = pref.getString("LastTryDate");
     if (correctChoice == userChoice) {
       //if等於7 or null，重新計算
