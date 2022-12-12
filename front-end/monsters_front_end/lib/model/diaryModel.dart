@@ -46,6 +46,8 @@ class Diary {
   int? share;
   File? contentFile;
   File? moodFile;
+  String? imageContent;
+  String? audioContent;
   bool? newMonster;
   int? newMonsterId;
   Diary({
@@ -59,6 +61,8 @@ class Diary {
     this.share,
     this.contentFile,
     this.moodFile,
+    this.imageContent,
+    this.audioContent,
     this.newMonster,
     this.newMonsterId,
   });
@@ -74,6 +78,8 @@ class Diary {
         share: json['share'],
         contentFile: json['contentFile'],
         moodFile: json['moodFile'],
+        imageContent: json['imageContent'],
+        audioContent: json['audioContent'],
         newMonster: json['newMonster'],
         newMonsterId: json['newMonsterId'],
       );
@@ -89,6 +95,8 @@ class Diary {
     data['share'] = share;
     data['contentFile'] = contentFile;
     data['moodFile'] = moodFile;
+    data['imageContent'] = imageContent;
+    data['audioContent'] = audioContent;
     data['newMonster'] = newMonster;
     data['newMonsterId'] = newMonsterId;
     return data;

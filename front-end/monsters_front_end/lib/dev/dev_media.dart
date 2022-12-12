@@ -42,7 +42,7 @@ class _dev_mediaState extends State<dev_media> {
         .searchHistoryByType(2)
         .then((value) => Data.fromJson(value!));
     await histories.then((value) {
-      finalMap.putIfAbsent("mood", () => value.data.first.mood);
+      finalMap.putIfAbsent("mood", () => value.data.first.imageContent);
     });
 
     return finalMap;
