@@ -1124,16 +1124,16 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
                                     // padding: EdgeInsets.symmetric(
                                     //     horizontal: 35, vertical: 15),
                                     child: SingleChildScrollView(
-                                      scrollDirection: Axis.vertical,
-                                      child: Text(
-                                        data["content"],
-                                        style: TextStyle(
-                                          fontFamily: 'Segoe UI',
-                                          fontSize: 22,
-                                          color: const Color(0xff707070),
-                                        ),
-                                      ),
-                                    ),
+                                        scrollDirection: Axis.vertical,
+                                        child: Text(
+                                          data["content"],
+                                          textAlign: TextAlign.justify,
+                                          style: const TextStyle(
+                                            letterSpacing: -1,
+                                            fontSize: 22,
+                                            color: Color(0xff707070),
+                                          ),
+                                        )),
                                   ),
                                 ),
                           //分享內容:心情圖
@@ -1186,7 +1186,11 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
                                           ),
                                           title: Text(
                                             userNameList[index],
-                                            style: TextStyle(fontSize: 20),
+                                            textAlign: TextAlign.justify,
+                                            style: const TextStyle(
+                                              letterSpacing: -1,
+                                              fontSize: 20,
+                                            ),
                                           ),
                                           subtitle: Container(
                                             height: 50,
