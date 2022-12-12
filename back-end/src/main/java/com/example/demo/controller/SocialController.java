@@ -1,9 +1,9 @@
 package com.example.demo.controller;
 
-import com.example.demo.bean.AnnoyanceBean;
-import com.example.demo.bean.DiaryBean;
-import com.example.demo.bean.PersonalInfoBean;
+import com.example.demo.bean.*;
+import com.example.demo.service.DiarySocialCommentService;
 import com.example.demo.service.impl.AnnoyanceServiceImpl;
+import com.example.demo.service.impl.AnnoyanceSocialCommentServiceImpl;
 import com.example.demo.service.impl.DiaryServiceImpl;
 import com.example.demo.service.impl.PersonalInfoServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,8 +26,10 @@ import java.util.Optional;
 @RequestMapping(value = "/social")
 public class SocialController {
     private final AnnoyanceServiceImpl annoyanceService;
-    private final DiaryServiceImpl diaryServiceimpl;
+    private final DiaryServiceImpl diaryService;
     private final PersonalInfoServiceImpl personalInfoService;
+    private final AnnoyanceSocialCommentServiceImpl annoyanceSocialCommentService;
+    private final DiarySocialCommentService diarySocialCommentService;
 
     @ResponseBody
     @GetMapping(path = "/all/{type}", produces = "application/json; charset=UTF-8")
@@ -37,7 +39,7 @@ public class SocialController {
         ArrayNode dataNode = result.putArray("data");
         try {
             List<AnnoyanceBean> annoyanceList = annoyanceService.searchAnnoyanceByShare();
-            List<DiaryBean> diaryList = diaryServiceimpl.searchAnnoyanceByShare();
+            List<DiaryBean> diaryList = diaryService.searchAnnoyanceByShare();
             if (annoyanceList.size() != 0 || diaryList.size() != 0) {
                 Collections.sort(annoyanceList, new Comparator<AnnoyanceBean>() {
                     @Override
@@ -61,7 +63,7 @@ public class SocialController {
                             annoyanceNode.put("nickName", nickName);
                             annoyanceNode.put("content", annoyanceBean.getContent());
                             annoyanceNode.put("type", annoyanceBean.getType());
-                            annoyanceNode.put("monsterId", annoyanceBean.getMonsterId()/4);
+                            annoyanceNode.put("monsterId", annoyanceBean.getMonsterId() / 4);
                             annoyanceNode.put("mood", annoyanceBean.getMood());
                             annoyanceNode.put("index", annoyanceBean.getIndex());
                             annoyanceNode.put("time", annoyanceBean.getTime().format(DateTimeFormatter.ofPattern("MM/dd")));
@@ -77,7 +79,7 @@ public class SocialController {
                             diaryNode.put("id", diaryBean.getId());
                             diaryNode.put("nickName", nickName);
                             diaryNode.put("content", diaryBean.getContent());
-                            diaryNode.put("monsterId", diaryBean.getMonsterId()/4);
+                            diaryNode.put("monsterId", diaryBean.getMonsterId() / 4);
                             diaryNode.put("index", diaryBean.getIndex());
                             diaryNode.put("time", diaryBean.getTime().format(DateTimeFormatter.ofPattern("MM/dd")));
                             diaryNode.put("share", diaryBean.getShare());
@@ -92,7 +94,7 @@ public class SocialController {
                             annoyanceNode.put("nickName", nickName);
                             annoyanceNode.put("content", annoyanceBean.getContent());
                             annoyanceNode.put("type", annoyanceBean.getType());
-                            annoyanceNode.put("monsterId", annoyanceBean.getMonsterId()/4);
+                            annoyanceNode.put("monsterId", annoyanceBean.getMonsterId() / 4);
                             annoyanceNode.put("mood", annoyanceBean.getMood());
                             annoyanceNode.put("index", annoyanceBean.getIndex());
                             annoyanceNode.put("time", annoyanceBean.getTime().format(DateTimeFormatter.ofPattern("MM/dd")));
@@ -106,7 +108,7 @@ public class SocialController {
                             diaryNode.put("id", diaryBean.getId());
                             diaryNode.put("nickName", nickName);
                             diaryNode.put("content", diaryBean.getContent());
-                            diaryNode.put("monsterId", diaryBean.getMonsterId()/4);
+                            diaryNode.put("monsterId", diaryBean.getMonsterId() / 4);
                             diaryNode.put("index", diaryBean.getIndex());
                             diaryNode.put("time", diaryBean.getTime().format(DateTimeFormatter.ofPattern("MM/dd")));
                             diaryNode.put("share", diaryBean.getShare());
@@ -137,7 +139,7 @@ public class SocialController {
         ArrayNode dataNode = result.putArray("data");
         try {
             List<AnnoyanceBean> annoyanceList = annoyanceService.searchAnnoyanceByShareByAccount(account);
-            List<DiaryBean> diaryList = diaryServiceimpl.searchAnnoyanceByShareByAccount(account);
+            List<DiaryBean> diaryList = diaryService.searchAnnoyanceByShareByAccount(account);
             if (annoyanceList.size() != 0 || diaryList.size() != 0) {
                 Collections.sort(annoyanceList, new Comparator<AnnoyanceBean>() {
                     @Override
@@ -194,11 +196,53 @@ public class SocialController {
     }
 
     @ResponseBody
-    @PostMapping(path = "/comment/{id}/{account}")
-    public ResponseEntity comment(@PathVariable(name = "id") Integer id,
-                                  @PathVariable(name = "account") String
-            account) {
-        return null;
+    @PostMapping(path = "/comment/annoyance")
+    public ResponseEntity createAnnoyanceComment(@RequestBody AnnoyanceSocialCommentBean annoyanceSocialCommentBean) {
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode result = mapper.createObjectNode();
+        ObjectNode dataNode = result.putObject("data");
+        try {
+            if (!annoyanceService.getByPK(annoyanceSocialCommentBean.getAnnoyanceId()).isPresent()) {
+                result.put("result", false);
+                result.put("errorCode", "");
+                result.put("message", "找不到此煩惱");
+            }
+            annoyanceSocialCommentService.createAndReturnBean(annoyanceSocialCommentBean);
+            result.put("result", true);
+            result.put("errorCode", "200");
+            result.put("message", "留言成功");
+        } catch (Exception e) {
+            result.put("result", false);
+            result.put("errorCode", "");
+            result.put("message", "");
+            e.printStackTrace();
+        }
+        return ResponseEntity.status(HttpStatus.CREATED).body(result);
+    }
+
+    @ResponseBody
+    @PostMapping(path = "/comment/diary")
+    public ResponseEntity createDiaryComment(@RequestBody DiarySocialCommentBean diarySocialCommentBean) {
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode result = mapper.createObjectNode();
+        ObjectNode dataNode = result.putObject("data");
+        try {
+            if (!diaryService.getByPK(diarySocialCommentBean.getDiaryId()).isPresent()) {
+                result.put("result", false);
+                result.put("errorCode", "");
+                result.put("message", "找不到此煩惱");
+            }
+            diarySocialCommentService.createAndReturnBean(diarySocialCommentBean);
+            result.put("result", true);
+            result.put("errorCode", "200");
+            result.put("message", "留言成功");
+        } catch (Exception e) {
+            result.put("result", false);
+            result.put("errorCode", "");
+            result.put("message", "");
+            e.printStackTrace();
+        }
+        return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 
 }

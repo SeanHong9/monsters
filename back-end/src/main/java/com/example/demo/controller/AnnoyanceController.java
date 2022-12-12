@@ -18,12 +18,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Optional;
 
@@ -52,25 +46,30 @@ public class AnnoyanceController {
         ObjectNode result = mapper.createObjectNode();
         ArrayNode dataNode = result.putArray("data");
         try {
-            if (annoyanceBean.getContent() == null && annoyanceBean.getContent().isEmpty() && annoyanceBean.getContentFile() == null && annoyanceBean.getContentFile().isEmpty()) {
+            if (annoyanceBean.getContent() == null && annoyanceBean.getContent().isEmpty() &&
+                    annoyanceBean.getImageContent() == null && annoyanceBean.getImageContent().isEmpty() &&
+                    annoyanceBean.getAudioContent() == null && annoyanceBean.getAudioContent().isEmpty()) {
                 result.put("result", false);
                 result.put("errorCode", "");
                 result.put("message", "新增失敗");
             } else {
-                try {
-                    if (annoyanceBean.getContent() == null || annoyanceBean.getContent().isEmpty()) {
-                        System.out.println(annoyanceBean.getContentFile().getName());
-                        byte[] contentBytes = annoyanceBean.getContentFile().getBytes();
-                        Path contentPath = Paths.get(CONTENT_FILE + LocalDateTime.now().format(DateTimeFormatter.ofPattern("MMdd")) + annoyanceBean.getContentFile().getOriginalFilename());
-                        Files.write(contentPath, contentBytes);
-                        annoyanceBean.setContent(contentPath.toString());
-                    }
-                    if (annoyanceBean.getMood().equals("是")) {
-                        annoyanceBean.setMood(annoyanceBean.getMood());
-                    }
-                    List<AllMonsterBean> allMonster = allMonsterService.searchAll();
-                    // 抽1~100為機率
-                    probability = (int) (Math.random() * 100);
+                if (annoyanceBean.getMood().equals("是")) {
+                    annoyanceBean.setMood(annoyanceBean.getMood());
+                }
+                List<AllMonsterBean> allMonster = allMonsterService.searchAll();
+                // 抽1~100為機率
+                probability = (int) (Math.random() * 100);
+                index = (int) (Math.random() * 20);
+                if (probability < 50) {
+                    index = (int) (Math.random() * 10);
+                } else if (probability < 85) {
+                    index = (int) (Math.random() * 5) + 10;
+                } else {
+                    index = (int) (Math.random() * 5) + 15;
+                }
+                index *= 4;
+
+                while (allMonster.get(index).getMain() != 0) {
                     index = (int) (Math.random() * 20);
                     if (probability < 50) {
                         index = (int) (Math.random() * 10);
@@ -80,62 +79,46 @@ public class AnnoyanceController {
                         index = (int) (Math.random() * 5) + 15;
                     }
                     index *= 4;
-
-                    while (allMonster.get(index).getMain() != 0) {
-                        index = (int) (Math.random() * 20);
-                        if (probability < 50) {
-                            index = (int) (Math.random() * 10);
-                        } else if (probability < 85) {
-                            index = (int) (Math.random() * 5) + 10;
-                        } else {
-                            index = (int) (Math.random() * 5) + 15;
-                        }
-                        index *= 4;
-                    }
-                    annoyanceBean.setMonsterId(allMonster.get(index).getId());
-                    annoyanceService.createAndReturnBean(annoyanceBean);
-                    PersonalMonsterBean personalMonsterBean = new PersonalMonsterBean();
-                    PersonalMonsterUseBean personalMonsterUseBean = new PersonalMonsterUseBean();
-                    List<PersonalMonsterBean> personalMonsterList = personalMonsterService.findByAccount(annoyanceBean.getAccount());
-                    for (PersonalMonsterBean personalMonster : personalMonsterList) {
-                        System.out.println(personalMonster.getMonsterId() + "/" + allMonster.get(index).getId());
-                        if (personalMonster.getMonsterId().equals(allMonster.get(index).getId())) {
-                            isAddMonster = false;
-                            break;
-                        }
-                    }
-                    System.out.println(isAddMonster);
-                    personalMonsterUseBean.setAccount(annoyanceBean.getAccount());
-                    personalMonsterUseBean.setMonsterGroup(allMonster.get(index).getGroup());
-                    personalMonsterUseBean.setUse(0);
-                    Optional<PersonalMonsterUseBean> personalMonsterUseBeanOptional = personalMonsterUseService.findByAccountAndMonsterGroup(personalMonsterUseBean.getAccount(), personalMonsterUseBean.getMonsterGroup());
-                    System.out.println(personalMonsterUseBeanOptional.isPresent());
-                    if (!personalMonsterUseBeanOptional.isPresent()) {
-                        personalMonsterUseService.createAndReturnBean(personalMonsterUseBean);
-                    }
-                    if (isAddMonster) {
-                        personalMonsterBean.setAccount(annoyanceBean.getAccount());
-                        personalMonsterBean.setMonsterId(allMonster.get(index).getId());
-                        personalMonsterBean.setMonsterGroup(allMonster.get(index).getGroup());
-                        ObjectNode personalMonsterNode = dataNode.addObject();
-                        personalMonsterNode.put("newMonster", true);
-                        personalMonsterNode.put("use", personalMonsterUseBean.getUse());
-                        personalMonsterNode.put("newMonsterId", allMonster.get(index).getGroup());
-                        personalMonsterService.createAndReturnBean(personalMonsterBean);
-                    } else {
-                        ObjectNode personalMonsterNode = dataNode.addObject();
-                        personalMonsterNode.put("newMonster", false);
-                        personalMonsterNode.put("use", personalMonsterUseBean.getUse());
-                        personalMonsterNode.put("newMonsterId", allMonster.get(index).getGroup());
-                    }
-                    result.put("result", true);
-                    result.put("errorCode", "200");
-                    result.put("message", "新增成功");
-                } catch (IOException e) {
-                    result.put("result", false);
-                    result.put("errorCode", "");
-                    result.put("message", "新增失敗");
                 }
+                annoyanceBean.setMonsterId(allMonster.get(index).getId());
+                annoyanceService.createAndReturnBean(annoyanceBean);
+                PersonalMonsterBean personalMonsterBean = new PersonalMonsterBean();
+                PersonalMonsterUseBean personalMonsterUseBean = new PersonalMonsterUseBean();
+                List<PersonalMonsterBean> personalMonsterList = personalMonsterService.findByAccount(annoyanceBean.getAccount());
+                for (PersonalMonsterBean personalMonster : personalMonsterList) {
+                    System.out.println(personalMonster.getMonsterId() + "/" + allMonster.get(index).getId());
+                    if (personalMonster.getMonsterId().equals(allMonster.get(index).getId())) {
+                        isAddMonster = false;
+                        break;
+                    }
+                }
+                System.out.println(isAddMonster);
+                personalMonsterUseBean.setAccount(annoyanceBean.getAccount());
+                personalMonsterUseBean.setMonsterGroup(allMonster.get(index).getGroup());
+                personalMonsterUseBean.setUse(0);
+                Optional<PersonalMonsterUseBean> personalMonsterUseBeanOptional = personalMonsterUseService.findByAccountAndMonsterGroup(personalMonsterUseBean.getAccount(), personalMonsterUseBean.getMonsterGroup());
+                System.out.println(personalMonsterUseBeanOptional.isPresent());
+                if (!personalMonsterUseBeanOptional.isPresent()) {
+                    personalMonsterUseService.createAndReturnBean(personalMonsterUseBean);
+                }
+                if (isAddMonster) {
+                    personalMonsterBean.setAccount(annoyanceBean.getAccount());
+                    personalMonsterBean.setMonsterId(allMonster.get(index).getId());
+                    personalMonsterBean.setMonsterGroup(allMonster.get(index).getGroup());
+                    ObjectNode personalMonsterNode = dataNode.addObject();
+                    personalMonsterNode.put("newMonster", true);
+                    personalMonsterNode.put("use", personalMonsterUseBean.getUse());
+                    personalMonsterNode.put("newMonsterId", allMonster.get(index).getGroup());
+                    personalMonsterService.createAndReturnBean(personalMonsterBean);
+                } else {
+                    ObjectNode personalMonsterNode = dataNode.addObject();
+                    personalMonsterNode.put("newMonster", false);
+                    personalMonsterNode.put("use", personalMonsterUseBean.getUse());
+                    personalMonsterNode.put("newMonsterId", allMonster.get(index).getGroup());
+                }
+                result.put("result", true);
+                result.put("errorCode", "200");
+                result.put("message", "新增成功");
             }
         } catch (Exception e) {
             result.put("result", false);
