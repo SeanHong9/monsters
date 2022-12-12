@@ -31,7 +31,7 @@ class _dev_annoyanceChatState extends State<dev_annoyanceChat> {
   File? _contentFile;
 
   int _type = 1;
-  String _content = "測試";
+  String? _content = "測試";
   String _mood = "否";
   int _index = 3;
   int _share = 0;
@@ -107,6 +107,8 @@ class _dev_annoyanceChatState extends State<dev_annoyanceChat> {
                               ),
                               onPressed: () {
                                 _contentFile = null;
+                                imageFile = null;
+                                audioFile = null;
                                 setState(() {});
                               },
                             ),
@@ -179,8 +181,9 @@ class _dev_annoyanceChatState extends State<dev_annoyanceChat> {
                     } else {
                       _mood = "是";
                     }
-                    String _imageFile = "";
-                    String _audioFile = "";
+                    String? _imageFile;
+                    String? _audioFile;
+                    _content = "文字煩惱";
                     if (moodFile != null) {
                       File file = moodFile!;
                       List<int> bytes = file.readAsBytesSync();
@@ -191,23 +194,28 @@ class _dev_annoyanceChatState extends State<dev_annoyanceChat> {
                       File file = imageFile!;
                       List<int> bytes = file.readAsBytesSync();
                       _imageFile = base64.encode(bytes);
-                      log(_imageFile);
+                      _content = "圖片煩惱";
+                      log(_imageFile.length.toString());
                     }
 
                     if (audioFile != null) {
                       File file = audioFile!;
                       List<int> bytes = file.readAsBytesSync();
                       _audioFile = base64.encode(bytes);
+                      _content = "聲音煩惱";
+                      log(_audioFile.length.toString());
                     }
+                    setState(() {});
 
                     // File file = _contentFile!;
                     // List<int> bytes = file.readAsBytesSync();
                     // String base64String = base64.encode(bytes);
+
                     annoyanceRepository.createAnnoyance(
                       Annoyance(
                         id: 0,
                         account: "tonyhong", //"Lin"
-                        content: "123", //"純文字不分享無多媒體"
+                        content: _content, //"純文字不分享無多媒體"
                         type: 1,
                         monsterId: 0,
                         mood: _mood, //
@@ -216,7 +224,7 @@ class _dev_annoyanceChatState extends State<dev_annoyanceChat> {
                         solve: 0,
                         share: 0, //0
                         imageContent: _imageFile,
-                        audioContent: _audioFile,
+                        audioContent: null,
                       ),
                     );
                   },
@@ -232,19 +240,20 @@ class _dev_annoyanceChatState extends State<dev_annoyanceChat> {
                   onTap: () {
                     log(base64String.toString());
                   },
-                  /*child: Container(
-                    child: Image.file(_contentFile!,
-                        width: (MediaQuery.of(context).size.width >
-                                MediaQuery.of(context).size.height)
-                            ? 288
-                            : 162,
-                        height: (MediaQuery.of(context).size.width <
-                                MediaQuery.of(context).size.height)
-                            ? 240
-                            : 162,
-                        filterQuality: FilterQuality.high),
-                  ),
-                */
+                  child: imageFile != null
+                      ? Container(
+                          child: Image.file(imageFile!,
+                              width: (MediaQuery.of(context).size.width >
+                                      MediaQuery.of(context).size.height)
+                                  ? 288
+                                  : 162,
+                              height: (MediaQuery.of(context).size.width <
+                                      MediaQuery.of(context).size.height)
+                                  ? 240
+                                  : 162,
+                              filterQuality: FilterQuality.high),
+                        )
+                      : Container(),
                 ),
               ),
               Container(
@@ -256,11 +265,11 @@ class _dev_annoyanceChatState extends State<dev_annoyanceChat> {
                     "_content: \n" +
                         _content.toString() +
                         "\n\n\n" +
-                        "_contentFile: \n" +
-                        _contentFile.toString() +
+                        "imageFile: \n" +
+                        imageFile.toString() +
                         "\n\n\n"
-                            "_moodFile: \n" +
-                        moodFile.toString() +
+                            "audioFile: \n" +
+                        audioFile.toString() +
                         "\n\n\n",
                     style: const TextStyle(fontSize: 20, color: Colors.white),
                   ),
@@ -277,8 +286,13 @@ class _dev_annoyanceChatState extends State<dev_annoyanceChat> {
   takePhoto() async {
     final media = await ImagePicker().pickImage(source: ImageSource.camera);
     if (media == null) return;
+
+    log("media:" + media.path.toString());
     imageFile = File(media.path);
-    _contentFile = imageFile;
+    // if (imageFile != null) {
+    //   messages.insert(0, {"data": 2, "image": imageFile});
+    //   response(null, imageFile);
+    // }
 
     setState(() {});
   }
@@ -298,8 +312,11 @@ class _dev_annoyanceChatState extends State<dev_annoyanceChat> {
       context,
       MaterialPageRoute(builder: (context) => AudioMainPage()),
     );
-
+    log("media:" + media.toString());
     if (media == null) return;
+    final audioTemporary = File(media.toString());
+    audioFile = audioTemporary;
+    log("audioFile: " + audioFile.toString());
     audioFile = File(media);
     _contentFile = audioFile;
     setState(() {});

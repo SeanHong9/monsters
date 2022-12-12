@@ -21,10 +21,10 @@ public class Annoyance {
     @Column(name = "`content`")
     private String content;
 
-    @Column(name = "image_content")
+    @Column(name = "`image_content`")
     private String imageContent;
 
-    @Column(name = "audio_content")
+    @Column(name = "`audio_content`")
     private String audioContent;
 
     @Column(name = "`type`", nullable = false)

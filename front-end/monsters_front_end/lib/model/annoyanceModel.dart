@@ -79,8 +79,8 @@ class Annoyance {
         time: json['time'],
         solve: json['solve'],
         share: json['share'],
-        imageContent: json['image_content'],
-        audioContent: json['audio_content'],
+        imageContent: json['imageContent'],
+        audioContent: json['audioContent'],
         newMonster: json['newMonster'],
         newMonsterId: json['newMonsterId'],
       );
@@ -96,8 +96,8 @@ class Annoyance {
     data['time'] = time;
     data['solve'] = solve;
     data['share'] = share;
-    data['image_content'] = imageContent;
-    data['audio_content'] = audioContent;
+    data['imageContent'] = imageContent;
+    data['audioContent'] = audioContent;
     data['newMonster'] = newMonster;
     data['newMonsterId'] = newMonsterId;
     return data;
@@ -105,7 +105,7 @@ class Annoyance {
 
   @override
   String toString() {
-    return "{account:$account,id: $id,account: $account,content: $content, type: $type, monsterId: $monsterId, mood: $mood, index: $index, time: $time, solve: $solve, share: $share, imageContent: $imageContent, audioContent: $audioContent,newMonster:$newMonster,newMonsterId:$newMonsterId}";
+    return "{account:$account,id: $id,account: $account,content: $content, type: $type, monsterId: $monsterId, mood: ${mood.toString().length}, index: $index, time: $time, solve: $solve, share: $share, imageContent: ${imageContent.toString().length}, audioContent: ${audioContent.toString().length},newMonster:$newMonster,newMonsterId:$newMonsterId}";
   }
 
   @override
