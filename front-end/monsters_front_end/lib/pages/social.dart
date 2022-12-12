@@ -37,22 +37,8 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
   late Animation rotationAnimation;
   final _messageController = TextEditingController();
   StateSetter? animationState;
-  var Comments = [
-    "如果是我是我是我是我是我是我是我是我是我也一樣",
-    "總是學不會",
-    "再聰明一點再聰明一點再聰明一點再聰明一點再聰明一點再聰明一點再聰明一點再聰明一點再聰明一點",
-    "...",
-    "...",
-  ];
-  var userNames = [
-    "Wong",
-    "Tsai",
-    "Tim",
-    "Koala",
-    "Lin",
-  ];
-  var times = ["11/18", "11/18", "11/18", "11/17", "11/16"];
-  List<String> messages = [];
+
+  final SocialRepository socialRepository = SocialRepository();
 
   //異步處理
   late Future _future;
@@ -95,8 +81,6 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
   }
 
   Future<Map> getSocialMap() async {
-    final SocialRepository socialRepository = SocialRepository();
-
     Future<Data> socials = socialRepository
         .searchSocialByType(selectionTab_type)
         .then((value) => Data.fromJson(value!));
@@ -145,15 +129,18 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
             'moodIndex': value.data.elementAt(index).index,
             'imageContent': value.data.elementAt(index).imageContent,
             'audioContent': value.data.elementAt(index).audioContent,
-            // 'avatar': 1,
-            // 'type': type,
-            // 'solve': value.data.elementAt(index).solve?.toInt(),
-            // 'share': value.data.elementAt(index).share,
+            'solve': value.data.elementAt(index).solve?.toInt(),
           },
         );
       }
     });
     return socialResult;
+  }
+
+  Future<Map> getCommentMap() async {
+    Map socialCommentResult = {};
+
+    return socialCommentResult;
   }
 
   @override
@@ -961,8 +948,65 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
         });
   }
 
-  showComment(var data) {
-    return showDialog(
+  showComment(var data) async {
+    int _type = 1;
+    if (data["solve"] == null) {
+      _type = 2;
+    }
+    int _id = data["id"];
+    dv.log("_type:" + _type.toString());
+    dv.log("_id:" + _id.toString());
+
+    Future<Data> comments = socialRepository
+        .searchCommentByTypeById(_type, _id)
+        .then((value) => Data.fromJson(value!));
+
+    var commentList = [];
+    var userNameList = [];
+    var timesList = [];
+    var photoList = [];
+    int commentCounter = 1;
+    await comments.then((value) async {
+      commentCounter = value.data.length;
+      for (int i = 0; i < commentCounter; i++) {
+        dv.log("commentCounter: " + commentCounter.toString());
+        commentList.add(value.data.elementAt(i).commentContent);
+        userNameList.add(value.data.elementAt(i).commentUser);
+        timesList.add(value.data.elementAt(i).time);
+        int _photo = int.parse(value.data.elementAt(i).photo.toString());
+        // photoList.add( );
+        photoList.add(_photo);
+        // dv.log("time: " + value.data.first.time.toString());
+      }
+    }).then((value) {
+      dv.log(commentCounter.toString());
+      dv.log("commentCounter: " + commentCounter.toString());
+      dv.log("photoList: " + photoList.toString());
+      dv.log("userNameList: " + userNameList.toString());
+      dv.log("commentList: " + commentList.toString());
+      dv.log("timesList: " + timesList.toString());
+      ShowDialogState(data, commentCounter, photoList, userNameList,
+          commentList, timesList);
+    });
+  }
+
+  void ShowDialogState(
+    var data,
+    int commentCounter,
+    List photoList,
+    List userNameList,
+    List commentList,
+    List timesList,
+  ) {
+    double _containerSize = 300;
+    if (data["mood"] != "否") {
+      _containerSize += 150;
+    }
+    if ((data["imageContent"] != null)) {
+      _containerSize += 150;
+    }
+
+    showDialog(
         context: context,
         builder: (BuildContext context) {
           var _like;
@@ -1047,12 +1091,19 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
 
                   //中間多媒體區
                   Container(
-                    height: 600,
+                    // height: _containerSize,
+                    constraints: BoxConstraints(
+                      minHeight: 50,
+                      minWidth: MediaQuery.of(context).size.width,
+                      maxHeight: MediaQuery.of(context).size.height * 0.7,
+                      maxWidth: MediaQuery.of(context).size.width,
+                    ),
                     color: BackgroundColorLight,
                     child: SingleChildScrollView(
                       scrollDirection: Axis.vertical,
                       child: Column(
                         children: [
+                          //分享內容:照片
                           (data["imageContent"] != null)
                               ? Container(
                                   width:
@@ -1064,14 +1115,14 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
                                       filterQuality: FilterQuality.high),
                                 )
                               :
-                              //分享內容
+                              //分享內容:文字
                               Container(
                                   alignment: Alignment.topLeft,
                                   color: BackgroundColorLight,
-                                  height: 130,
                                   child: Padding(
-                                    padding: EdgeInsets.symmetric(
-                                        horizontal: 35, vertical: 15),
+                                    padding: EdgeInsets.fromLTRB(35, 0, 35, 20),
+                                    // padding: EdgeInsets.symmetric(
+                                    //     horizontal: 35, vertical: 15),
                                     child: SingleChildScrollView(
                                       scrollDirection: Axis.vertical,
                                       child: Text(
@@ -1085,6 +1136,7 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
                                     ),
                                   ),
                                 ),
+                          //分享內容:心情圖
                           (data["mood"] != "否")
                               ? Container(
                                   width:
@@ -1101,7 +1153,7 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
                           //貼文的相關留言
                           Container(
                               alignment: Alignment.center,
-                              height: 80 * Comments.length + 45,
+                              height: 80 * commentCounter + 5,
                               decoration: const BoxDecoration(
                                   color: Colors.white,
                                   border: Border.symmetric(
@@ -1110,11 +1162,10 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
                                   )),
                               child: ListView.builder(
                                   physics: NeverScrollableScrollPhysics(),
-                                  itemCount: Comments.length,
+                                  itemCount: commentCounter,
                                   itemBuilder: (context, int index) {
-                                    List tempList = [1, 2, 3, 4, 5];
                                     return Card(
-                                      child: Container(
+                                      child: SizedBox(
                                         height: 80,
                                         child: ListTile(
                                           leading: Container(
@@ -1130,11 +1181,11 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
                                               backgroundImage: AssetImage(
                                                   getMonsterAvatarPath(
                                                       monsterNamesList[
-                                                          tempList[index]])),
+                                                          photoList[index]])),
                                             ),
                                           ),
                                           title: Text(
-                                            userNames[index],
+                                            userNameList[index],
                                             style: TextStyle(fontSize: 20),
                                           ),
                                           subtitle: Container(
@@ -1142,13 +1193,13 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
                                             child: SingleChildScrollView(
                                               scrollDirection: Axis.vertical,
                                               child: Text(
-                                                Comments[index],
+                                                commentList[index],
                                                 style: TextStyle(fontSize: 16),
                                               ),
                                             ),
                                           ),
                                           trailing: Text(
-                                            times[index],
+                                            timesList[index],
                                             style: TextStyle(
                                                 color: BackgroundColorWarm),
                                           ),
@@ -1222,7 +1273,6 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
                                   ),
                                 ],
                               )),
-                        
                         ],
                       ),
                     ),
