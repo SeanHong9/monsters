@@ -18,7 +18,7 @@ class _DailyTest_correctState extends State<DailyTest_correct> {
   late Future _future;
   var learn, web;
   _DailyTest_correctState(this.learn, this.web);
-  late int unlockProgress;
+  int unlockProgress = 0;
 
   @override
   void initState() {
@@ -229,17 +229,18 @@ class _DailyTest_correctState extends State<DailyTest_correct> {
   }
 
   dailyTestReward() async {
-    //進度到7，顯示獲得怪獸
-    if (unlockProgress == 7) {
-      //要較晚跳出才能pop，不然會出錯
-      Future.delayed(Duration(microseconds: 200), () {
+    //要較晚跳出才能pop，不然會出錯
+    Future.delayed(Duration(microseconds: 200), () {
+      //進度到7，顯示獲得怪獸
+      if (unlockProgress == 7) {
         popUp(context);
-      });
-    }
+      }
+    });
   }
 
   Future<bool> getUserDailyTestProgress() async {
-    unlockProgress = 3;
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    unlockProgress = pref.getInt("unlockProgress")!;
     //上面這行unlockProgress用sharepref替代
 
     // unlockProgress=SharedPreferences...
