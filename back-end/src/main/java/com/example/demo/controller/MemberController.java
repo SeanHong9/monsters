@@ -66,14 +66,19 @@ public class MemberController {
         try {
             Optional<PersonalInfoBean> personalInfoBeanOptional = personalInfoService.getByPK(personalInfoBean.getAccount());
             PersonalInfoBean local = personalInfoBeanOptional.get();
+
+            ArrayNode dataNode = result.putArray("data");
             if (passwordEncoder.matches(personalInfoBean.getPassword(), local.getPassword())) {
-                result.put("account", local.getAccount());
-                result.put("birthday", local.getBirthday().toString());
-                result.put("mail", local.getMail());
-                result.put("nickName", local.getNickName());
-                result.put("lock", local.getPhoto());
-                result.put("photo", local.getPhoto());
-                result.put("dailyTest", local.getDailyTest());
+                ObjectNode personalInfoNode = dataNode.addObject();
+                personalInfoNode.put("account", local.getAccount());
+                personalInfoNode.put("birthday", local.getBirthday().toString());
+                personalInfoNode.put("mail", local.getMail());
+                personalInfoNode.put("mail", local.getMail());
+                personalInfoNode.put("nickName", local.getNickName());
+                personalInfoNode.put("lock", local.getPhoto());
+                personalInfoNode.put("photo", local.getPhoto());
+                personalInfoNode.put("dailyTest", local.getDailyTest());
+
             }
             result.put("result", true);
             result.put("errorCode", "200");

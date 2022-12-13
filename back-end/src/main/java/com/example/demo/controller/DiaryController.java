@@ -18,6 +18,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @AllArgsConstructor
 @Controller
@@ -47,7 +48,6 @@ public class DiaryController {
                 result.put("errorCode", "");
                 result.put("message", "新增失敗");
             } else {
-
                 if (diarybean.getMood().equals("是")) {
                     diarybean.setMood(diarybean.getMood());
                 }
@@ -86,31 +86,36 @@ public class DiaryController {
                 PersonalMonsterBean personalMonsterBean = new PersonalMonsterBean();
                 PersonalMonsterUseBean personalMonsterUseBean = new PersonalMonsterUseBean();
                 List<PersonalMonsterBean> personalMonsterList = personalMonsterService.findByAccount(diarybean.getAccount());
+
                 for (PersonalMonsterBean personalMonster : personalMonsterList) {
+                    System.out.println(personalMonster.getMonsterId() + "/" + allMonster.get(index).getId());
                     if (personalMonster.getMonsterId().equals(allMonster.get(index).getId())) {
                         isAddMonster = false;
                         break;
                     }
                 }
+                System.out.println(isAddMonster);
                 personalMonsterUseBean.setAccount(diarybean.getAccount());
                 personalMonsterUseBean.setMonsterGroup(allMonster.get(index).getGroup());
                 personalMonsterUseBean.setUse(0);
-                personalMonsterUseService.createAndReturnBean(personalMonsterUseBean);
-                System.out.println(isAddMonster);
-                ObjectNode personalMonsterNode = dataNode.addObject();
+                Optional<PersonalMonsterUseBean> personalMonsterUseBeanOptional = personalMonsterUseService.findByAccountAndMonsterGroup(personalMonsterUseBean.getAccount(), personalMonsterUseBean.getMonsterGroup());
+                System.out.println(personalMonsterUseBeanOptional.isPresent());
+                if (!personalMonsterUseBeanOptional.isPresent()) {
+                    personalMonsterUseService.createAndReturnBean(personalMonsterUseBean);
+                }
                 if (isAddMonster) {
                     personalMonsterBean.setAccount(diarybean.getAccount());
                     personalMonsterBean.setMonsterId(allMonster.get(index).getId());
                     personalMonsterBean.setMonsterGroup(allMonster.get(index).getGroup());
+                    ObjectNode personalMonsterNode = dataNode.addObject();
                     personalMonsterNode.put("newMonster", true);
+                    personalMonsterNode.put("newMonsterGroup", allMonster.get(index).getGroup());
                     personalMonsterService.createAndReturnBean(personalMonsterBean);
                 } else {
+                    ObjectNode personalMonsterNode = dataNode.addObject();
                     personalMonsterNode.put("newMonster", false);
-                    personalMonsterNode.put("use", personalMonsterUseBean.getUse());
-                    personalMonsterNode.put("newMonsterId", allMonster.get(index).getGroup());
+                    personalMonsterNode.put("newMonsterGroup", allMonster.get(index).getGroup());
                 }
-                personalMonsterNode.put("use", personalMonsterUseBean.getUse());
-                personalMonsterNode.put("newMonsterId", allMonster.get(index).getGroup());
                 result.put("result", true);
                 result.put("errorCode", "200");
                 result.put("message", "新增成功");
@@ -125,7 +130,7 @@ public class DiaryController {
 
     @ResponseBody
     @PatchMapping("/modify/{id}/{account}")
-    public ResponseEntity modifyAnnoyance(@PathVariable(name = "id") int id, @PathVariable(name = "account") String account, @RequestBody DiaryBean diaryBean) {
+    public ResponseEntity modifyDiary(@PathVariable(name = "id") int id, @PathVariable(name = "account") String account, @RequestBody DiaryBean diaryBean) {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode result = mapper.createObjectNode();
         diaryService.update(id, diaryBean);

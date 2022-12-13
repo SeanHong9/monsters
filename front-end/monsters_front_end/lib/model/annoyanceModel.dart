@@ -50,7 +50,7 @@ class Annoyance {
   String? imageContent;
   String? audioContent;
   bool? newMonster;
-  int? newMonsterId;
+  int? newMonsterGroup;
   Annoyance({
     this.id,
     this.account,
@@ -65,7 +65,7 @@ class Annoyance {
     this.imageContent,
     this.audioContent,
     this.newMonster,
-    this.newMonsterId,
+    this.newMonsterGroup,
   });
 
   factory Annoyance.fromJson(Map<String, dynamic> json) => Annoyance(
@@ -82,7 +82,7 @@ class Annoyance {
         imageContent: json['imageContent'],
         audioContent: json['audioContent'],
         newMonster: json['newMonster'],
-        newMonsterId: json['newMonsterId'],
+        newMonsterGroup: json['newMonsterGroup'],
       );
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
@@ -99,17 +99,17 @@ class Annoyance {
     data['imageContent'] = imageContent;
     data['audioContent'] = audioContent;
     data['newMonster'] = newMonster;
-    data['newMonsterId'] = newMonsterId;
+    data['newMonsterGroup'] = newMonsterGroup;
     return data;
   }
 
   @override
   String toString() {
-    return "{account:$account,id: $id,account: $account,content: $content, type: $type, monsterId: $monsterId, mood: ${mood.toString().length}, index: $index, time: $time, solve: $solve, share: $share, imageContent: ${imageContent.toString().length}, audioContent: ${audioContent.toString().length},newMonster:$newMonster,newMonsterId:$newMonsterId}";
+    return "{account:$account,id: $id,account: $account,content: $content, type: $type, monsterId: $monsterId, mood: ${mood.toString().length}, index: $index, time: $time, solve: $solve, share: $share, imageContent: ${imageContent.toString().length}, audioContent: ${audioContent.toString().length},newMonster:$newMonster,newMonsterGroup:$newMonsterGroup}";
   }
 
   @override
   String getCreate() {
-    return "{newMonster:$newMonster,newMonsterId:$newMonsterId}";
+    return "{newMonster:$newMonster,newMonsterGroup:$newMonsterGroup}";
   }
 }
