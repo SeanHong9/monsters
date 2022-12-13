@@ -44,7 +44,7 @@ class Member {
   int? photo;
   int? monsterId;
   int? monsterGroup;
-  int? progress;
+  int? dailyTest;
 
   Member({
     required this.account,
@@ -56,7 +56,7 @@ class Member {
     this.photo,
     this.monsterId,
     this.monsterGroup,
-    this.progress,
+    this.dailyTest,
   });
 
   factory Member.fromJson(Map<String, dynamic> json) => Member(
@@ -69,7 +69,7 @@ class Member {
         photo: int.parse(json['photo']),
         monsterId: json['monsterId'],
         monsterGroup: json['monsterGroup'],
-        progress: json['progress'],
+        dailyTest: json['dailyTest'],
       );
 
   Map<String, dynamic> toJson() {
@@ -83,7 +83,7 @@ class Member {
     data['photo'] = photo.toString();
     data['monsterId'] = monsterId;
     data['monsterGroup'] = monsterGroup;
-    data['progress'] = progress;
+    data['dailyTest'] = dailyTest;
     return data;
   }
 }

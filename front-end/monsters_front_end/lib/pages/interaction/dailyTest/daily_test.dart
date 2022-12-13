@@ -31,8 +31,8 @@ class _Daily_testState extends State<Daily_test> {
   var learn = "";
   String web = "";
 
-  updateProgress() async {
-    Map progressResult = {};
+  updatedailyTest() async {
+    Map dailyTestResult = {};
     var request = memberRepository.updateDailyTest();
     // .then((value) => Data.fromJson(value!));
 
@@ -40,17 +40,17 @@ class _Daily_testState extends State<Daily_test> {
       var ans = value.toString().split(",");
       var tempmonsterId = ans[0].toString().split(": ")[1];
       var tempmonsterGroup = ans[1].toString().split(": ")[1];
-      var tempprogress = ans[2].toString().split(": ")[1].split("}")[0];
+      var tempdailyTest = ans[2].toString().split(": ")[1].split("}")[0];
       int monsterId = int.parse(tempmonsterId);
       // progressResult["monsterGroup"] = monsterGroup.toString();
       int monsterGroup = int.parse(tempmonsterGroup);
-      int progress = int.parse(tempprogress);
+      int dailyTest = int.parse(tempdailyTest);
 
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(
               builder: (context) => DailyTest_correct(
-                  learn, web, monsterId, monsterGroup, progress)));
+                  learn, web, monsterId, monsterGroup, dailyTest)));
     });
   }
 
@@ -59,7 +59,7 @@ class _Daily_testState extends State<Daily_test> {
     // var unlockProgress = pref.getInt("unlockProgress")?.toInt();
     // var lastTryDay = pref.getString("LastTryDate");
     if (correctChoice == userChoice) {
-      updateProgress();
+      updatedailyTest();
       //if等於7 or null，重新計算
       // if (unlockProgress == 7 || unlockProgress == null) {
       //   unlockProgress = 0;

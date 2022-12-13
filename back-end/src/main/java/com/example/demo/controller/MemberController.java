@@ -185,7 +185,7 @@ public class MemberController {
             personalInfoNode.put("monsterId", -1);
             personalInfoNode.put("monsterGroup", -1);
         }
-        personalInfoNode.put("progress", personalInfoBeanOptional.get().getDailyTest() + 1);
+        personalInfoNode.put("dailyTest", personalInfoBeanOptional.get().getDailyTest() + 1);
         result.put("result", true);
         result.put("errorCode", "200");
         result.put("message", "修改成功");

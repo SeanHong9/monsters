@@ -8,24 +8,24 @@ import 'package:url_launcher/url_launcher_string.dart';
 
 class DailyTest_correct extends StatefulWidget {
   String learn, web;
-  int monsterId, monsterGroup, progress;
+  int monsterId, monsterGroup, dailyTest;
   DailyTest_correct(
-      this.learn, this.web, this.monsterId, this.monsterGroup, this.progress);
+      this.learn, this.web, this.monsterId, this.monsterGroup, this.dailyTest);
   @override
   _DailyTest_correctState createState() => _DailyTest_correctState(
-      this.learn, this.web, this.monsterId, this.monsterGroup, this.progress);
+      this.learn, this.web, this.monsterId, this.monsterGroup, this.dailyTest);
 }
 
 class _DailyTest_correctState extends State<DailyTest_correct> {
   late Future _future;
   var learn, web;
-  int monsterId, monsterGroup, progress;
+  int monsterId, monsterGroup, dailyTest;
   _DailyTest_correctState(
-      this.learn, this.web, this.monsterId, this.monsterGroup, this.progress);
+      this.learn, this.web, this.monsterId, this.monsterGroup, this.dailyTest);
 
   @override
   void initState() {
-    _future = getUserDailyTestProgress();
+    _future = getUserDailyTest();
     super.initState();
   }
 
@@ -93,9 +93,9 @@ class _DailyTest_correctState extends State<DailyTest_correct> {
                               left: 30,
                             ),
                             alignment: Alignment.topLeft,
-                            child: progress < 7
+                            child: dailyTest < 7
                                 ? Text(
-                                    "每天只有第一次能挑戰獎勵進度，\n再成功${7 - progress}次就可以解鎖隱藏獎勵！\n目前解鎖進度 ：",
+                                    "每天只有第一次能挑戰獎勵進度，\n再成功${7 - dailyTest}次就可以解鎖隱藏獎勵！\n目前解鎖進度 ：",
                                     style: const TextStyle(
                                         fontSize: 20,
                                         color: BackgroundColorWarm),
@@ -190,7 +190,7 @@ class _DailyTest_correctState extends State<DailyTest_correct> {
     Container littleguy = Container();
     // Color boxColor = Colors.white;
     Color boxColor = Colors.white;
-    if (progress == value) {
+    if (dailyTest == value) {
       littleguy = Container(
         child: SvgPicture.string(
           _svg_mu7hm4,
@@ -199,7 +199,7 @@ class _DailyTest_correctState extends State<DailyTest_correct> {
         ),
       );
     }
-    if (value <= progress) {
+    if (value <= dailyTest) {
       boxColor = BackgroundColorSoft;
     }
     return Expanded(
@@ -235,13 +235,13 @@ class _DailyTest_correctState extends State<DailyTest_correct> {
     //要較晚跳出才能pop，不然會出錯
     Future.delayed(Duration(microseconds: 200), () {
       //進度到7，顯示獲得怪獸
-      if (progress == 7) {
+      if (dailyTest == 7) {
         popUp(context, monsterGroup);
       }
     });
   }
 
-  Future<bool> getUserDailyTestProgress() async {
+  Future<bool> getUserDailyTest() async {
     // SharedPreferences pref = await SharedPreferences.getInstance();
     // progress = pref.getInt("unlockProgress")!;
     //上面這行unlockProgress用sharepref替代
