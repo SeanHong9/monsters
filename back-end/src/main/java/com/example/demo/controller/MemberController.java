@@ -79,7 +79,7 @@ public class MemberController {
                 personalInfoNode.put("result", true);
                 personalInfoNode.put("errorCode", "200");
                 personalInfoNode.put("message", "登入成功");
-            }else {
+            } else {
                 personalInfoNode.put("result", false);
                 personalInfoNode.put("errorCode", "");
                 personalInfoNode.put("message", "登入失敗");
@@ -109,6 +109,7 @@ public class MemberController {
                 personalInfoNode.put("account", personalInfoBean.getAccount());
                 personalInfoNode.put("photo", personalInfoBean.getPhoto());
                 personalInfoNode.put("dailyTest", personalInfoBean.getDailyTest());
+                personalInfoNode.put("lock", personalInfoBean.getLock());
                 result.put("result", true);
                 result.put("errorCode", "200");
                 result.put("message", "查詢成功");
