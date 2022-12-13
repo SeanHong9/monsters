@@ -468,20 +468,47 @@ class _SignUpState extends State<SignUp> {
 
         if (value.toString().contains("401")) {
           //帳號已被註冊
-
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              duration: Duration(seconds: 3),
+              backgroundColor: BackgroundColorWarm,
+              content: Text(
+                "帳號已被註冊，請重新輸入",
+                style: TextStyle(color: Colors.white, fontSize: 30),
+              )));
         }
         if (value.toString().contains("402")) {
           //信箱已被使用
-
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              duration: Duration(seconds: 3),
+              backgroundColor: BackgroundColorWarm,
+              content: Text(
+                "信箱已被使用，請重新輸入",
+                style: TextStyle(color: Colors.white, fontSize: 30),
+              )));
         }
         if (value.toString().contains("403")) {
           //暱稱已被使用
-
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              duration: Duration(seconds: 3),
+              backgroundColor: BackgroundColorWarm,
+              content: Text(
+                "暱稱已被使用，請重新輸入",
+                style: TextStyle(color: Colors.white, fontSize: 30),
+              )));
+        }
+        if (value.toString().contains("200")) {
+          //註冊成功
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              duration: Duration(seconds: 1),
+              backgroundColor: BackgroundColorWarm,
+              content: Text(
+                "註冊成功",
+                style: TextStyle(color: Colors.white, fontSize: 30),
+              )));
+          Navigator.pushReplacement(context,
+              MaterialPageRoute(builder: (context) => Login_selfacount()));
         }
       });
-
-      // Navigator.pushReplacement(
-      //     context, MaterialPageRoute(builder: (context) => Login_selfacount()));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           duration: Duration(seconds: 1),
