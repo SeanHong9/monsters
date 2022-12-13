@@ -55,15 +55,12 @@ public class AnnoyanceController {
             } else {
                 if (annoyanceBean.getMood().equals("是")) {
                     annoyanceBean.setMood(annoyanceBean.getMood());
-                    System.out.println("get Mood length: "+ annoyanceBean.getMood().length());
                 }
                 if(annoyanceBean.getAudioContent()!=null){
                     annoyanceBean.setAudioContent(annoyanceBean.getAudioContent());
-                    System.out.println("get audioContent length: "+ annoyanceBean.getAudioContent().length());
                 }
                 if(annoyanceBean.getImageContent()!=null){
                     annoyanceBean.setImageContent(annoyanceBean.getImageContent());
-                    System.out.println("get ImageContent length: "+ annoyanceBean.getImageContent().length());
                 }
 
                 List<AllMonsterBean> allMonster = allMonsterService.searchAll();
@@ -117,14 +114,12 @@ public class AnnoyanceController {
                     personalMonsterBean.setMonsterGroup(allMonster.get(index).getGroup());
                     ObjectNode personalMonsterNode = dataNode.addObject();
                     personalMonsterNode.put("newMonster", true);
-                    personalMonsterNode.put("use", personalMonsterUseBean.getUse());
-                    personalMonsterNode.put("newMonsterId", allMonster.get(index).getGroup());
+                    personalMonsterNode.put("newMonsterGroup", allMonster.get(index).getGroup());
                     personalMonsterService.createAndReturnBean(personalMonsterBean);
                 } else {
                     ObjectNode personalMonsterNode = dataNode.addObject();
                     personalMonsterNode.put("newMonster", false);
-                    personalMonsterNode.put("use", personalMonsterUseBean.getUse());
-                    personalMonsterNode.put("newMonsterId", allMonster.get(index).getGroup());
+                    personalMonsterNode.put("newMonsterGroup", allMonster.get(index).getGroup());
                 }
                 result.put("result", true);
                 result.put("errorCode", "200");
