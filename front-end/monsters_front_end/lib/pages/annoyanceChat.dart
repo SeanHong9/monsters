@@ -346,7 +346,7 @@ class _AnnoyanceChat extends State<AnnoyanceChat> with WidgetsBindingObserver {
                             ),
                           ),
                         ),
-                        onPressed: () async {
+                        onPressed: () {
                           Navigator.pushReplacement(
                               //TODO: Level 2
                               //ADD HERO https://youtu.be/1xipg02Wu8s?t=657
@@ -771,7 +771,6 @@ class _AnnoyanceChat extends State<AnnoyanceChat> with WidgetsBindingObserver {
             }
             userAnswers.add(text);
             //提示輸入煩惱程度
-            // reply("給煩惱程度打一個分數～\n5分是最煩惱的喔！");
             reply("給煩惱程度打一個分數～");
             log("--完成畫心情");
           } else {
@@ -846,7 +845,7 @@ class _AnnoyanceChat extends State<AnnoyanceChat> with WidgetsBindingObserver {
                 .then((value) => Data.fromJson(value!));
             await requestBody.then((value) {
               if (value.data.first.newMonster == true) {
-                popUp(context, value.data.first.newMonsterId!);
+                popUp(context, value.data.first.newMonsterGroup!);
               }
             });
             log("--完成分享");
@@ -934,32 +933,32 @@ class _AnnoyanceChat extends State<AnnoyanceChat> with WidgetsBindingObserver {
     }
   }
 
-  Future<dynamic> popUp(BuildContext context, int newMonsterId) {
+  Future<dynamic> popUp(BuildContext context, int newMonsterGroup) {
     return showDialog(
       context: context,
       builder: (BuildContext context) {
-        return PresentWidget(newMonsterId);
+        return PresentWidget(newMonsterGroup);
       },
     );
   }
 }
 
 class PresentWidget extends StatefulWidget {
-  int newMonsterId;
-  PresentWidget(this.newMonsterId, {Key? key}) : super(key: key);
+  int newMonsterGroup;
+  PresentWidget(this.newMonsterGroup, {Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
-    return _PresentWidget(newMonsterId);
+    return _PresentWidget(newMonsterGroup);
   }
 }
 
 class _PresentWidget extends State<PresentWidget> {
-  int newMonsterId;
-  _PresentWidget(this.newMonsterId);
+  int newMonsterGroup;
+  _PresentWidget(this.newMonsterGroup);
   @override
   Widget build(BuildContext context) {
-    String present_name = monsterNamesList_CH[newMonsterId];
+    String present_name = monsterNamesList_CH[newMonsterGroup];
     return Material(
         type: MaterialType.transparency,
         child: Center(

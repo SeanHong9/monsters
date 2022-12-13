@@ -346,7 +346,7 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                                 ),
                                 title: Container(
                                   height: 140,
-                                  alignment: Alignment.topLeft,
+                                  alignment: Alignment.centerLeft,
                                   child: SingleChildScrollView(
                                     scrollDirection: Axis.vertical,
                                     child: Padding(

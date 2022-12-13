@@ -38,8 +38,9 @@ class DiaryRepository implements DiaryApiDataSource {
       var body = json.encode(diary);
       var request = await client.post(url,
           headers: {'Content-type': 'application/json'}, body: body);
+      log("_createDiary status: " + request.statusCode.toString());
+      log("_createDiary body: " + request.body.toString());
       if (request.statusCode == 201) {
-        
         Map<String, dynamic> diary = jsonDecode(request.body);
         return Future.value(diary);
       } else {

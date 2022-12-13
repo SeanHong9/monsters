@@ -45,8 +45,6 @@ class _historyAnnoyanceChat extends State<historyAnnoyanceChat> {
   int finalId = 0;
   int solve = 0;
   List userAnswers = [];
-  File? contentFile;
-  File? moodFile;
   @override
   Widget build(BuildContext context) {
     final AnnoyanceRepository annoyanceRepository = AnnoyanceRepository();
@@ -59,7 +57,7 @@ class _historyAnnoyanceChat extends State<historyAnnoyanceChat> {
     } else {
       response("是");
     }
-    response(data["index"].toString());
+    response(data["moodIndex"].toString());
 
     if (data["share"] == 0) {
       response("否");
@@ -353,7 +351,7 @@ class _historyAnnoyanceChat extends State<historyAnnoyanceChat> {
                         ),
                         Flexible(
                             child: Container(
-                                child: Image.file(contentFile!,
+                                child: Image.memory(base64Decode(message),
                                     width: (MediaQuery.of(context).size.width >
                                             MediaQuery.of(context).size.height)
                                         ? 288

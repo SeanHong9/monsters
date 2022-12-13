@@ -37,8 +37,6 @@ class _historyDiaryChat extends State<historyDiaryChat> {
   List<Map> messages = [];
   int acceptShare = 0;
   var userAnswers = [];
-  File? contentFile;
-  File? moodFile;
   @override
   Widget build(BuildContext context) {
     final DiaryRepository diaryRepository = DiaryRepository();
@@ -50,7 +48,7 @@ class _historyDiaryChat extends State<historyDiaryChat> {
     } else {
       response("是");
     }
-    response(data["index"].toString());
+    response(data["moodIndex"].toString());
 
     if (data["share"] == 0) {
       response("否");
@@ -246,7 +244,7 @@ class _historyDiaryChat extends State<historyDiaryChat> {
                         ),
                         Flexible(
                             child: Container(
-                                child: Image.file(contentFile!,
+                            child: Image.memory(base64Decode(message),
                                     width: (MediaQuery.of(context).size.width >
                                             MediaQuery.of(context).size.height)
                                         ? 288
@@ -255,7 +253,9 @@ class _historyDiaryChat extends State<historyDiaryChat> {
                                             MediaQuery.of(context).size.height)
                                         ? 240
                                         : 162,
-                                    filterQuality: FilterQuality.high))),
+                                filterQuality: FilterQuality.high),
+                          ),
+                        ),
                         SizedBox(
                           width: 3.0,
                         ),
@@ -425,7 +425,9 @@ class _historyDiaryChat extends State<historyDiaryChat> {
                                 child: Image.memory(base64Decode(message),
                                     width: 200,
                                     height: 200,
-                                    filterQuality: FilterQuality.high))),
+                                filterQuality: FilterQuality.high),
+                          ),
+                        ),
                         SizedBox(
                           width: 3.0,
                         ),
