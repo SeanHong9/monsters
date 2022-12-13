@@ -451,17 +451,37 @@ class _SignUpState extends State<SignUp> {
   void signUp() async {
     //註冊功能
     if (isCheck == true) {
-      memberRepository.createMember(
-        Member(
-          account: _accountController.text,
-          birthday: formatDate(date, [yyyy, '-', mm, '-', dd]).toString(),
-          mail: _mailController.text,
-          nickName: _nicknameController.text,
-          password: _pwdController.text,
-        ),
-      );
-      Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => Login_selfacount()));
+      Future<Map> request = memberRepository
+          .createMember(
+            Member(
+              account: _accountController.text,
+              birthday: formatDate(date, [yyyy, '-', mm, '-', dd]).toString(),
+              mail: _mailController.text,
+              nickName: _nicknameController.text,
+              password: _pwdController.text,
+            ),
+          )
+          .then((value) => json.decode(value));
+
+      await request.then((value) {
+        log(value.toString());
+
+        if (value.toString().contains("401")) {
+          //帳號已被註冊
+
+        }
+        if (value.toString().contains("402")) {
+          //信箱已被使用
+
+        }
+        if (value.toString().contains("403")) {
+          //暱稱已被使用
+
+        }
+      });
+
+      // Navigator.pushReplacement(
+      //     context, MaterialPageRoute(builder: (context) => Login_selfacount()));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           duration: Duration(seconds: 1),

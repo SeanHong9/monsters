@@ -49,7 +49,7 @@ class _MainPageState extends State<MainPage>
   late Future _future;
 
   //資料庫拿怪獸名稱
-  late String monsterName;
+  late String monsterName = "Baku";
   bool resetPhoto = false;
 
   LocalStorage storage = LocalStorage('current_tab');
