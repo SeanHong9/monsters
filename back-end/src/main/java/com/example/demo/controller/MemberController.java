@@ -66,23 +66,22 @@ public class MemberController {
         try {
             Optional<PersonalInfoBean> personalInfoBeanOptional = personalInfoService.getByPK(personalInfoBean.getAccount());
             PersonalInfoBean local = personalInfoBeanOptional.get();
-
-            ArrayNode dataNode = result.putArray("data");
             if (passwordEncoder.matches(personalInfoBean.getPassword(), local.getPassword())) {
-                ObjectNode personalInfoNode = dataNode.addObject();
-                personalInfoNode.put("account", local.getAccount());
-                personalInfoNode.put("birthday", local.getBirthday().toString());
-                personalInfoNode.put("mail", local.getMail());
-                personalInfoNode.put("mail", local.getMail());
-                personalInfoNode.put("nickName", local.getNickName());
-                personalInfoNode.put("lock", local.getPhoto());
-                personalInfoNode.put("photo", local.getPhoto());
-                personalInfoNode.put("dailyTest", local.getDailyTest());
-
+                result.put("account", local.getAccount());
+                result.put("birthday", local.getBirthday().toString());
+                result.put("mail", local.getMail());
+                result.put("nickName", local.getNickName());
+                result.put("lock", local.getPhoto());
+                result.put("photo", local.getPhoto());
+                result.put("dailyTest", local.getDailyTest());
+                result.put("result", true);
+                result.put("errorCode", "200");
+                result.put("message", "登入成功");
+            }else {
+                result.put("result", false);
+                result.put("errorCode", "");
+                result.put("message", "登入失敗");
             }
-            result.put("result", true);
-            result.put("errorCode", "200");
-            result.put("message", "登入成功");
         } catch (Exception e) {
             System.out.println(e);
             result.put("result", false);
@@ -149,7 +148,7 @@ public class MemberController {
             personalMonsterNode.put("monsterGroup", personalMonsterBean.getMonsterGroup());
         }
         System.out.println(personalInfoBeanOptional.get().getDailyTest());
-        result.put("dailyTest", personalInfoBeanOptional.get().getDailyTest()+1);
+        result.put("dailyTest", personalInfoBeanOptional.get().getDailyTest() + 1);
         result.put("result", true);
         result.put("errorCode", "200");
         result.put("message", "修改成功");
