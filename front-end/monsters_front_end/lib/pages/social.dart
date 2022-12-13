@@ -3,7 +3,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
-import 'package:date_format/date_format.dart';
 import 'package:http/http.dart' as http;
 import 'dart:developer' as dv;
 import 'package:flutter/material.dart';
@@ -136,12 +135,6 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
       }
     });
     return socialResult;
-  }
-
-  Future<Map> getCommentMap() async {
-    Map socialCommentResult = {};
-
-    return socialCommentResult;
   }
 
   @override
@@ -427,16 +420,15 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
                                                           Pin(
                                                               size: 70.0,
                                                               start: 0.0),
-                                                          child:
-                                                              SingleChildScrollView(
-                                                            scrollDirection:
-                                                                Axis.vertical,
-                                                            child: snapshot.data[
-                                                                            "result $index"]
-                                                                        [
-                                                                        "imageContent"] ==
-                                                                    null
-                                                                ? Text(
+                                                          child: snapshot.data[
+                                                                          "result $index"]
+                                                                      [
+                                                                      "imageContent"] ==
+                                                                  null
+                                                              ? SingleChildScrollView(
+                                                                  scrollDirection:
+                                                                      Axis.vertical,
+                                                                  child: Text(
                                                                     snapshot.data[
                                                                             "result $index"]
                                                                         [
@@ -452,16 +444,21 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
                                                                     ),
                                                                     softWrap:
                                                                         true,
-                                                                  )
-                                                                : Container(
-                                                                    child: Image.memory(
-                                                                        base64Decode(snapshot.data["result $index"]
-                                                                            [
-                                                                            "imageContent"]),
-                                                                        filterQuality:
-                                                                            FilterQuality.high),
-                                                                  ),
-                                                          ),
+                                                                  ))
+                                                              : Container(
+                                                                  child: Image.memory(
+                                                                      base64Decode(
+                                                                          snapshot.data["result $index"]
+                                                                              [
+                                                                              "imageContent"]),
+                                                                      height:
+                                                                          200,
+                                                                      fit: BoxFit
+                                                                          .fitHeight,
+                                                                      filterQuality:
+                                                                          FilterQuality
+                                                                              .high),
+                                                                ),
                                                         ),
                                                       ],
                                                     )),
@@ -1017,17 +1014,26 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
     List timesList,
   ) {
     double _containerSize = 300;
+    double _maxHeight = 0;
     if (data["mood"] != "否") {
       _containerSize += 150;
     }
     if ((data["imageContent"] != null)) {
       _containerSize += 150;
     }
+    if (commentCounter > 0) {
+      if (commentCounter > 3) {
+        _maxHeight = 300;
+      } else {
+        _maxHeight += commentCounter * 100;
+      }
+    }
 
     showDialog(
         context: context,
         builder: (BuildContext context) {
           var _like;
+
           return Material(
               type: MaterialType.transparency,
               child: Column(
@@ -1124,8 +1130,7 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
                           //分享內容:照片
                           (data["imageContent"] != null)
                               ? Container(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.8,
+                                  width: MediaQuery.of(context).size.width,
                                   alignment: Alignment.center,
                                   padding: EdgeInsets.only(bottom: 5),
                                   child: Image.memory(
@@ -1139,8 +1144,6 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
                                   color: BackgroundColorLight,
                                   child: Padding(
                                     padding: EdgeInsets.fromLTRB(35, 0, 35, 20),
-                                    // padding: EdgeInsets.symmetric(
-                                    //     horizontal: 35, vertical: 15),
                                     child: SingleChildScrollView(
                                         scrollDirection: Axis.vertical,
                                         child: Text(
@@ -1157,8 +1160,7 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
                           //分享內容:心情圖
                           (data["mood"] != "否")
                               ? Container(
-                                  width:
-                                      MediaQuery.of(context).size.width * 0.8,
+                                  width: MediaQuery.of(context).size.width,
                                   alignment: Alignment.center,
                                   decoration: const BoxDecoration(
                                     color: BackgroundColorLight,
@@ -1169,66 +1171,136 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
                                 )
                               : Container(),
                           //貼文的相關留言
-                          Container(
-                              alignment: Alignment.center,
-                              height: 80 * commentCounter + 5,
-                              decoration: const BoxDecoration(
-                                  color: Colors.white,
-                                  border: Border.symmetric(
-                                    horizontal: BorderSide(
-                                        width: 2, color: BackgroundColorWarm),
-                                  )),
-                              child: ListView.builder(
-                                  physics: NeverScrollableScrollPhysics(),
-                                  itemCount: commentCounter,
-                                  itemBuilder: (context, int index) {
-                                    return Card(
-                                      child: SizedBox(
-                                        height: 80,
-                                        child: ListTile(
-                                          leading: Container(
-                                            decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              border: Border.all(
-                                                  width: 1,
-                                                  color:
-                                                      const Color(0xffa0522d)),
-                                            ),
-                                            child: CircleAvatar(
-                                              radius: 30,
-                                              backgroundImage: AssetImage(
-                                                  getMonsterAvatarPath(
-                                                      monsterNamesList[
-                                                          photoList[index]])),
-                                            ),
-                                          ),
-                                          title: Text(
-                                            userNameList[index],
-                                            textAlign: TextAlign.justify,
-                                            style: const TextStyle(
-                                              letterSpacing: -1,
-                                              fontSize: 20,
-                                            ),
-                                          ),
-                                          subtitle: Container(
-                                            height: 50,
-                                            child: SingleChildScrollView(
-                                              scrollDirection: Axis.vertical,
-                                              child: Text(
-                                                commentList[index],
-                                                style: TextStyle(fontSize: 16),
+                          (commentCounter > 0)
+                              ? Container(
+                                  alignment: Alignment.center,
+                                  constraints: BoxConstraints(
+                                    minHeight: 100,
+                                    maxHeight: _maxHeight,
+                                  ),
+                                  decoration: const BoxDecoration(
+                                    color: Colors.white,
+                                    border: Border.symmetric(
+                                      horizontal: BorderSide(
+                                          width: 2, color: BackgroundColorWarm),
+                                    ),
+                                  ),
+                                  child: ListView.builder(
+                                    itemCount: commentCounter,
+                                    itemBuilder: (context, int index) {
+                                      return Card(
+                                        child: SizedBox(
+                                          height: 80,
+                                          child: ListTile(
+                                            leading: Container(
+                                              decoration: BoxDecoration(
+                                                shape: BoxShape.circle,
+                                                border: Border.all(
+                                                    width: 1,
+                                                    color: const Color(
+                                                        0xffa0522d)),
+                                              ),
+                                              child: CircleAvatar(
+                                                radius: 30,
+                                                backgroundImage: AssetImage(
+                                                    getMonsterAvatarPath(
+                                                        monsterNamesList[
+                                                            photoList[index]])),
                                               ),
                                             ),
-                                          ),
-                                          trailing: Text(
-                                            timesList[index],
-                                            style: TextStyle(
-                                                color: BackgroundColorWarm),
+                                            title: Text(
+                                              userNameList[index],
+                                              textAlign: TextAlign.justify,
+                                              style: const TextStyle(
+                                                letterSpacing: -1,
+                                                fontSize: 20,
+                                              ),
+                                            ),
+                                            subtitle: SizedBox(
+                                              height: 50,
+                                              child: SingleChildScrollView(
+                                                scrollDirection: Axis.vertical,
+                                                child: Text(
+                                                  commentList[index],
+                                                  style:
+                                                      TextStyle(fontSize: 16),
+                                                ),
+                                              ),
+                                            ),
+                                            trailing: Text(
+                                              timesList[index],
+                                              style: TextStyle(
+                                                  color: BackgroundColorWarm),
+                                            ),
                                           ),
                                         ),
+                                      );
+                                    },
+                                  ))
+                              : Container(),
+                          //輸入留言區
+                          Container(
+                            alignment: Alignment.centerLeft,
+                            color: BackgroundColorSoft,
+                            height: 80,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Expanded(
+                                  flex: 8,
+                                  child: Container(
+                                    width: 50,
+                                    margin: EdgeInsets.only(
+                                        left: 15.0, top: 10, bottom: 10),
+                                    alignment: Alignment.bottomLeft,
+                                    decoration: BoxDecoration(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(13)),
+                                      color: Colors.white,
+                                      border: Border.all(
+                                          width: 1, color: BackgroundColorWarm),
+                                    ),
+                                    padding: const EdgeInsets.only(left: 10),
+                                    child: Center(
+                                      child: TextFormField(
+                                        textAlign: TextAlign.left,
+                                        controller: _messageController,
+                                        decoration: InputDecoration(
+                                          border: InputBorder.none,
+                                          hintText: "Enter a message...",
+                                          hintStyle:
+                                              TextStyle(color: Colors.grey),
+                                        ),
+                                        style: TextStyle(
+                                            fontSize: 16, color: Colors.black),
+                                        onChanged: (value) {},
                                       ),
-                                    );
-                                  })),
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 2,
+                                  child: IconButton(
+                                      icon: Icon(
+                                        Icons.send,
+                                        size: 30.0,
+                                        color: Color.fromARGB(255, 164, 78, 38),
+                                      ),
+                                      onPressed: () {
+                                        //TODO:新增一筆留言 接API
+                                        _messageController.clear();
+                                        FocusScopeNode currentFocus =
+                                            FocusScope.of(context);
+                                        if (!currentFocus.hasPrimaryFocus) {
+                                          currentFocus.unfocus();
+                                        }
+                                        setState(() {});
+                                      }),
+                                ),
+                              ],
+                            ),
+                          )
                         ],
                       ),
                     ),
