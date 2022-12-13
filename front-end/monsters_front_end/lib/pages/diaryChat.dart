@@ -1,4 +1,5 @@
 // ignore_for_file: use_key_in_widget_constructors, unnecessary_string_interpolations, prefer_const_constructors, file_names, avoid_unnecessary_containers, sized_box_for_whitespace, non_constant_identifier_names, camel_case_types
+import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
 import 'package:bubble/bubble.dart';
@@ -37,17 +38,19 @@ class _diaryChat extends State<diaryChat> with WidgetsBindingObserver {
   var userAnswers = [];
   File? contentFile;
   File? moodFile;
+  File? imageFile;
+  File? audioFile;
+
 
   //新增煩惱-照相
   takePhoto() async {
     final media = await ImagePicker().pickImage(source: ImageSource.camera);
     if (media == null) return;
-    final imageTemporary = File(media.path);
-
-    contentFile = imageTemporary;
-    if (contentFile != null) {
-      messages.insert(0, {"data": 2, "image": contentFile});
-      response(null, contentFile);
+    log("media:" + media.path.toString());
+    imageFile = File(media.path);
+    if (imageFile != null) {
+      messages.insert(0, {"data": 2, "image": imageFile});
+      response(null, imageFile);
     }
     setState(() {});
   }
@@ -71,12 +74,11 @@ class _diaryChat extends State<diaryChat> with WidgetsBindingObserver {
   pickPhoto() async {
     final media = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (media == null) return;
-    final imageTemporary = File(media.path);
-
-    contentFile = imageTemporary;
-    if (contentFile != null) {
-      messages.insert(0, {"data": 2, "image": contentFile});
-      response(null, contentFile);
+    log("media:" + media.path.toString());
+    imageFile = File(media.path);
+    if (imageFile != null) {
+      messages.insert(0, {"data": 2, "image": imageFile});
+      response(null, imageFile);
     }
     setState(() {});
   }
@@ -125,7 +127,8 @@ class _diaryChat extends State<diaryChat> with WidgetsBindingObserver {
       reply("畫心情失敗，請通知官方平台");
     } else {
       final imageTemporary = File(moodImage.path);
-      this.moodFile = imageTemporary;
+      moodFile = imageTemporary;
+      log("moodFile: " + moodFile.toString());
       messages.insert(0, {"data": 5, "image": moodFile});
     }
 
@@ -334,12 +337,63 @@ class _diaryChat extends State<diaryChat> with WidgetsBindingObserver {
                             ),
                           ),
                           onPressed: () async {
-                            Navigator.pushReplacement(
-                                //TODO: Level 2
-                                //ADD HERO https://youtu.be/1xipg02Wu8s?t=657
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => History()));
+                            String _mood = userAnswers[1];
+                            String? _imageFile;
+                            String? _audioFile;
+                            String? _content = userAnswers[0];
+                            _imageFile = null;
+                            _audioFile = null;
+
+                            if (moodFile != null) {
+                              File file = moodFile!;
+                              List<int> bytes = file.readAsBytesSync();
+                              _mood = base64.encode(bytes);
+                            }
+
+                            if (imageFile != null) {
+                              File file = imageFile!;
+                              List<int> bytes = file.readAsBytesSync();
+                              _imageFile = base64.encode(bytes);
+                              _content = "圖片煩惱";
+                            }
+
+                            if (audioFile != null) {
+                              File file = audioFile!;
+                              List<int> bytes = file.readAsBytesSync();
+                              _audioFile = base64.encode(bytes);
+                              _content = "聲音煩惱";
+                            }
+
+                            Future<Data> requestBody = diaryRepository
+                                .createDiary(
+                                  Diary(
+                                    id: 0,
+                                    account: userAccount, //"Lin"
+                                    content: _content, //"純文字不分享無多媒體"
+                                    index: userAnswers[2], //3
+                                    share: userAnswers[3], //0
+                                    time: '',
+                                    contentFile: null,
+                                    moodFile: null,
+                                    monsterId: 1,
+                                    mood: _mood, //"否"
+                                    imageContent: _imageFile, //null
+                                    audioContent: null, //null
+                                  ),
+                                )
+                                .then((value) => Data.fromJson(value!));
+
+                            await requestBody.then((value) {
+                              if (value.data.first.newMonster == true) {
+                                popUp(context, value.data.first.newMonsterId!);
+                              }
+                            });
+                            // Navigator.pushReplacement(
+                            //     //TODO: Level 2
+                            //     //ADD HERO https://youtu.be/1xipg02Wu8s?t=657
+                            //     context,
+                            //     MaterialPageRoute(
+                            //         builder: (context) => History()));
                           },
                         ),
                       ),
@@ -443,7 +497,7 @@ class _diaryChat extends State<diaryChat> with WidgetsBindingObserver {
                         ),
                         Flexible(
                             child: Container(
-                                child: Image.file(contentFile!,
+                                child: Image.file(imageFile!,
                                     width: (MediaQuery.of(context).size.width >
                                             MediaQuery.of(context).size.height)
                                         ? 288
@@ -452,7 +506,7 @@ class _diaryChat extends State<diaryChat> with WidgetsBindingObserver {
                                             MediaQuery.of(context).size.height)
                                         ? 240
                                         : 162,
-                                    filterQuality: FilterQuality.medium))),
+                                    filterQuality: FilterQuality.high))),
                         SizedBox(
                           width: 3.0,
                         ),
@@ -619,7 +673,7 @@ class _diaryChat extends State<diaryChat> with WidgetsBindingObserver {
                                 child: Image.file(moodFile!,
                                     width: 200,
                                     height: 200,
-                                    filterQuality: FilterQuality.medium))),
+                                    filterQuality: FilterQuality.high))),
                         SizedBox(
                           width: 3.0,
                         ),
@@ -747,9 +801,8 @@ class _diaryChat extends State<diaryChat> with WidgetsBindingObserver {
           log("--完成內容");
           if (text != null) {
             userAnswers.add(text);
-          }
-          if (media != null) {
-            userAnswers.add(media);
+          } else {
+            userAnswers.add(null);
           }
           reply("想畫點甚麼表達你的感受嗎？");
         }
@@ -792,28 +845,59 @@ class _diaryChat extends State<diaryChat> with WidgetsBindingObserver {
             }
             lastSpeaking = true;
             reply("我幫你記錄下來囉，想回顧的時候隨時跟我說！");
+/*
+            String _mood = userAnswers[1];
+            String? _imageFile;
+            String? _audioFile;
+            String? _content = userAnswers[0];
+            _imageFile = null;
+            _audioFile = null;
+            
+            if (moodFile != null) {
+              File file = moodFile!;
+              List<int> bytes = file.readAsBytesSync();
+              _mood = base64.encode(bytes);
+            }
+
+            if (imageFile != null) {
+              File file = imageFile!;
+              List<int> bytes = file.readAsBytesSync();
+              _imageFile = base64.encode(bytes);
+              _content = "圖片煩惱";
+            }
+
+            if (audioFile != null) {
+              File file = audioFile!;
+              List<int> bytes = file.readAsBytesSync();
+              _audioFile = base64.encode(bytes);
+              _content = "聲音煩惱";
+            }
 
             Future<Data> requestBody = diaryRepository
                 .createDiary(
                   Diary(
                     id: 0,
                     account: userAccount, //"Lin"
-                    content: userAnswers[0], //"純文字不分享無多媒體"
+                    content: _content, //"純文字不分享無多媒體"
                     index: userAnswers[2], //3
                     share: userAnswers[3], //0
                     time: '',
-                    contentFile: contentFile,
-                    moodFile: moodFile,
+                    contentFile: null,
+                    moodFile: null,
                     monsterId: 1,
-                    mood: userAnswers[1], //"否"
+                    mood: _mood, //"否"
+                    imageContent: _imageFile, //null
+                    audioContent: null, //null
                   ),
                 )
                 .then((value) => Data.fromJson(value!));
+
             await requestBody.then((value) {
               if (value.data.first.newMonster == true) {
                 popUp(context, value.data.first.newMonsterId!);
               }
             });
+*/
             setState(() {});
             log("--完成分享");
           } else {

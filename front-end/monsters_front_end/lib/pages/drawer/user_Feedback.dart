@@ -1,6 +1,8 @@
-import 'dart:convert';
+// ignore_for_file: file_names, camel_case_types, prefer_const_constructors_in_immutables
 
+import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:monsters_front_end/main.dart';
 import 'package:monsters_front_end/pages/settings/style.dart';
 import 'package:http/http.dart' as http;
 
@@ -158,8 +160,8 @@ class _user_FeedbackState extends State<user_Feedback> {
       return;
     }
     sent = true;
-    String email = "tony960281@gmail.com";//useremail
-    String name = "tester";//username
+    String email = "tony960281@gmail.com"; //userEmail
+    String name = userAccount; //userAccount
     const serviceId = "service_iexyh7q";
     const templateId = "template_00dj57j";
     const userId = "x0TtUpsa7W7aHFIbl";

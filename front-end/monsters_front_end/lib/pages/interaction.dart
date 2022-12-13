@@ -124,7 +124,7 @@ class _InteractionPageState extends State<InteractionPage>
                           transition: LinkTransition.Fade,
                           ease: Curves.easeOut,
                           duration: 0.3,
-                          // pageBuilder: () => AnswerbookPage(),
+                          pageBuilder: () => AnswerbookPage(),
                         ),
                       ],
                       child: Stack(
@@ -155,7 +155,6 @@ class _InteractionPageState extends State<InteractionPage>
                         ],
                       )),
                 ),
-                //TODO: 拉寬 或是 置中
                 //每日測驗
                 Pinned.fromPins(
                   Pin(start: 0.0, end: 0.0),

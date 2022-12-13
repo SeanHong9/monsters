@@ -18,8 +18,14 @@ public class Annoyance {
     @Column(name = "`account`", nullable = false, length = 45)
     private String account;
 
-    @Column(name = "`content`", nullable = false)
+    @Column(name = "`content`")
     private String content;
+
+    @Column(name = "`image_content`")
+    private String imageContent;
+
+    @Column(name = "`audio_content`")
+    private String audioContent;
 
     @Column(name = "`type`", nullable = false)
     private Integer type;

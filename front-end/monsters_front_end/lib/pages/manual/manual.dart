@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_constructors, constant_identifier_names, non_constant_identifier_names
 
 import 'dart:convert';
-import 'dart:developer';
+import 'dart:developer' as dv;
 
 import 'package:flutter/material.dart';
 import 'package:adobe_xd/pinned.dart';
@@ -70,7 +70,7 @@ class _ManualState extends State<Manual> with SingleTickerProviderStateMixin {
                 if (snapshot.data == null) {
                   return Center(
                       child: Text(
-                    "還沒有圖鑑嗎？\n先去新增煩惱或日記吧！",
+                    "Loading...",
                     style: TextStyle(fontSize: 30),
                   ));
                 }
@@ -79,7 +79,37 @@ class _ManualState extends State<Manual> with SingleTickerProviderStateMixin {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
                     //標題 完成
-                    Expanded(flex: 10, child: mainAppBarTitleContainer("圖鑑")),
+                    Expanded(
+                      flex: 10,
+                      child: Stack(children: [
+                        mainAppBarTitleContainer("圖鑑"),
+                        GestureDetector(
+                          child: Container(
+                              margin: const EdgeInsets.fromLTRB(20, 20, 0, 15),
+                              width: 45,
+                              height: 45,
+                              decoration: BoxDecoration(
+                                  border: Border.all(
+                                      color: BackgroundColorWarm,
+                                      width: 2,
+                                      style: BorderStyle.solid),
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(10))),
+                              child: Center(
+                                child: Container(
+                                  width: 35,
+                                  height: 35,
+                                  child: SvgPicture.string(
+                                    _svg_bx5ln,
+                                    allowDrawingOutsideViewBox: true,
+                                    fit: BoxFit.fill,
+                                  ),
+                                ),
+                              )),
+                          onTap: () => showAlertDialog(context),
+                        ),
+                      ]),
+                    ),
                     //標籤
                     Expanded(
                         flex: 5,
@@ -153,7 +183,7 @@ class _ManualState extends State<Manual> with SingleTickerProviderStateMixin {
                             ),
                           ),
                         )),
-
+                    //圖鑑主體
                     Expanded(
                       flex: 80,
                       child: GridView(
@@ -225,6 +255,57 @@ class _ManualState extends State<Manual> with SingleTickerProviderStateMixin {
                                         softWrap: false,
                                       ),
                                     ),
+                                    //star level1
+
+                                    (snapshot.data["route"][index] >= 0)
+                                        ? Pinned.fromPins(
+                                            Pin(size: 32.0, end: 5.0),
+                                            Pin(size: 32.0, middle: 0.75),
+                                            child:
+                                                // Adobe XD layer: 'Icon awesome-star' (shape)
+                                                SvgPicture.string(
+                                              _svg_bx5ln,
+                                              allowDrawingOutsideViewBox: true,
+                                              fit: BoxFit.scaleDown,
+                                            ),
+                                          )
+                                        : Container(),
+
+                                    (snapshot.data["route"][index] >= 10)
+                                        ?
+                                        //star level2
+                                        Pinned.fromPins(
+                                            Pin(size: 32.0, end: 40.0),
+                                            Pin(size: 32.0, middle: 0.75),
+                                            child:
+                                                // Adobe XD layer: 'Icon awesome-star' (shape)
+                                                SvgPicture.string(
+                                              _svg_bx5ln,
+                                              allowDrawingOutsideViewBox: true,
+                                              fit: BoxFit.scaleDown,
+                                            ),
+                                          )
+                                        : Container(),
+
+                                    snapshot.data["route"][index] >= 15
+                                        ?
+                                        //star level3
+                                        Pinned.fromPins(
+                                            Pin(size: 32.0, end: 75.0),
+                                            Pin(size: 32.0, middle: 0.75),
+                                            child:
+                                                // Adobe XD layer: 'Icon awesome-star' (shape)
+                                                SvgPicture.string(
+                                              _svg_bx5ln,
+                                              allowDrawingOutsideViewBox: true,
+                                              fit: BoxFit.scaleDown,
+                                            ),
+                                          )
+                                        : Container(),
+
+                                    snapshot.data["route"][index] < 10
+                                        ? Container()
+                                        : Container()
                                   ],
                                 ),
                               ),
@@ -684,6 +765,53 @@ class CircularButton extends StatelessWidget {
   }
 }
 
+showAlertDialog(BuildContext context) {
+  AlertDialog dialog = AlertDialog(
+    //backgroundColor: const Color(0xfffffed4),
+    title: const Text(
+      "怪獸獲得說明",
+      style: TextStyle(
+        fontFamily: 'Segoe UI',
+        fontSize: 25,
+        color: Color.fromRGBO(160, 82, 45, 1),
+      ),
+      softWrap: true,
+    ),
+    content: Text(
+      "1.新增煩惱/日記後將隨機獲得一隻怪獸，已擁有的怪獸有機率會重複獲得。\n\n2.機率公開如下：\n⭐️(共10隻)：50%\n⭐️⭐️(共5隻)：35%\n⭐️⭐️⭐️(共5隻)：15%",
+      style: TextStyle(
+        fontFamily: 'Segoe UI',
+        fontSize: 20,
+        color: Colors.black,
+      ),
+      softWrap: true,
+    ),
+    actions: [
+      RaisedButton(
+          color: const Color.fromRGBO(160, 82, 45, 1),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(22.0)),
+          child: const Text(
+            "OK",
+            style: TextStyle(
+              fontFamily: 'Segoe UI',
+              fontSize: 15,
+              color: Color.fromRGBO(255, 255, 255, 1),
+            ),
+            softWrap: true,
+          ),
+          onPressed: () {
+            Navigator.pop(context);
+          })
+    ],
+  );
+  showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return dialog;
+      });
+}
+
 const String _svg_xvbnb =
     '<svg viewBox="100.5 230.9 33.0 31.6" ><path transform="translate(99.06, 230.92)" d="M 16.17111015319824 1.097833633422852 L 12.1432638168335 9.264556884765625 L 3.131494522094727 10.57838726043701 C 1.515420794487 10.81277942657471 0.8677577972412109 12.80511474609375 2.039719343185425 13.94623565673828 L 8.559527397155762 20.29950141906738 L 7.017472743988037 29.27426147460938 C 6.739902973175049 30.89650535583496 8.44849967956543 32.11164093017578 9.87952709197998 31.35295104980469 L 17.9413890838623 27.11538505554199 L 26.00325393676758 31.35295104980469 C 27.43428039550781 32.10547256469727 29.14287567138672 30.8965015411377 28.86530685424805 29.27426147460938 L 27.32325172424316 20.29950141906738 L 33.84305953979492 13.94623470306396 C 35.01502227783203 12.80511379241943 34.36735916137695 10.81277942657471 32.75128555297852 10.5783863067627 L 23.73951530456543 9.264556884765625 L 19.71166801452637 1.097833633422852 C 18.98998641967773 -0.357866108417511 16.89896202087402 -0.3763708472251892 16.17111206054688 1.097833633422852 Z" fill="#ffff00" stroke="#a0522d" stroke-width="1" stroke-miterlimit="4" stroke-linecap="butt" /></svg>';
 const String _svg_tn4ajf =
@@ -696,3 +824,5 @@ const String _svg_kzt9m =
     '<svg viewBox="350.0 719.7 35.0 22.3" ><path transform="translate(348.5, 712.21)" d="M 25.36363410949707 17.04545402526855 C 28.00454330444336 17.04545402526855 30.12045288085938 14.91363525390625 30.12045288085938 12.27272701263428 C 30.12045288085938 9.631818771362305 28.00454330444336 7.499999523162842 25.36363410949707 7.499999523162842 C 22.72272491455078 7.499999523162842 20.59090614318848 9.631818771362305 20.59090614318848 12.27272701263428 C 20.59090614318848 14.91363525390625 22.72272491455078 17.04545402526855 25.36363410949707 17.04545402526855 Z M 12.63636302947998 17.04545402526855 C 15.27727127075195 17.04545402526855 17.39318084716797 14.91363525390625 17.39318084716797 12.27272701263428 C 17.39318084716797 9.631818771362305 15.27727127075195 7.499999523162842 12.63636302947998 7.499999523162842 C 9.995454788208008 7.499999523162842 7.863636016845703 9.631818771362305 7.863636016845703 12.27272701263428 C 7.863636016845703 14.91363525390625 9.995454788208008 17.04545402526855 12.63636302947998 17.04545402526855 Z M 12.63636302947998 20.22727012634277 C 8.929545402526855 20.22727012634277 1.49999988079071 22.0886344909668 1.49999988079071 25.79545211791992 L 1.49999988079071 29.77272605895996 L 23.77272605895996 29.77272605895996 L 23.77272605895996 25.79545211791992 C 23.77272605895996 22.08863639831543 16.34317970275879 20.22727012634277 12.63636302947998 20.22727012634277 Z M 25.36363410949707 20.22727012634277 C 24.90227127075195 20.22727012634277 24.37726974487305 20.25909042358398 23.8204517364502 20.30681800842285 C 25.66590690612793 21.64318084716797 26.95454216003418 23.44090843200684 26.95454216003418 25.79545211791992 L 26.95454216003418 29.77272605895996 L 36.5 29.77272605895996 L 36.5 25.79545211791992 C 36.5 22.08863639831543 29.0704517364502 20.22727012634277 25.36363410949707 20.22727012634277 Z" fill="#a0522d" stroke="none" stroke-width="1" stroke-miterlimit="4" stroke-linecap="butt" /></svg>';
 const String _svg_a3julx =
     '<svg viewBox="29.0 716.5 28.7 28.7" ><path transform="translate(26.0, 713.51)" d="M 21.6403694152832 10.88630962371826 L 21.6403694152832 3 L 13.03712177276611 3 L 13.03712177276611 10.88630962371826 L 17.3387451171875 15.18793296813965 L 21.6403694152832 10.88630962371826 Z M 10.88630962371826 13.03712177276611 L 3 13.03712177276611 L 3 21.6403694152832 L 10.88630962371826 21.6403694152832 L 15.18793296813965 17.3387451171875 L 10.88630962371826 13.03712177276611 Z M 13.03712177276611 23.79118156433105 L 13.03712177276611 31.677490234375 L 21.6403694152832 31.677490234375 L 21.6403694152832 23.79118156433105 L 17.3387451171875 19.48955726623535 L 13.03712177276611 23.79118156433105 Z M 23.79118156433105 13.03712177276611 L 19.48955726623535 17.3387451171875 L 23.79118156433105 21.6403694152832 L 31.677490234375 21.6403694152832 L 31.677490234375 13.03712177276611 L 23.79118156433105 13.03712177276611 Z" fill="#a0522d" stroke="none" stroke-width="1" stroke-miterlimit="4" stroke-linecap="butt" /></svg>';
+const String _svg_bx5ln =
+    '<svg viewBox="178.5 230.9 33.0 31.6" ><path transform="translate(177.06, 230.92)" d="M 16.17111015319824 1.097833633422852 L 12.1432638168335 9.264556884765625 L 3.131494522094727 10.57838726043701 C 1.515420794487 10.81277942657471 0.8677577972412109 12.80511474609375 2.039719343185425 13.94623565673828 L 8.559527397155762 20.29950141906738 L 7.017472743988037 29.27426147460938 C 6.739902973175049 30.89650535583496 8.44849967956543 32.11164093017578 9.87952709197998 31.35295104980469 L 17.9413890838623 27.11538505554199 L 26.00325393676758 31.35295104980469 C 27.43428039550781 32.10547256469727 29.14287567138672 30.8965015411377 28.86530685424805 29.27426147460938 L 27.32325172424316 20.29950141906738 L 33.84305953979492 13.94623470306396 C 35.01502227783203 12.80511379241943 34.36735916137695 10.81277942657471 32.75128555297852 10.5783863067627 L 23.73951530456543 9.264556884765625 L 19.71166801452637 1.097833633422852 C 18.98998641967773 -0.357866108417511 16.89896202087402 -0.3763708472251892 16.17111206054688 1.097833633422852 Z" fill="#ffff00" stroke="#a0522d" stroke-width="1" stroke-miterlimit="4" stroke-linecap="butt" /></svg>';

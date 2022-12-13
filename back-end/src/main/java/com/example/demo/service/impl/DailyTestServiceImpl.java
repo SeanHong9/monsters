@@ -34,6 +34,7 @@ public class DailyTestServiceImpl extends BaseServiceImplement<DailyTestDAO, Dai
         entity.setOptionFour(bean.getOptionFour());
         entity.setAnswer(bean.getAnswer());
         entity.setLearn(bean.getLearn());
+        entity.setWeb(bean.getWeb());
         return entity;
     }
 
@@ -48,6 +49,7 @@ public class DailyTestServiceImpl extends BaseServiceImplement<DailyTestDAO, Dai
         bean.setOptionFour(entity.getOptionFour());
         bean.setAnswer(entity.getAnswer());
         bean.setLearn(entity.getLearn());
+        bean.setWeb(entity.getWeb());
         return bean;
     }
 }

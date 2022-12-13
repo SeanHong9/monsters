@@ -1,8 +1,12 @@
+import 'dart:math';
+import 'dart:developer' as dv;
+import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
 import 'package:monsters_front_end/pages/settings/style.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:monsters_front_end/repository/historyRepo.dart';
+import '../../model/moodLineModel.dart';
 
-//暫時放在抽屜
 class MoodLineChart extends StatefulWidget {
   const MoodLineChart({Key? key}) : super(key: key);
 
@@ -11,24 +15,50 @@ class MoodLineChart extends StatefulWidget {
 }
 
 class _MoodLineChartState extends State<MoodLineChart> {
-  List<String> dateTimeData = [
-    '09/06',
-    '09/07',
-    '09/22',
-    '09/22',
-    '09/24',
-    '11/16',
-    '11/16',
-  ];
-  List<num> moodData = [5, 2, 2, 3, 2, 2, 5];
-  List totalCount = [];
+  List dateTimeData = [];
+  List moodData = [];
+  List totalCount = [0, 0, 0, 0, 0];
+  late Future _future;
+  int selectionTab_type = 1;
 
   @override
   void initState() {
     super.initState();
-    setState(() {
+    _future = getIndexMap();
+    setState(() {});
+  }
+
+  Future<Map> getIndexMap() async {
+    Map finalMap = {};
+    HistoryRepository historyRepository = HistoryRepository();
+    Future<Data> indexMap = historyRepository
+        .searchIndexByType(selectionTab_type)
+        .then((value) => Data.fromJson(value!));
+    Map indexMapResult = {};
+    await indexMap.then((value) {
+      var indexList = [];
+      var timeList = [];
+
+      for (int i = 0; i < min(7, value.data.length); i++) {
+        indexList.add(value.data.elementAt(i).index);
+        timeList.add(value.data.elementAt(i).time);
+      }
+      for (int j = indexList.length; j < 7; j++) {
+        indexList.add(0);
+        timeList.add("_");
+      }
+      indexMapResult.putIfAbsent("indexList", () => indexList);
+      indexMapResult.putIfAbsent("timeList", () => timeList);
+      dateTimeData = indexMapResult["timeList"];
+      moodData = indexMapResult["indexList"];
       countDay();
+      dv.log("indexList" + indexMapResult["indexList"].toString());
+      dv.log("timeList" + indexMapResult["timeList"].toString());
     });
+
+    return finalMap;
+    // 在futureBuilder中用snapshot.data["indexList"]可以獲得分數List
+    // 在futureBuilder中用snapshot.data["timeList"]可以獲得時間List
   }
 
   void countDay() {
@@ -54,247 +84,334 @@ class _MoodLineChartState extends State<MoodLineChart> {
         happy++;
       }
     }
-    totalCount.add(happy);
-    totalCount.add(fine);
-    totalCount.add(notBad);
-    totalCount.add(notGood);
-    totalCount.add(bad);
+    totalCount[0] = happy;
+    totalCount[1] = fine;
+    totalCount[2] = notBad;
+    totalCount[3] = notGood;
+    totalCount[4] = bad;
+    dv.log("累積數" + totalCount.toString());
   }
 
   @override
   Widget build(BuildContext context) {
+    _future = getIndexMap();
+    setState(() {});
     return Scaffold(
       appBar: secondAppBar("心的軌跡"),
       backgroundColor: const Color(0xfffffed4),
       body: SafeArea(
           child: SingleChildScrollView(
-        child: Stack(
-          children: <Widget>[
-            Column(
-              children: <Widget>[
-                const SizedBox(height: 30.0),
-                AspectRatio(
-                  aspectRatio: 1.10,
-                  child: Container(
-                    decoration: const BoxDecoration(color: Colors.white),
+        child: FutureBuilder<dynamic>(
+            future: _future,
+            builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+              if (snapshot.data == null || moodData.length < 7) {
+                return const Center(
+                    child: Text(
+                  "還沒有紀錄嗎？\n先去新增煩惱或日記吧！",
+                  style: TextStyle(fontSize: 30),
+                ));
+              }
+              return Column(
+                children: <Widget>[
+                  //標籤
+                  AspectRatio(
+                      aspectRatio: 6.10,
+                      child: Container(
+                        alignment: Alignment.center,
+                        padding: EdgeInsets.only(left: 15, bottom: 10),
+                        child: Center(
+                          child: Wrap(
+                            spacing: 20,
+                            //標籤設定
+                            children: [
+                              //煩惱標籤
+                              InkWell(
+                                  child: Container(
+                                    width: 80,
+                                    decoration: BoxDecoration(
+                                      color: selectionTab_type == 1
+                                          ? const Color(0xffa0522d)
+                                          : const Color(0xffffed97),
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.elliptical(9999.0, 9999.0)),
+                                    ),
+                                    child: Text(
+                                      '煩惱',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontFamily: 'Segoe UI',
+                                          fontSize: 20,
+                                          color:
+                                              selectionTab_type == 1 //點按後更新文字顏色
+                                                  ? const Color(0xffffffff)
+                                                  : const Color(0xffa0522d)),
+                                    ),
+                                  ),
+                                  onTap: () {
+                                    if (selectionTab_type != 1) {
+                                      selectionTab_type = 1;
+                                      setState(() {});
+                                    }
+                                  }),
+                              //日記標籤
+                              InkWell(
+                                  child: Container(
+                                    width: 80,
+                                    decoration: BoxDecoration(
+                                      color: selectionTab_type == 2
+                                          ? const Color(0xffa0522d)
+                                          : const Color(0xffffed97),
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.elliptical(100.0, 100.0)),
+                                    ),
+                                    child: Text(
+                                      '日記',
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(
+                                          fontFamily: 'Segoe UI',
+                                          fontSize: 20,
+                                          color:
+                                              selectionTab_type == 2 //點按後更新文字顏色
+                                                  ? const Color(0xffffffff)
+                                                  : const Color(0xffa0522d)),
+                                    ),
+                                  ),
+                                  onTap: () {
+                                    if (selectionTab_type != 2) {
+                                      selectionTab_type = 2;
+                                      setState(() {});
+                                    }
+                                  }),
+                            ],
+                          ),
+                        ),
+                      )),
+                  AspectRatio(
+                    aspectRatio: 1.10,
                     child: Container(
-                      margin: const EdgeInsets.only(top: 20),
-                      padding: const EdgeInsets.fromLTRB(20, 24, 30, 12),
-                      child: LineChart(
-                        mainData(),
+                      decoration: const BoxDecoration(color: Colors.white),
+                      child: Container(
+                        margin: const EdgeInsets.only(top: 20),
+                        padding: const EdgeInsets.fromLTRB(20, 24, 30, 12),
+                        child: LineChart(
+                          mainData(),
+                        ),
                       ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 20.0),
-                //downside face and day counter
-                AspectRatio(
-                  aspectRatio: 2.10,
-                  child: Padding(
-                    padding: const EdgeInsets.all(10),
-                    child: Stack(
-                      children: <Widget>[
-                        Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              color: const Color(0xffa0522d),
+                  const SizedBox(height: 20.0),
+                  //downside face and day counter
+                  AspectRatio(
+                    aspectRatio: 2.10,
+                    child: Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Stack(
+                        children: <Widget>[
+                          Container(
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: const Color(0xffa0522d),
+                              ),
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10.0),
                             ),
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(10.0),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(10),
-                            child: Stack(children: [
-                              Align(
-                                alignment: Alignment.topLeft,
-                                child: SizedBox(
-                                  width: 150.0,
-                                  height: 40.0,
-                                  child: Text(
-                                    dateTimeData[0] + '~' + dateTimeData[6],
-                                    style: const TextStyle(
-                                      fontFamily: 'Segoe UI',
-                                      fontSize: 18,
-                                      color: Color(0xffa0522d),
+                            child: Padding(
+                              padding: const EdgeInsets.all(10),
+                              child: Stack(children: [
+                                Align(
+                                  alignment: Alignment.topLeft,
+                                  child: SizedBox(
+                                    width: 150.0,
+                                    height: 40.0,
+                                    child: Text(
+                                      dateTimeData[0] + '~' + dateTimeData[6],
+                                      style: const TextStyle(
+                                        fontFamily: 'Segoe UI',
+                                        fontSize: 18,
+                                        color: Color(0xffa0522d),
+                                      ),
                                     ),
                                   ),
                                 ),
-                              ),
-                              Align(
-                                alignment: Alignment.center,
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.end,
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        Container(
-                                          width: 50.0,
-                                          height: 50.0,
-                                          decoration: const BoxDecoration(
-                                            image: DecorationImage(
-                                              image: AssetImage(
-                                                  'assets/image/mood/moodPoint_1.png'),
-                                              fit: BoxFit.cover,
+                                Align(
+                                  alignment: Alignment.center,
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.end,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          Container(
+                                            width: 50.0,
+                                            height: 50.0,
+                                            decoration: const BoxDecoration(
+                                              image: DecorationImage(
+                                                image: AssetImage(
+                                                    'assets/image/mood/moodPoint_1.png'),
+                                                fit: BoxFit.cover,
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                        const SizedBox(height: 5.0),
-                                        SizedBox(
-                                          width: 40.0,
-                                          height: 30.0,
-                                          child: Text(
-                                            totalCount[0].toString() + '天',
-                                            style: const TextStyle(
-                                              fontFamily: 'Segoe UI',
-                                              fontSize: 20,
-                                              color: Color(0xffa0522d),
+                                          const SizedBox(height: 5.0),
+                                          SizedBox(
+                                            width: 40.0,
+                                            height: 30.0,
+                                            child: Text(
+                                              totalCount[0].toString() + '次',
+                                              style: const TextStyle(
+                                                fontFamily: 'Segoe UI',
+                                                fontSize: 20,
+                                                color: Color(0xffa0522d),
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.end,
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        Container(
-                                          width: 50.0,
-                                          height: 50.0,
-                                          decoration: const BoxDecoration(
-                                            image: DecorationImage(
-                                              image: AssetImage(
-                                                  'assets/image/mood/moodPoint_2.png'),
-                                              fit: BoxFit.cover,
+                                        ],
+                                      ),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.end,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          Container(
+                                            width: 50.0,
+                                            height: 50.0,
+                                            decoration: const BoxDecoration(
+                                              image: DecorationImage(
+                                                image: AssetImage(
+                                                    'assets/image/mood/moodPoint_2.png'),
+                                                fit: BoxFit.cover,
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                        const SizedBox(height: 5.0),
-                                        SizedBox(
-                                          width: 40.0,
-                                          height: 30.0,
-                                          child: Text(
-                                            totalCount[1].toString() + '天',
-                                            style: const TextStyle(
-                                              fontFamily: 'Segoe UI',
-                                              fontSize: 20,
-                                              color: Color(0xffa0522d),
+                                          const SizedBox(height: 5.0),
+                                          SizedBox(
+                                            width: 40.0,
+                                            height: 30.0,
+                                            child: Text(
+                                              totalCount[1].toString() + '次',
+                                              style: const TextStyle(
+                                                fontFamily: 'Segoe UI',
+                                                fontSize: 20,
+                                                color: Color(0xffa0522d),
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.end,
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        Container(
-                                          width: 50.0,
-                                          height: 50.0,
-                                          decoration: const BoxDecoration(
-                                            image: DecorationImage(
-                                              image: AssetImage(
-                                                  'assets/image/mood/moodPoint_3.png'),
-                                              fit: BoxFit.cover,
+                                        ],
+                                      ),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.end,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          Container(
+                                            width: 50.0,
+                                            height: 50.0,
+                                            decoration: const BoxDecoration(
+                                              image: DecorationImage(
+                                                image: AssetImage(
+                                                    'assets/image/mood/moodPoint_3.png'),
+                                                fit: BoxFit.cover,
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                        const SizedBox(height: 5.0),
-                                        SizedBox(
-                                          width: 40.0,
-                                          height: 30.0,
-                                          child: Text(
-                                            totalCount[2].toString() + '天',
-                                            style: const TextStyle(
-                                              fontFamily: 'Segoe UI',
-                                              fontSize: 20,
-                                              color: Color(0xffa0522d),
+                                          const SizedBox(height: 5.0),
+                                          SizedBox(
+                                            width: 40.0,
+                                            height: 30.0,
+                                            child: Text(
+                                              totalCount[2].toString() + '次',
+                                              style: const TextStyle(
+                                                fontFamily: 'Segoe UI',
+                                                fontSize: 20,
+                                                color: Color(0xffa0522d),
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.end,
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        Container(
-                                          width: 50.0,
-                                          height: 50.0,
-                                          decoration: const BoxDecoration(
-                                            image: DecorationImage(
-                                              image: AssetImage(
-                                                  'assets/image/mood/moodPoint_4.png'),
-                                              fit: BoxFit.cover,
+                                        ],
+                                      ),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.end,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          Container(
+                                            width: 50.0,
+                                            height: 50.0,
+                                            decoration: const BoxDecoration(
+                                              image: DecorationImage(
+                                                image: AssetImage(
+                                                    'assets/image/mood/moodPoint_4.png'),
+                                                fit: BoxFit.cover,
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                        const SizedBox(height: 5.0),
-                                        SizedBox(
-                                          width: 40.0,
-                                          height: 30.0,
-                                          child: Text(
-                                            totalCount[3].toString() + '天',
-                                            style: const TextStyle(
-                                              fontFamily: 'Segoe UI',
-                                              fontSize: 20,
-                                              color: Color(0xffa0522d),
+                                          const SizedBox(height: 5.0),
+                                          SizedBox(
+                                            width: 40.0,
+                                            height: 30.0,
+                                            child: Text(
+                                              totalCount[3].toString() + '次',
+                                              style: const TextStyle(
+                                                fontFamily: 'Segoe UI',
+                                                fontSize: 20,
+                                                color: Color(0xffa0522d),
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.end,
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        Container(
-                                          width: 50.0,
-                                          height: 50.0,
-                                          decoration: const BoxDecoration(
-                                            image: DecorationImage(
-                                              image: AssetImage(
-                                                  'assets/image/mood/moodPoint_5.png'),
-                                              fit: BoxFit.cover,
+                                        ],
+                                      ),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.end,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [
+                                          Container(
+                                            width: 50.0,
+                                            height: 50.0,
+                                            decoration: const BoxDecoration(
+                                              image: DecorationImage(
+                                                image: AssetImage(
+                                                    'assets/image/mood/moodPoint_5.png'),
+                                                fit: BoxFit.cover,
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                        const SizedBox(height: 5.0),
-                                        SizedBox(
-                                          width: 40.0,
-                                          height: 30.0,
-                                          child: Text(
-                                            totalCount[4].toString() + '天',
-                                            style: const TextStyle(
-                                              fontFamily: 'Segoe UI',
-                                              fontSize: 20,
-                                              color: Color(0xffa0522d),
+                                          const SizedBox(height: 5.0),
+                                          SizedBox(
+                                            width: 40.0,
+                                            height: 30.0,
+                                            child: Text(
+                                              totalCount[4].toString() + '次',
+                                              style: const TextStyle(
+                                                fontFamily: 'Segoe UI',
+                                                fontSize: 20,
+                                                color: Color(0xffa0522d),
+                                              ),
                                             ),
                                           ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                            ]),
+                              ]),
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
-                ),
-              ],
-            ),
-          ],
-        ),
+                ],
+              );
+            }),
       )),
     );
   }

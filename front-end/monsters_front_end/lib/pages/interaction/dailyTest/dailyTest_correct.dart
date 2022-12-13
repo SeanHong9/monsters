@@ -4,19 +4,21 @@ import 'package:monsters_front_end/pages/manual/manual.dart';
 import 'package:monsters_front_end/pages/settings/monsters_information.dart';
 import 'package:monsters_front_end/pages/settings/style.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher_string.dart';
 
 class DailyTest_correct extends StatefulWidget {
-  String learn;
-  DailyTest_correct(this.learn);
+  String learn, web;
+  DailyTest_correct(this.learn, this.web);
   @override
-  _DailyTest_correctState createState() => _DailyTest_correctState(this.learn);
+  _DailyTest_correctState createState() =>
+      _DailyTest_correctState(this.learn, this.web);
 }
 
 class _DailyTest_correctState extends State<DailyTest_correct> {
   late Future _future;
-  var learn;
-  _DailyTest_correctState(this.learn);
-  int unlockProgress = 7;
+  var learn, web;
+  _DailyTest_correctState(this.learn, this.web);
+  int unlockProgress = 0;
 
   @override
   void initState() {
@@ -45,7 +47,7 @@ class _DailyTest_correctState extends State<DailyTest_correct> {
             child: Center(
               child: Container(
                 margin: const EdgeInsets.only(left: 20, right: 20, bottom: 50),
-                height: 200,
+                height: 150,
                 decoration: BoxDecoration(
                   color: const Color(0xffffffff),
                   borderRadius: BorderRadius.circular(22.0),
@@ -69,7 +71,7 @@ class _DailyTest_correctState extends State<DailyTest_correct> {
           ),
 
           Expanded(
-              flex: 25,
+              flex: 26,
               child: FutureBuilder<dynamic>(
                   future: _future,
                   builder:
@@ -90,21 +92,21 @@ class _DailyTest_correctState extends State<DailyTest_correct> {
                             alignment: Alignment.topLeft,
                             child: unlockProgress < 7
                                 ? Text(
-                                    "每天只有第一次能挑戰獎勵進度，\n再答對${7 - unlockProgress}次就可以解鎖隱藏獎勵！\n目前解鎖進度 ：",
+                                    "每天只有第一次能挑戰獎勵進度，\n再成功${7 - unlockProgress}次就可以解鎖隱藏獎勵！\n目前解鎖進度 ：",
                                     style: const TextStyle(
                                         fontSize: 20,
                                         color: BackgroundColorWarm),
                                   )
                                 : const Center(
                                     child: Text(
-                                      "恭喜解鎖隱藏獎勵！",
+                                      "解鎖怪獸造型！",
                                       style: TextStyle(
                                           fontSize: 22,
                                           color: BackgroundColorWarm),
                                     ),
                                   )), //進度條
                         Expanded(
-                          flex: 15,
+                          flex: 10,
                           child: Container(
                             alignment: Alignment.center,
                             margin: const EdgeInsets.all(20),
@@ -115,11 +117,11 @@ class _DailyTest_correctState extends State<DailyTest_correct> {
                     );
                   })),
 
-          //留白
+          //講解
           Expanded(
-            flex: 45,
+            flex: 40,
             child: Container(
-              margin: const EdgeInsets.fromLTRB(20, 20, 20, 50),
+              margin: const EdgeInsets.fromLTRB(20, 10, 20, 20),
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: const BorderRadius.all(Radius.circular(30.0)),
@@ -139,6 +141,25 @@ class _DailyTest_correctState extends State<DailyTest_correct> {
                         ),
                       ))),
             ),
+          ),
+
+          Expanded(
+            flex: 10,
+            child: GestureDetector(
+                onTap: () {
+                  launchUrlString(web);
+                },
+                child: Container(
+                  margin: const EdgeInsets.only(top: 5),
+                  child: const Text(
+                    "前往閱讀文章！",
+                    style: TextStyle(
+                      color: BackgroundColorWarm,
+                      fontSize: 22,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                )),
           ),
         ],
       ),
@@ -208,16 +229,21 @@ class _DailyTest_correctState extends State<DailyTest_correct> {
   }
 
   dailyTestReward() async {
-    //進度到7，顯示獲得怪獸
-    if (unlockProgress == 7) {
-      //要較晚跳出才能pop，不然會出錯
-      Future.delayed(Duration(microseconds: 200), () {
+    //要較晚跳出才能pop，不然會出錯
+    Future.delayed(Duration(microseconds: 200), () {
+      //進度到7，顯示獲得怪獸
+      if (unlockProgress == 7) {
         popUp(context);
-      });
-    }
+      }
+    });
   }
 
   Future<bool> getUserDailyTestProgress() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    unlockProgress = pref.getInt("unlockProgress")!;
+    //上面這行unlockProgress用sharepref替代
+
+    // unlockProgress=SharedPreferences...
     return true;
   }
 

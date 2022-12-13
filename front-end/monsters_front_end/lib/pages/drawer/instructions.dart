@@ -29,7 +29,6 @@ class _InstructionsPageState extends State<InstructionsPage> {
             },
             children: [
               buildPage(
-                  // color: Color.fromARGB(255, 251, 217, 46),
                   color: Color.fromARGB(255, 255, 254, 224),
                   urlImage: 'assets/image/instructions/instructionPage_1.png',
                   title: "新增煩惱/日記",

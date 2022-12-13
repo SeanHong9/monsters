@@ -1,7 +1,6 @@
 // ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, use_key_in_widget_constructors, avoid_print, prefer_const_constructors_in_immutables, sized_box_for_whitespace
 import 'dart:async';
 import 'dart:math';
-import 'dart:developer' as dev;
 import 'package:adobe_xd/page_link.dart';
 import 'package:adobe_xd/pinned.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +13,11 @@ import 'package:monsters_front_end/pages/interaction.dart';
 import 'package:monsters_front_end/pages/manual/manual.dart';
 import 'package:monsters_front_end/pages/social.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:monsters_front_end/repository/memberRepo.dart';
 import 'package:monsters_front_end/state/drawer.dart';
+
+import '../main.dart';
+import '../model/memberModel.dart';
 
 class MainPage extends StatefulWidget {
   @override
@@ -41,12 +44,13 @@ class _MainPageState extends State<MainPage>
   static const moveSpeed = 25;
   bool visited = false;
   late Timer _timer;
+  //monster repo
+  MemberRepository memberRepository = MemberRepository();
+  late Future _future;
 
-  // double _marginL2 = originPosition;
-  // double _marginT2 = originPosition;
-  // static String monsterName2 = "Cloud";
   //資料庫拿怪獸名稱
-  static String monsterName = getRandomMonsterName();
+  late String monsterName;
+  bool resetPhoto = false;
 
   LocalStorage storage = LocalStorage('current_tab');
 
@@ -80,15 +84,12 @@ class _MainPageState extends State<MainPage>
     ]).animate(animationController);
     rotationAnimation = Tween<double>(begin: 180.0, end: 0.0).animate(
         CurvedAnimation(parent: animationController, curve: Curves.easeOut));
-    _timer = Timer.periodic(const Duration(milliseconds: 619), (timer) {
-      doAnimation();
-      // doAnimation1();
-    });
+    _future = getPhoto();
+
     super.initState();
   }
 
-  String showImage = getMonsterAnimationPath(monsterName, "left");
-  // String showImage2 = getMonsterAnimationPath(monsterName2, "left");
+  late String showImage;
   @override
   Widget build(BuildContext context) {
     if (!visited) {
@@ -113,6 +114,7 @@ class _MainPageState extends State<MainPage>
               onPressed: () => _scaffoldKEy.currentState?.openEndDrawer(),
             ),
           ),
+
           //草地
           Pinned.fromPins(
             Pin(start: -27.0, end: -27.0),
@@ -123,36 +125,44 @@ class _MainPageState extends State<MainPage>
               fit: BoxFit.fill,
             ),
           ),
-          //怪獸
-          Center(
-            child: Padding(
-              padding: const EdgeInsets.only(top: 260),
-              child: Container(
-                height: maxSize * 1.1,
-                width: maxSize,
-                child: Container(
-                  alignment: Alignment.topLeft,
-                  child: AnimatedContainer(
+          FutureBuilder<dynamic>(
+              future: _future,
+              builder: (BuildContext context, AsyncSnapshot<dynamic> snapshot) {
+                if (snapshot.data == null) {
+                  return Container();
+                }
+                //怪獸
+                return Center(
+                  child: Padding(
+                    padding: const EdgeInsets.only(top: 260),
                     child: Container(
-                      height: 120,
-                      width: 120,
-                      decoration: BoxDecoration(
-                        image: DecorationImage(
-                          image: AssetImage(showImage),
-                          fit: BoxFit.scaleDown,
+                      height: maxSize * 1.1,
+                      width: maxSize,
+                      child: Container(
+                        alignment: Alignment.topLeft,
+                        child: AnimatedContainer(
+                          child: Container(
+                            height: 120,
+                            width: 120,
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: AssetImage(showImage),
+                                fit: BoxFit.scaleDown,
+                              ),
+                            ),
+                          ),
+                          margin: EdgeInsets.only(
+                            left: _marginL,
+                            top: _marginT,
+                          ),
+                          duration: const Duration(milliseconds: 1211),
                         ),
                       ),
                     ),
-                    margin: EdgeInsets.only(
-                      left: _marginL,
-                      top: _marginT,
-                    ),
-                    duration: const Duration(milliseconds: 1211),
                   ),
-                ),
-              ),
-            ),
-          ),
+                );
+              }),
+
           //底部
           Pinned.fromPins(
             Pin(start: 0.0, end: 0.0),
@@ -489,32 +499,30 @@ class _MainPageState extends State<MainPage>
 
   //怪獸動畫主程式-隨機移動XY軸
   doAnimation() {
-    setState(() {
-      int randomNum = random.nextInt(4) + 1; //1 2 3 4
-      // int randomNum = 2; //1 2 3 4
-      if (randomNum == 1) {
-        _marginL += moveSpeed;
-        movingDirection = 2;
-        // print("go Right");
-        checker();
-      }
-      if (randomNum == 2) {
-        _marginL -= moveSpeed;
-        movingDirection = 1;
-        // print("go left");
-        checker();
-      }
-      if (randomNum == 3) {
-        _marginT -= moveSpeed;
-        // print("go top");
-        checker();
-      }
-      if (randomNum == 4) {
-        _marginT += moveSpeed;
-        // print("go bottom");
-        checker();
-      }
-    });
+    int randomNum = random.nextInt(4) + 1; //1 2 3 4
+    // int randomNum = 2; //1 2 3 4
+    if (randomNum == 1) {
+      _marginL += moveSpeed;
+      movingDirection = 2;
+      // print("go Right");
+      checker();
+    }
+    if (randomNum == 2) {
+      _marginL -= moveSpeed;
+      movingDirection = 1;
+      // print("go left");
+      checker();
+    }
+    if (randomNum == 3) {
+      _marginT -= moveSpeed;
+      // print("go top");
+      checker();
+    }
+    if (randomNum == 4) {
+      _marginT += moveSpeed;
+      // print("go bottom");
+      checker();
+    }
   }
 
   //怪獸動畫限制區域主程式
@@ -528,11 +536,9 @@ class _MainPageState extends State<MainPage>
 
     if (movingDirection == 1) {
       showImage = getMonsterAnimationPath(monsterName, "left");
-      // showImage2 = getMonsterAnimationPath(monsterName2, "left");
     }
     if (movingDirection == 2) {
       showImage = getMonsterAnimationPath(monsterName, "right");
-      // showImage2 = getMonsterAnimationPath(monsterName2, "right");
     }
     setState(() {});
   }
@@ -545,7 +551,6 @@ class _MainPageState extends State<MainPage>
       movingDirection = 1;
     }
     _marginT = originPosition;
-    // _marginT2 = originPosition;
   }
 
   //怪獸動畫限制區域-Y軸
@@ -556,7 +561,23 @@ class _MainPageState extends State<MainPage>
       movingDirection = 1;
     }
     _marginL = originPosition;
-    // _marginL2 = originPosition;
+  }
+
+  Future getPhoto() async {
+    Map personalInfoMap = {};
+    Future<Data> personalInfo = memberRepository
+        .searchPersonalInfoByAccount()
+        .then((value) => Data.fromJson(value!));
+
+    await personalInfo.then((value) async {
+      monsterName = monsterNamesList[value.data.first.photo!];
+      showImage = getMonsterAnimationPath(monsterName, "left");
+    }).then((value) => {
+          _timer = Timer.periodic(const Duration(milliseconds: 619), (timer) {
+            doAnimation();
+          })
+        });
+    return personalInfoMap;
   }
 }
 

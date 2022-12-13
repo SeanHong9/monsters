@@ -36,14 +36,16 @@ public class PersonalMonsterUseServiceImpl  extends BaseServiceImplement<Persona
     }
 
     @Override
-    public PersonalMonsterUseBean findByAccountAndMonsterGroup(String account, Integer monsterGroup) {
+    public Optional<PersonalMonsterUseBean> findByAccountAndMonsterGroup(String account, Integer monsterGroup) {
         Optional<PersonalMonsterUse> personalMonsterUseOptional = personalMonsterUseDAO.findByAccountAndMonsterGroup(account, monsterGroup);
         PersonalMonsterUseBean personalMonsterUseBean = new PersonalMonsterUseBean();
         if (personalMonsterUseOptional.isPresent()) {
             PersonalMonsterUse personalMonsterUse = personalMonsterUseOptional.get();
             copy(personalMonsterUse, personalMonsterUseBean);
+            return Optional.of(personalMonsterUseBean);
+        }else {
+            return Optional.empty();
         }
-        return personalMonsterUseBean;
     }
 
     @Override

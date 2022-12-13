@@ -86,6 +86,8 @@ public class DiaryServiceImpl extends BaseServiceImplement<DiaryDAO, Diary, Diar
         entity.setId(bean.getId());
         entity.setAccount(bean.getAccount());
         entity.setContent(bean.getContent());
+        entity.setImageContent(bean.getImageContent());
+        entity.setAudioContent(bean.getAudioContent());
         entity.setMonsterId(bean.getMonsterId());
         entity.setMood(bean.getMood());
         entity.setIndex(bean.getIndex());
@@ -100,6 +102,8 @@ public class DiaryServiceImpl extends BaseServiceImplement<DiaryDAO, Diary, Diar
         bean.setId(entity.getId());
         bean.setAccount(entity.getAccount());
         bean.setContent(entity.getContent());
+        bean.setImageContent(entity.getImageContent());
+        bean.setAudioContent(entity.getAudioContent());
         bean.setMonsterId(entity.getMonsterId());
         bean.setMood(entity.getMood());
         bean.setIndex(entity.getIndex());

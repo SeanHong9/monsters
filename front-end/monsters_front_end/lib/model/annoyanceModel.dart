@@ -47,8 +47,8 @@ class Annoyance {
   String? time;
   int? solve;
   int? share;
-  File? contentFile;
-  File? moodFile;
+  String? imageContent;
+  String? audioContent;
   bool? newMonster;
   int? newMonsterId;
   Annoyance({
@@ -62,8 +62,8 @@ class Annoyance {
     this.time,
     this.solve,
     this.share,
-    this.contentFile,
-    this.moodFile,
+    this.imageContent,
+    this.audioContent,
     this.newMonster,
     this.newMonsterId,
   });
@@ -79,8 +79,8 @@ class Annoyance {
         time: json['time'],
         solve: json['solve'],
         share: json['share'],
-        contentFile: json['contentFile'],
-        moodFile: json['moodFile'],
+        imageContent: json['imageContent'],
+        audioContent: json['audioContent'],
         newMonster: json['newMonster'],
         newMonsterId: json['newMonsterId'],
       );
@@ -96,8 +96,8 @@ class Annoyance {
     data['time'] = time;
     data['solve'] = solve;
     data['share'] = share;
-    data['contentFile'] = contentFile;
-    data['moodFile'] = moodFile;
+    data['imageContent'] = imageContent;
+    data['audioContent'] = audioContent;
     data['newMonster'] = newMonster;
     data['newMonsterId'] = newMonsterId;
     return data;
@@ -105,7 +105,7 @@ class Annoyance {
 
   @override
   String toString() {
-    return "{account:$account,id: $id,account: $account,content: $content, type: $type, monsterId: $monsterId, mood: $mood, index: $index, time: $time, solve: $solve, share: $share, contentFile: $contentFile, moodFile: $moodFile,newMonster:$newMonster,newMonsterId:$newMonsterId}";
+    return "{account:$account,id: $id,account: $account,content: $content, type: $type, monsterId: $monsterId, mood: ${mood.toString().length}, index: $index, time: $time, solve: $solve, share: $share, imageContent: ${imageContent.toString().length}, audioContent: ${audioContent.toString().length},newMonster:$newMonster,newMonsterId:$newMonsterId}";
   }
 
   @override

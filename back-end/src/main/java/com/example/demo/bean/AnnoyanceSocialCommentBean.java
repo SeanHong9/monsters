@@ -5,10 +5,10 @@ import lombok.Data;
 import java.time.LocalDateTime;
 
 @Data
-public class AnnoyanceSocialCommentBean {
+public class AnnoyanceSocialCommentBean extends BaseBean{
     private Integer id;
-    private String commentUsr;
-    private Integer annoyanceSocialId;
-    private String content;
+    private String commentUser;
+    private Integer annoyanceId;
+    private String commentContent;
     private LocalDateTime date = LocalDateTime.now();
 }

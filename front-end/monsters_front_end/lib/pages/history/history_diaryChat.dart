@@ -1,15 +1,14 @@
-// ignore_for_file: use_key_in_widget_constructors, unnecessary_string_interpolations, prefer_const_constructors, file_names, avoid_unnecessary_containers, sized_box_for_whitespace, non_constant_identifier_names, camel_case_types
+// ignore_for_file: use_key_in_widget_constructors, unnecessary_string_interpolations, prefer_const_constructors, file_names, avoid_unnecessary_containers, sized_box_for_whitespace, non_constant_identifier_names, camel_case_types, no_logic_in_create_state
 import 'dart:async';
+import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:bubble/bubble.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:monsters_front_end/model/diaryModel.dart';
 import 'package:monsters_front_end/pages/chat_items/Timer_Widget.dart';
-import 'package:monsters_front_end/pages/chat_items/audio_main.dart';
-import 'package:monsters_front_end/pages/chat_items/drawing_colors.dart';
 import 'package:monsters_front_end/pages/settings/monsters_information.dart';
 import 'package:monsters_front_end/pages/settings/style.dart';
 import 'package:monsters_front_end/repository/diaryRepo.dart';
@@ -40,110 +39,16 @@ class _historyDiaryChat extends State<historyDiaryChat> {
   var userAnswers = [];
   File? contentFile;
   File? moodFile;
-  //新增煩惱-照相
-  takePhoto() async {
-    final media = await ImagePicker().pickImage(source: ImageSource.camera);
-    if (media == null) return;
-    final imageTemporary = File(media.path);
-
-    contentFile = imageTemporary;
-    if (contentFile != null) {
-      messages.insert(0, {"data": 2, "image": contentFile});
-      response(null, contentFile);
-    }
-    setState(() {});
-  }
-
-  //新增煩惱-錄影
-  recordVideo() async {
-    XFile? recordedVideo = await ImagePicker().pickVideo(
-        source: ImageSource.camera, maxDuration: Duration(seconds: 15));
-    if (recordedVideo == null) return;
-    contentFile = File(recordedVideo.path);
-    _videoPlayerController = VideoPlayerController.file(contentFile!)
-      ..initialize().then((_) {
-        messages.insert(0, {"data": 3, "video": contentFile});
-        _videoPlayerController.play();
-        response(null, contentFile);
-      });
-    setState(() {});
-  }
-
-  //新增煩惱-相簿匯入照片
-  pickPhoto() async {
-    final media = await ImagePicker().pickImage(source: ImageSource.gallery);
-    if (media == null) return;
-    final imageTemporary = File(media.path);
-
-    contentFile = imageTemporary;
-    if (contentFile != null) {
-      messages.insert(0, {"data": 2, "image": contentFile});
-      response(null, contentFile);
-    }
-    setState(() {});
-  }
-
-  //新增煩惱-相簿匯入影片
-  pickVideo() async {
-    XFile? pickedVideo =
-        await ImagePicker().pickVideo(source: ImageSource.gallery);
-    if (pickedVideo == null) return;
-    contentFile = File(pickedVideo.path);
-    _videoPlayerController = VideoPlayerController.file(contentFile!)
-      ..initialize().then((_) {
-        messages.insert(0, {"data": 3, "video": contentFile});
-        _videoPlayerController.play();
-        response(null, contentFile);
-      });
-    setState(() {});
-  }
-
-  //錄音功能
-  recordAudio(BuildContext context) async {
-    final media = await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => AudioMainPage()),
-    );
-
-    if (media == null) return;
-    final audioTemporary = File(media);
-    contentFile = audioTemporary;
-    if (contentFile != null) {
-      messages.insert(0, {"data": 4, "audio": contentFile});
-      response(null, contentFile);
-    }
-    setState(() {});
-  }
-
-  //畫心情功能
-  _navigateAndDisplayPaint(BuildContext context) async {
-    //TODO: Level 2
-    //ADD HERO https://youtu.be/1xipg02Wu8s?t=657
-    final moodImage = await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => Draw_mood()),
-    );
-    if (moodImage == null) {
-      reply("畫心情失敗，請通知官方平台");
-    } else {
-      final imageTemporary = File(moodImage.path);
-      moodFile = imageTemporary;
-      messages.insert(0, {"data": 5, "image": moodFile});
-    }
-
-    setState(() {});
-  }
-
   @override
   Widget build(BuildContext context) {
     final DiaryRepository diaryRepository = DiaryRepository();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
     response();
     response(data["content"]);
-    if (data["mood"] != null) {
-      response("是");
-    } else {
+    if (data["mood"] == "否") {
       response("否");
+    } else {
+      response("是");
     }
     response(data["index"].toString());
 
@@ -218,6 +123,7 @@ class _historyDiaryChat extends State<historyDiaryChat> {
                               Diary(
                                 id: data["id"],
                                 share: _share,
+                                index: data["moodIndex"],
                               ),
                             );
                             data["share"] = _share;
@@ -244,7 +150,7 @@ class _historyDiaryChat extends State<historyDiaryChat> {
     );
   }
 
-  //聊天功能
+//聊天功能
   Widget chat(String message, int data) {
     Container chatContainer = Container();
     //text container
@@ -256,7 +162,7 @@ class _historyDiaryChat extends State<historyDiaryChat> {
               data == 1 ? MainAxisAlignment.end : MainAxisAlignment.start,
           children: [
             data == 0
-                //左方巴古頭貼
+                //左方怪獸頭貼
                 ? Container(
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
@@ -349,7 +255,7 @@ class _historyDiaryChat extends State<historyDiaryChat> {
                                             MediaQuery.of(context).size.height)
                                         ? 240
                                         : 162,
-                                    filterQuality: FilterQuality.medium))),
+                                    filterQuality: FilterQuality.high))),
                         SizedBox(
                           width: 3.0,
                         ),
@@ -516,10 +422,10 @@ class _historyDiaryChat extends State<historyDiaryChat> {
                         ),
                         Flexible(
                             child: Container(
-                                child: Image.file(moodFile!,
+                                child: Image.memory(base64Decode(message),
                                     width: 200,
                                     height: 200,
-                                    filterQuality: FilterQuality.medium))),
+                                    filterQuality: FilterQuality.high))),
                         SizedBox(
                           width: 3.0,
                         ),
@@ -611,7 +517,10 @@ class _historyDiaryChat extends State<historyDiaryChat> {
       //取得是否畫心情
       if (chatRound == 2) {
         insert(text!);
-        reply("給心情程度打一個分數～");
+        if (text == "是") {
+          messages.insert(0, {"data": 5, "message": data["mood"]});
+        }
+        reply("給煩惱程度打一個分數～");
       }
       //取得心情分數
       if (chatRound == 3) {
