@@ -45,6 +45,7 @@ class _SignUpState extends State<SignUp> {
       backgroundColor: const Color(0xfffffed4),
       body: SafeArea(
         child: SingleChildScrollView(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           scrollDirection: Axis.vertical,
           child: Form(
             key: _formKey,
@@ -99,6 +100,7 @@ class _SignUpState extends State<SignUp> {
                     style: const TextStyle(color: Colors.black),
                     autofocus: false,
                     controller: _accountController,
+                    textInputAction: TextInputAction.next,
                     decoration: const InputDecoration(
                       labelText: "帳號",
                       hintText: '請輸入帳號',
@@ -139,6 +141,7 @@ class _SignUpState extends State<SignUp> {
                   TextFormField(
                       style: const TextStyle(color: Colors.black),
                       controller: _pwdController,
+                      textInputAction: TextInputAction.next,
                       decoration: const InputDecoration(
                         labelText: "密碼",
                         hintText: '請輸入密碼',
@@ -180,6 +183,7 @@ class _SignUpState extends State<SignUp> {
                       style: const TextStyle(color: Colors.black),
                       autofocus: false,
                       controller: _checkpwdController,
+                      textInputAction: TextInputAction.next,
                       decoration: const InputDecoration(
                         labelText: "確認密碼",
                         hintText: '請再次輸入密碼',
@@ -219,6 +223,7 @@ class _SignUpState extends State<SignUp> {
                     style: const TextStyle(color: Colors.black),
                     autofocus: false,
                     controller: _mailController,
+                    textInputAction: TextInputAction.next,
                     decoration: const InputDecoration(
                       labelText: "信箱",
                       hintText: '請輸入信箱',
