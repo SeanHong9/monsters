@@ -1,8 +1,13 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:monsters_front_end/main.dart';
+import 'package:monsters_front_end/model/memberModel.dart';
 import 'package:monsters_front_end/pages/manual/manual.dart';
 import 'package:monsters_front_end/pages/settings/monsters_information.dart';
 import 'package:monsters_front_end/pages/settings/style.dart';
+import 'package:monsters_front_end/repository/memberRepo.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
@@ -18,7 +23,9 @@ class _DailyTest_correctState extends State<DailyTest_correct> {
   late Future _future;
   var learn, web;
   _DailyTest_correctState(this.learn, this.web);
-  int unlockProgress = 0;
+  var unlockProgress;
+  var photo;
+  final MemberRepository memberRepository = MemberRepository();
 
   @override
   void initState() {
@@ -240,10 +247,22 @@ class _DailyTest_correctState extends State<DailyTest_correct> {
 
   Future<bool> getUserDailyTestProgress() async {
     SharedPreferences pref = await SharedPreferences.getInstance();
-    unlockProgress = pref.getInt("unlockProgress")!;
-    //上面這行unlockProgress用sharepref替代
-
-    // unlockProgress=SharedPreferences...
+    unlockProgress = pref.getInt("dailyTest");
+    var nickName = pref.getString("nickName").toString();
+    var mail = pref.getString("mail").toString();
+    var birthday = pref.getString("birthday").toString();
+    photo = pref.getInt("photo");
+    //寫入資料庫dailyTest進度 錯誤
+    var result = memberRepository.modifyPersonalInfo(
+      Member(
+        account: userAccount,
+        nickName: nickName,
+        mail: mail,
+        birthday: birthday,
+        photo: photo,
+        dailyTest: unlockProgress,
+      ),
+    );
     return true;
   }
 
