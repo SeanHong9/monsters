@@ -42,6 +42,8 @@ public class PersonalInfoServiceImpl extends BaseServiceImplement<PersonalInfoDA
     public PersonalInfoBean createAndReturnBean(PersonalInfoBean bean) {
         PersonalInfo personalInfo = createVO(bean);
         personalInfo.setPassword(passwordEncoder.encode(bean.getPassword()));
+        personalInfo.setDailyTest(0);
+        personalInfo.setPhoto("0");
         personalInfoDAO.insert(personalInfo);
         bean = createBean(personalInfo);
         return bean;

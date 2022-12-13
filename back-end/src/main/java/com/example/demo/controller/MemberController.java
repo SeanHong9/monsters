@@ -2,7 +2,10 @@ package com.example.demo.controller;
 
 import com.example.demo.bean.PersonalInfoBean;
 import com.example.demo.bean.PersonalMonsterBean;
+import com.example.demo.bean.PersonalMonsterUseBean;
 import com.example.demo.service.PersonalInfoService;
+import com.example.demo.service.impl.PersonalMonsterServiceImpl;
+import com.example.demo.service.impl.PersonalMonsterUseServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -14,12 +17,16 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+
 @AllArgsConstructor
 @RestController
 @RequestMapping(value = "/member")
-public class PersonalInfoController {
+public class MemberController {
     private final PersonalInfoService personalInfoService;
     private final PasswordEncoder passwordEncoder;
+
+    private final PersonalMonsterServiceImpl personalMonsterService;
+    private final PersonalMonsterUseServiceImpl personalMonsterUseService;
 
     @ResponseBody
     @PostMapping(value = "/create")
@@ -29,30 +36,43 @@ public class PersonalInfoController {
         result.putObject("data");
         try {
             personalInfoService.createAndReturnBean(personalInfoBean);
+            PersonalMonsterBean personalMonsterBean = new PersonalMonsterBean();
+            PersonalMonsterUseBean personalMonsterUseBean = new PersonalMonsterUseBean();
+            personalMonsterBean.setAccount(personalInfoBean.getAccount());
+            personalMonsterBean.setMonsterId(0);
+            personalMonsterBean.setMonsterGroup(0);
+            personalMonsterUseBean.setAccount(personalInfoBean.getAccount());
+            personalMonsterUseBean.setMonsterGroup(0);
+            personalMonsterUseBean.setUse(0);
+            personalMonsterService.createAndReturnBean(personalMonsterBean);
+            personalMonsterUseService.createAndReturnBean(personalMonsterUseBean);
+            result.put("result", true);
+            result.put("errorCode", "200");
+            result.put("message", "註冊成功");
         } catch (Exception e) {
+            result.put("result", false);
+            result.put("errorCode", "");
+            result.put("message", "註冊失敗");
             e.printStackTrace();
         }
-        result.put("result", true);
-        result.put("errorCode", "200");
-        result.put("message", "註冊成功");
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 
     @ResponseBody
     @PostMapping(value = "/login")
-    public ResponseEntity login(@RequestBody PersonalInfoBean personalInfoBean){
+    public ResponseEntity login(@RequestBody PersonalInfoBean personalInfoBean) {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode result = mapper.createObjectNode();
         try {
             Optional<PersonalInfoBean> personalInfoBeanOptional = personalInfoService.getByPK(personalInfoBean.getAccount());
             PersonalInfoBean local = personalInfoBeanOptional.get();
-            if(passwordEncoder.matches(personalInfoBean.getPassword(), local.getPassword())){
+            if (passwordEncoder.matches(personalInfoBean.getPassword(), local.getPassword())) {
                 result.put("account", local.getAccount());
                 result.put("birthday", local.getBirthday().toString());
-                result.put("mail",local.getMail());
+                result.put("mail", local.getMail());
                 result.put("nickName", local.getNickName());
-                result.put("lock",local.getPhoto());
-                result.put("photo",local.getPhoto());
+                result.put("lock", local.getPhoto());
+                result.put("photo", local.getPhoto());
                 result.put("dailyTest", local.getDailyTest());
             }
             result.put("result", true);
@@ -77,11 +97,11 @@ public class PersonalInfoController {
             List<PersonalInfoBean> personalInfoList = personalInfoService.searchPersonalInfoByAccount(account);
             ObjectNode personalInfoNode = dataNode.addObject();
             for (PersonalInfoBean personalInfoBean : personalInfoList) {
-                personalInfoNode.put("nickName",personalInfoBean.getNickName());
-                personalInfoNode.put("birthday",personalInfoBean.getBirthday().toString());
-                personalInfoNode.put("mail",personalInfoBean.getMail());
-                personalInfoNode.put("account",personalInfoBean.getAccount());
-                personalInfoNode.put("photo",personalInfoBean.getPhoto());
+                personalInfoNode.put("nickName", personalInfoBean.getNickName());
+                personalInfoNode.put("birthday", personalInfoBean.getBirthday().toString());
+                personalInfoNode.put("mail", personalInfoBean.getMail());
+                personalInfoNode.put("account", personalInfoBean.getAccount());
+                personalInfoNode.put("photo", personalInfoBean.getPhoto());
                 result.put("result", true);
                 result.put("errorCode", "200");
                 result.put("message", "查詢成功");
@@ -97,12 +117,12 @@ public class PersonalInfoController {
 
     @ResponseBody
     @PatchMapping(value = "/modify/{account}")
-    public ResponseEntity modifyMemberByAccount(@PathVariable(name = "account") String account,@RequestBody PersonalInfoBean personalInfoBean){
+    public ResponseEntity modifyMemberByAccount(@PathVariable(name = "account") String account, @RequestBody PersonalInfoBean personalInfoBean) {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode result = mapper.createObjectNode();
         System.out.println(personalInfoBean.toString());
         personalInfoService.updateInformation(account, personalInfoBean);
-        result.put("result", true) ;
+        result.put("result", true);
         result.put("errorCode", "200");
         result.put("message", "修改成功");
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
@@ -110,19 +130,22 @@ public class PersonalInfoController {
 
     @ResponseBody
     @PatchMapping(value = "/dailyTest/{account}")
-    public ResponseEntity dailyTest(@PathVariable(name = "account") String account){
+    public ResponseEntity dailyTest(@PathVariable(name = "account") String account) {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode result = mapper.createObjectNode();
         ArrayNode dataNode = result.putArray("data");
         Optional<PersonalInfoBean> personalInfoBeanOptional = personalInfoService.getByPK(account);
+        System.out.println(personalInfoBeanOptional.get().getDailyTest());
         List<PersonalMonsterBean> personalMonsterBeanList = personalInfoService.updateDailyTest(
                 personalInfoBeanOptional.get().getAccount());
-        for (PersonalMonsterBean personalMonsterBean : personalMonsterBeanList){
+        for (PersonalMonsterBean personalMonsterBean : personalMonsterBeanList) {
             ObjectNode personalMonsterNode = dataNode.addObject();
             personalMonsterNode.put("monsterId", personalMonsterBean.getMonsterId());
             personalMonsterNode.put("monsterGroup", personalMonsterBean.getMonsterGroup());
         }
-        result.put("result", true) ;
+        System.out.println(personalInfoBeanOptional.get().getDailyTest());
+        result.put("dailyTest", personalInfoBeanOptional.get().getDailyTest()+1);
+        result.put("result", true);
         result.put("errorCode", "200");
         result.put("message", "修改成功");
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
