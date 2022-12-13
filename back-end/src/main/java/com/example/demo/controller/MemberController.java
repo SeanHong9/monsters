@@ -40,19 +40,19 @@ public class MemberController {
         try {
             if (personalInfoBeanOptional.isPresent()) {
                 result.put("result", false);
-                result.put("errorCode", "");
+                result.put("errorCode", "401");
                 result.put("message", "帳號已被註冊");
             } else {
                 for(PersonalInfoBean userBean : personalInfoBeanList){
                     if(userBean.getMail().equals(personalInfoBean.getMail())){
                         result.put("result", false);
-                        result.put("errorCode", "");
+                        result.put("errorCode", "402");
                         result.put("message", "信箱已被使用");
                         isCreate = false;
                         break;
                     }else if(userBean.getNickName().equals(personalInfoBean.getNickName())){
                         result.put("result", false);
-                        result.put("errorCode", "");
+                        result.put("errorCode", "403");
                         result.put("message", "暱稱已被使用");
                         isCreate = false;
                         break;
