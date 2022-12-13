@@ -59,8 +59,8 @@ class _AnnoyanceChat extends State<AnnoyanceChat> with WidgetsBindingObserver {
   takePhoto() async {
     final media = await ImagePicker().pickImage(source: ImageSource.camera);
     if (media == null) return;
-    final imageFile = File(media.path);
-
+    log("media:" + media.path.toString());
+    imageFile = File(media.path);
     if (imageFile != null) {
       messages.insert(0, {"data": 2, "image": imageFile});
       response(null, imageFile);
@@ -87,12 +87,11 @@ class _AnnoyanceChat extends State<AnnoyanceChat> with WidgetsBindingObserver {
   pickPhoto() async {
     final media = await ImagePicker().pickImage(source: ImageSource.gallery);
     if (media == null) return;
-    final imageTemporary = File(media.path);
-
-    contentFile = imageTemporary;
-    if (contentFile != null) {
-      messages.insert(0, {"data": 2, "image": contentFile});
-      response(null, contentFile);
+    log("media:" + media.path.toString());
+    imageFile = File(media.path);
+    if (imageFile != null) {
+      messages.insert(0, {"data": 2, "image": imageFile});
+      response(null, imageFile);
     }
     setState(() {});
   }
@@ -122,8 +121,10 @@ class _AnnoyanceChat extends State<AnnoyanceChat> with WidgetsBindingObserver {
     );
 
     if (media == null) return;
-    final audioFile = File(media);
+    var audioFile = File(media.path);
     if (audioFile != null) {
+      final audioTemp = File(audioFile.path);
+      audioFile = audioTemp;
       messages.insert(0, {"data": 4, "audio": audioFile});
       response(null, audioFile);
     }
@@ -141,7 +142,9 @@ class _AnnoyanceChat extends State<AnnoyanceChat> with WidgetsBindingObserver {
     if (moodImage == null) {
       reply("畫心情失敗，請通知官方平台");
     } else {
-      final moodFile = File(moodImage.path);
+      final imageTemporary = File(moodImage.path);
+      moodFile = imageTemporary;
+      log("moodFile: " + moodFile.toString());
       messages.insert(0, {"data": 5, "image": moodFile});
     }
 
@@ -455,7 +458,7 @@ class _AnnoyanceChat extends State<AnnoyanceChat> with WidgetsBindingObserver {
                         ),
                         Flexible(
                             child: Container(
-                                child: Image.file(contentFile!,
+                                child: Image.file(imageFile!,
                                     width: (MediaQuery.of(context).size.width >
                                             MediaQuery.of(context).size.height)
                                         ? 288
@@ -800,8 +803,11 @@ class _AnnoyanceChat extends State<AnnoyanceChat> with WidgetsBindingObserver {
             reply("（歷史記錄點擊單一煩惱後按下完成按鈕！）");
 
             String _mood = userAnswers[2];
-            String _imageFile="";
-            String _audioFile="";
+            String? _imageFile;
+            String? _audioFile;
+            String? _content = userAnswers[1];
+            _imageFile = null;
+            _audioFile = null;
             if (moodFile != null) {
               File file = moodFile!;
               List<int> bytes = file.readAsBytesSync();
@@ -812,18 +818,21 @@ class _AnnoyanceChat extends State<AnnoyanceChat> with WidgetsBindingObserver {
               File file = imageFile!;
               List<int> bytes = file.readAsBytesSync();
               _imageFile = base64.encode(bytes);
+              _content = "圖片煩惱";
             }
+
             if (audioFile != null) {
               File file = audioFile!;
               List<int> bytes = file.readAsBytesSync();
               _audioFile = base64.encode(bytes);
+              _content = "聲音煩惱";
             }
-            
+
             Future<Data> requestBody = annoyanceRepository
                 .createAnnoyance(Annoyance(
                   id: 0, //0
                   account: userAccount, //"帳號"
-                  content: userAnswers[1], //"文字內容"
+                  content: _content, //"文字內容"
                   type: userAnswers[0], //0~5
                   monsterId: 1, //1
                   mood: _mood, //"否"
@@ -832,7 +841,7 @@ class _AnnoyanceChat extends State<AnnoyanceChat> with WidgetsBindingObserver {
                   solve: 0,
                   share: userAnswers[4], //0
                   imageContent: _imageFile, //null
-                  audioContent: _audioFile, //null
+                  audioContent: null, //null
                 ))
                 .then((value) => Data.fromJson(value!));
             await requestBody.then((value) {
@@ -840,7 +849,6 @@ class _AnnoyanceChat extends State<AnnoyanceChat> with WidgetsBindingObserver {
                 popUp(context, value.data.first.newMonsterId!);
               }
             });
-
             log("--完成分享");
           } else {
             cannotRead();

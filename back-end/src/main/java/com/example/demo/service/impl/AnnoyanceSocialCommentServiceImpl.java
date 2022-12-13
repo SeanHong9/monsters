@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class AnnoyanceSocialCommentServiceImpl extends BaseServiceImplement<AnnoyanceSocialCommentDAO, AnnoyanceSocialComment, AnnoyanceSocialCommentBean> implements AnnoyanceSocialCommentService {
@@ -29,12 +31,21 @@ public class AnnoyanceSocialCommentServiceImpl extends BaseServiceImplement<Anno
     }
 
     @Override
+    public List<AnnoyanceSocialCommentBean> findByAnnoyanceId(Integer annoyanceId) {
+        List<AnnoyanceSocialComment> userList = annoyanceSocialCommentDAO.findByAnnoyanceId(annoyanceId);
+        List<AnnoyanceSocialCommentBean> annoyanceSocialCommentBeanList = new ArrayList<>();
+        for(AnnoyanceSocialComment annoyanceSocialComment : userList){
+            annoyanceSocialCommentBeanList.add(createBean(annoyanceSocialComment));
+        }
+        return annoyanceSocialCommentBeanList;
+    }
+    @Override
     protected AnnoyanceSocialComment createVO(AnnoyanceSocialCommentBean bean) {
         AnnoyanceSocialComment entity = new AnnoyanceSocialComment();
         entity.setId(bean.getId());
         entity.setCommentUser(bean.getCommentUser());
         entity.setAnnoyanceId(bean.getAnnoyanceId());
-        entity.setContent(bean.getContent());
+        entity.setContent(bean.getCommentContent());
         entity.setDate(bean.getDate());
         return entity;
     }
@@ -45,8 +56,9 @@ public class AnnoyanceSocialCommentServiceImpl extends BaseServiceImplement<Anno
         bean.setId(entity.getId());
         bean.setCommentUser(entity.getCommentUser());
         bean.setAnnoyanceId(entity.getAnnoyanceId());
-        bean.setContent(entity.getContent());
+        bean.setCommentContent(entity.getContent());
         bean.setDate(entity.getDate());
         return bean;
     }
+
 }

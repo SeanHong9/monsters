@@ -47,8 +47,15 @@ public class DiaryController {
                 result.put("errorCode", "");
                 result.put("message", "新增失敗");
             } else {
+
                 if (diarybean.getMood().equals("是")) {
                     diarybean.setMood(diarybean.getMood());
+                }
+                if(diarybean.getAudioContent()!=null){
+                    diarybean.setAudioContent(diarybean.getAudioContent());
+                }
+                if(diarybean.getImageContent()!=null){
+                    diarybean.setImageContent(diarybean.getImageContent());
                 }
                 List<AllMonsterBean> allMonster = allMonsterService.searchAll();
                 // 抽1~100為機率

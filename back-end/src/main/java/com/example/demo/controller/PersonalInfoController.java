@@ -59,6 +59,9 @@ public class PersonalInfoController {
             result.put("errorCode", "200");
             result.put("message", "登入成功");
         } catch (Exception e) {
+            System.out.println(e);
+            result.put("result", false);
+            result.put("message", "登入失敗");
             e.printStackTrace();
         }
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
@@ -84,6 +87,9 @@ public class PersonalInfoController {
                 result.put("message", "查詢成功");
             }
         } catch (Exception e) {
+            System.out.println(e);
+            result.put("result", false);
+            result.put("message", "註冊失敗");
             e.printStackTrace();
         }
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
