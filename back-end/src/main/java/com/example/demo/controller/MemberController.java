@@ -2,7 +2,10 @@ package com.example.demo.controller;
 
 import com.example.demo.bean.PersonalInfoBean;
 import com.example.demo.bean.PersonalMonsterBean;
+import com.example.demo.bean.PersonalMonsterUseBean;
 import com.example.demo.service.PersonalInfoService;
+import com.example.demo.service.impl.PersonalMonsterServiceImpl;
+import com.example.demo.service.impl.PersonalMonsterUseServiceImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -17,10 +20,12 @@ import java.util.Optional;
 @AllArgsConstructor
 @RestController
 @RequestMapping(value = "/member")
-public class PersonalInfoController {
+public class MemberController {
     private final PersonalInfoService personalInfoService;
     private final PasswordEncoder passwordEncoder;
 
+    private final PersonalMonsterServiceImpl personalMonsterService;
+    private final PersonalMonsterUseServiceImpl personalMonsterUseService;
     @ResponseBody
     @PostMapping(value = "/create")
     public ResponseEntity register(@RequestBody PersonalInfoBean personalInfoBean) {
@@ -29,12 +34,25 @@ public class PersonalInfoController {
         result.putObject("data");
         try {
             personalInfoService.createAndReturnBean(personalInfoBean);
+            PersonalMonsterBean personalMonsterBean = new PersonalMonsterBean();
+            PersonalMonsterUseBean personalMonsterUseBean = new PersonalMonsterUseBean();
+            personalMonsterBean.setAccount(personalInfoBean.getAccount());
+            personalMonsterBean.setMonsterId(0);
+            personalMonsterBean.setMonsterGroup(0);
+            personalMonsterUseBean.setAccount(personalInfoBean.getAccount());
+            personalMonsterUseBean.setMonsterGroup(0);
+            personalMonsterUseBean.setUse(0);
+            personalMonsterService.createAndReturnBean(personalMonsterBean);
+            personalMonsterUseService.createAndReturnBean(personalMonsterUseBean);
+            result.put("result", true);
+            result.put("errorCode", "200");
+            result.put("message", "註冊成功");
         } catch (Exception e) {
+            result.put("result", false);
+            result.put("errorCode", "");
+            result.put("message", "註冊失敗");
             e.printStackTrace();
         }
-        result.put("result", true);
-        result.put("errorCode", "200");
-        result.put("message", "註冊成功");
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 
