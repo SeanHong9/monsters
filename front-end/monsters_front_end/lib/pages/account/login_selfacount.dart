@@ -246,13 +246,13 @@ class _Login_selfacountState extends State<Login_selfacount> {
   }
 
   void login() async {
-    print("start login()...");
-    print("try account: " + _accountController.text);
-    print("try pass: " + _pwdController.text);
+    log("start login()...");
+    log("try account: " + _accountController.text);
+    log("try pass: " + _pwdController.text);
     final MemberRepository memberRepository = MemberRepository();
     var result = await memberRepository.login(Member(
         account: _accountController.text, password: _pwdController.text));
-    if (result.contains("result")) {
+    if (result.contains("data") && !result.contains("{}")) {
       saveSelfLogin(_accountController.text);
       Navigator.of(context)
           .pushReplacement(MaterialPageRoute(builder: (context) => MainPage()));
