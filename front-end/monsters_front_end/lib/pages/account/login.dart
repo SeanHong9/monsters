@@ -160,7 +160,7 @@ class _loginState extends State<LoginPage> {
             style: TextStyle(color: Colors.white, fontSize: 30),
           )));
     } else {
-      print("帳號為: " + user.displayName.toString());
+      print("帳號為: " + user.email.toString());
       //判斷資料庫是否有此帳號
       //if有 => 進行登入
       print("doing signIn()...");
