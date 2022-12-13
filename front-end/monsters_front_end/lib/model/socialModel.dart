@@ -48,8 +48,6 @@ class Social {
   int? share;
   String? imageContent;
   String? audioContent;
-  File? contentFile;
-  File? moodFile;
   String? commentUser;
   String? commentContent;
   int? annoyanceId;
@@ -69,8 +67,6 @@ class Social {
     this.share,
     this.imageContent,
     this.audioContent,
-    this.contentFile,
-    this.moodFile,
     this.commentUser,
     this.commentContent,
     this.annoyanceId,
@@ -91,8 +87,6 @@ class Social {
         share: json['share'],
         imageContent: json['imageContent'],
         audioContent: json['audioContent'],
-        contentFile: json['contentFile'],
-        moodFile: json['moodFile'],
         commentUser: json['commentUser'],
         commentContent: json['commentContent'],
         annoyanceId: json['annoyanceId'],
@@ -113,8 +107,6 @@ class Social {
     data['share'] = share;
     data['imageContent'] = imageContent;
     data['audioContent'] = audioContent;
-    data['contentFile'] = contentFile;
-    data['moodFile'] = moodFile;
     data['commentUser'] = commentUser;
     data['commentContent'] = commentContent;
     data['annoyanceId'] = annoyanceId;

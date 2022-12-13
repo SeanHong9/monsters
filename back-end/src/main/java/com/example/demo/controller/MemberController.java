@@ -63,24 +63,26 @@ public class MemberController {
     public ResponseEntity login(@RequestBody PersonalInfoBean personalInfoBean) {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode result = mapper.createObjectNode();
+        ArrayNode dataNode = result.putArray("data");
         try {
             Optional<PersonalInfoBean> personalInfoBeanOptional = personalInfoService.getByPK(personalInfoBean.getAccount());
             PersonalInfoBean local = personalInfoBeanOptional.get();
+            ObjectNode personalInfoNode = dataNode.addObject();
             if (passwordEncoder.matches(personalInfoBean.getPassword(), local.getPassword())) {
-                result.put("account", local.getAccount());
-                result.put("birthday", local.getBirthday().toString());
-                result.put("mail", local.getMail());
-                result.put("nickName", local.getNickName());
-                result.put("lock", local.getPhoto());
-                result.put("photo", local.getPhoto());
-                result.put("dailyTest", local.getDailyTest());
-                result.put("result", true);
-                result.put("errorCode", "200");
-                result.put("message", "登入成功");
-            }else {
-                result.put("result", false);
-                result.put("errorCode", "");
-                result.put("message", "登入失敗");
+                personalInfoNode.put("account", local.getAccount());
+                personalInfoNode.put("birthday", local.getBirthday().toString());
+                personalInfoNode.put("mail", local.getMail());
+                personalInfoNode.put("nickName", local.getNickName());
+                personalInfoNode.put("lock", local.getLock());
+                personalInfoNode.put("photo", local.getPhoto());
+                personalInfoNode.put("dailyTest", local.getDailyTest());
+                personalInfoNode.put("result", true);
+                personalInfoNode.put("errorCode", "200");
+                personalInfoNode.put("message", "登入成功");
+            } else {
+                personalInfoNode.put("result", false);
+                personalInfoNode.put("errorCode", "");
+                personalInfoNode.put("message", "登入失敗");
             }
         } catch (Exception e) {
             System.out.println(e);
@@ -106,6 +108,8 @@ public class MemberController {
                 personalInfoNode.put("mail", personalInfoBean.getMail());
                 personalInfoNode.put("account", personalInfoBean.getAccount());
                 personalInfoNode.put("photo", personalInfoBean.getPhoto());
+                personalInfoNode.put("dailyTest", personalInfoBean.getDailyTest());
+                personalInfoNode.put("lock", personalInfoBean.getLock());
                 result.put("result", true);
                 result.put("errorCode", "200");
                 result.put("message", "查詢成功");
@@ -124,7 +128,6 @@ public class MemberController {
     public ResponseEntity modifyMemberByAccount(@PathVariable(name = "account") String account, @RequestBody PersonalInfoBean personalInfoBean) {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode result = mapper.createObjectNode();
-        System.out.println(personalInfoBean.toString());
         personalInfoService.updateInformation(account, personalInfoBean);
         result.put("result", true);
         result.put("errorCode", "200");

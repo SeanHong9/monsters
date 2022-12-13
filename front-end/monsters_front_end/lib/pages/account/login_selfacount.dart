@@ -235,7 +235,7 @@ class _Login_selfacountState extends State<Login_selfacount> {
                             MaterialPageRoute(builder: (context) => SignUp()));
                       },
                     ),
-                  )
+                  ),
                 ],
               ),
             ),
@@ -252,7 +252,7 @@ class _Login_selfacountState extends State<Login_selfacount> {
     final MemberRepository memberRepository = MemberRepository();
     var result = await memberRepository.login(Member(
         account: _accountController.text, password: _pwdController.text));
-    if (result.contains("data") && !result.contains("{}")) {
+    if (result.contains("true")) {
       saveSelfLogin(_accountController.text);
       Navigator.of(context)
           .pushReplacement(MaterialPageRoute(builder: (context) => MainPage()));
