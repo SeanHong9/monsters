@@ -48,30 +48,31 @@ class _Drawer_personalInfoState extends State<Drawer_personalInfo> {
         .searchPersonalInfoByAccount()
         .then((value) => Data.fromJson(value!));
 
-    await personalInfo.then((value) async {
-      personalInfoResult["nickName"] = value.data.first.nickName;
-      personalInfoResult["birthday"] = value.data.first.birthday;
-      personalInfoResult["mail"] = value.data.first.mail;
-      personalInfoResult["account"] = value.data.first.account;
-      personalInfoResult["photo"] = value.data.first.photo;
-      // personalInfoResult["dailyTest"] = value.data.first.birthday;
-      // personalInfoResult["lock"] = value.data.first.lock;
-      // personalInfoResult["password"] = value.data.first.password;
-      Future<ms.Data> monsters = monsterRepository
-          .searchMonsterByAccount()
-          .then((value) => ms.Data.fromJson(value!));
-      await monsters.then((value) {
-        String temp = jsonDecode(value.data.first.monsterGroup!).toString();
-        temp = temp.substring(1, temp.length - 1);
-        List<String> monsterResult = temp.split(",");
-        final List<int> monsterList =
-            monsterResult.map((e) => int.parse(e)).toList();
-        // log("monsterList:" + monsterList.toString());
-        personalInfoResult.putIfAbsent("ownList", () => monsterList);
-      });
-    });
+    await personalInfo.then(
+      (value) async {
+        personalInfoResult["nickName"] = value.data.first.nickName;
+        personalInfoResult["birthday"] = value.data.first.birthday;
+        personalInfoResult["mail"] = value.data.first.mail;
+        personalInfoResult["account"] = value.data.first.account;
+        personalInfoResult["photo"] = value.data.first.photo;
+        personalInfoResult["lock"] = value.data.first.lock;
+        personalInfoResult["dailyTest"] = value.data.first.dailyTest;
 
-    // log("personalInfoResult:" + personalInfoResult.toString());
+        Future<ms.Data> monsters = monsterRepository
+            .searchMonsterByAccount()
+            .then((value) => ms.Data.fromJson(value!));
+        await monsters.then(
+          (value) {
+            String temp = jsonDecode(value.data.first.monsterGroup!).toString();
+            temp = temp.substring(1, temp.length - 1);
+            List<String> monsterResult = temp.split(",");
+            final List<int> monsterList =
+                monsterResult.map((e) => int.parse(e)).toList();
+            personalInfoResult.putIfAbsent("ownList", () => monsterList);
+          },
+        );
+      },
+    );
 
     return personalInfoResult;
   }

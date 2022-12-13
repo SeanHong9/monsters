@@ -191,7 +191,7 @@ public class HistoryController {
                             for (int i = 0; i < 7; i++) {
                                 ObjectNode annoyanceNode = dataNode.addObject();
                                 annoyanceNode.put("index", annoyanceList.get(i).getIndex());
-                                annoyanceNode.put("time", annoyanceList.get(i).getTime().format(DateTimeFormatter.ofPattern("MM/dd")));
+                                annoyanceNode.put("time", annoyanceList.get(i).getTime().format(DateTimeFormatter.ofPattern("MM/dd hh:mm")));
                             }
                         } else {
                             for (int i = 0; i < annoyanceList.size(); i++) {
