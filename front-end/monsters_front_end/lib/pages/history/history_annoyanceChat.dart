@@ -51,7 +51,11 @@ class _historyAnnoyanceChat extends State<historyAnnoyanceChat> {
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
     response();
     response(data["type"]);
-    response(data["content"]);
+    if (data["imageContent"] == null) {
+      response(data["content"]);
+    } else {
+      response(data["imageContent"]);
+    }
     if (data["mood"] == "否") {
       response("否");
     } else {
@@ -363,7 +367,9 @@ class _historyAnnoyanceChat extends State<historyAnnoyanceChat> {
                                             MediaQuery.of(context).size.height)
                                         ? 240
                                         : 162,
-                                    filterQuality: FilterQuality.high))),
+                                filterQuality: FilterQuality.high),
+                          ),
+                        ),
                         SizedBox(
                           width: 3.0,
                         ),
@@ -637,7 +643,11 @@ class _historyAnnoyanceChat extends State<historyAnnoyanceChat> {
         }
         //取得內容
         if (chatRound == 2) {
-          insert(text!);
+          if (data["imageContent"] == null) {
+            insert(text!);
+          } else {
+            messages.insert(0, {"data": 2, "message": text});
+          }
           reply("真是辛苦你了，想做一幅畫表達你的感受嗎？");
         }
         //取得是否畫心情

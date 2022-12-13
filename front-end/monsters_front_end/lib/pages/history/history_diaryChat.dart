@@ -42,7 +42,13 @@ class _historyDiaryChat extends State<historyDiaryChat> {
     final DiaryRepository diaryRepository = DiaryRepository();
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
     response();
-    response(data["content"]);
+
+    if (data["imageContent"] == null) {
+      response(data["content"]);
+    } else {
+      response(data["imageContent"]);
+    }
+
     if (data["mood"] == "否") {
       response("否");
     } else {
@@ -513,7 +519,11 @@ class _historyDiaryChat extends State<historyDiaryChat> {
     if (chatRound < 5) {
       //取得內容
       if (chatRound == 1) {
-        insert(text!);
+        if (data["imageContent"] == null) {
+          insert(text!);
+        } else {
+          messages.insert(0, {"data": 2, "message": text});
+        }
         reply("真是辛苦你了，想做一幅畫表達你的感受嗎？");
       }
       //取得是否畫心情

@@ -3,6 +3,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
+import 'package:date_format/date_format.dart';
 import 'package:http/http.dart' as http;
 import 'dart:developer' as dv;
 import 'package:flutter/material.dart';
@@ -430,19 +431,36 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
                                                               SingleChildScrollView(
                                                             scrollDirection:
                                                                 Axis.vertical,
-                                                            child: Text(
-                                                              snapshot.data[
-                                                                      "result $index"]
-                                                                  ["content"],
-                                                              style: TextStyle(
-                                                                fontFamily:
-                                                                    'Segoe UI',
-                                                                fontSize: 16,
-                                                                color: const Color(
-                                                                    0xff707070),
-                                                              ),
-                                                              softWrap: true,
-                                                            ),
+                                                            child: snapshot.data[
+                                                                            "result $index"]
+                                                                        [
+                                                                        "imageContent"] ==
+                                                                    null
+                                                                ? Text(
+                                                                    snapshot.data[
+                                                                            "result $index"]
+                                                                        [
+                                                                        "content"],
+                                                                    style:
+                                                                        TextStyle(
+                                                                      fontFamily:
+                                                                          'Segoe UI',
+                                                                      fontSize:
+                                                                          16,
+                                                                      color: const Color(
+                                                                          0xff707070),
+                                                                    ),
+                                                                    softWrap:
+                                                                        true,
+                                                                  )
+                                                                : Container(
+                                                                    child: Image.memory(
+                                                                        base64Decode(snapshot.data["result $index"]
+                                                                            [
+                                                                            "imageContent"]),
+                                                                        filterQuality:
+                                                                            FilterQuality.high),
+                                                                  ),
                                                           ),
                                                         ),
                                                       ],
@@ -974,20 +992,20 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
         userNameList.add(value.data.elementAt(i).commentUser);
         timesList.add(value.data.elementAt(i).time);
         int _photo = int.parse(value.data.elementAt(i).photo.toString());
-        // photoList.add( );
         photoList.add(_photo);
-        // dv.log("time: " + value.data.first.time.toString());
       }
-    }).then((value) {
-      dv.log(commentCounter.toString());
-      dv.log("commentCounter: " + commentCounter.toString());
-      dv.log("photoList: " + photoList.toString());
-      dv.log("userNameList: " + userNameList.toString());
-      dv.log("commentList: " + commentList.toString());
-      dv.log("timesList: " + timesList.toString());
-      ShowDialogState(data, commentCounter, photoList, userNameList,
-          commentList, timesList);
-    });
+    }).then(
+      (value) {
+        ShowDialogState(
+          data,
+          commentCounter,
+          photoList,
+          userNameList,
+          commentList,
+          timesList,
+        );
+      },
+    );
   }
 
   void ShowDialogState(
@@ -1211,72 +1229,6 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
                                       ),
                                     );
                                   })),
-                          //使用者輸入留言區
-                          Container(
-                              height: 70,
-                              alignment: Alignment.centerLeft,
-                              color: BackgroundColorSoft,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Expanded(
-                                    flex: 8,
-                                    child: Container(
-                                      width: 70,
-                                      margin: EdgeInsets.only(
-                                          left: 15.0, top: 10, bottom: 10),
-                                      alignment: Alignment.bottomLeft,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(13)),
-                                        color: Colors.white,
-                                        border: Border.all(
-                                            width: 1,
-                                            color: BackgroundColorWarm),
-                                      ),
-                                      padding: const EdgeInsets.only(left: 10),
-                                      child: Center(
-                                        child: TextFormField(
-                                          textAlign: TextAlign.left,
-                                          controller: _messageController,
-                                          decoration: InputDecoration(
-                                            border: InputBorder.none,
-                                            hintText: "Enter a message...",
-                                            hintStyle:
-                                                TextStyle(color: Colors.grey),
-                                          ),
-                                          style: TextStyle(
-                                              fontSize: 16,
-                                              color: Colors.black),
-                                          onChanged: (value) {},
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  //傳送
-                                  Expanded(
-                                    flex: 2,
-                                    child: IconButton(
-                                        icon: Icon(
-                                          Icons.send,
-                                          size: 30.0,
-                                          color:
-                                              Color.fromARGB(255, 164, 78, 38),
-                                        ),
-                                        onPressed: () {
-                                          //TODO:新增一筆留言 接API
-                                          _messageController.clear();
-                                          FocusScopeNode currentFocus =
-                                              FocusScope.of(context);
-                                          if (!currentFocus.hasPrimaryFocus) {
-                                            currentFocus.unfocus();
-                                          }
-                                          setState(() {});
-                                        }),
-                                  ),
-                                ],
-                              )),
                         ],
                       ),
                     ),

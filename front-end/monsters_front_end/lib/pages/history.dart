@@ -39,7 +39,7 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
 
   //控制標籤
   //1:全部 2:煩惱 3:日記
-  int selectionTab_type = 1;
+  int selectionTab_type = 2;
   //當selectedSolve開啟已解決標籤
   int selectionTab_solve = 0;
   //當selectionTab_solve_enabled解鎖後兩個標籤
@@ -134,6 +134,7 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                       //標籤設定
                       children: [
                         //全部標籤  selectionTab_type == 1
+                        /*
                         InkWell(
                             child: Container(
                               width: 50,
@@ -163,6 +164,8 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                                 setState(() {});
                               }
                             }),
+                        */
+                        
                         //煩惱標籤 selectionTab_type == 2
                         InkWell(
                             child: Container(
