@@ -231,7 +231,9 @@ class _MoodLineChartState extends State<MoodLineChart> {
                                       width: 150.0,
                                       height: 40.0,
                                       child: Text(
-                                        dateTimeData[0] + '~' + dateTimeData[6],
+                                        dateTimeData[0].substring(0, 5) +
+                                            '~' +
+                                            dateTimeData[6].substring(0, 5),
                                         style: const TextStyle(
                                           fontFamily: 'Segoe UI',
                                           fontSize: 18,
@@ -431,25 +433,53 @@ class _MoodLineChartState extends State<MoodLineChart> {
     Widget text;
     switch (value.toInt()) {
       case 1:
-        text = Text(dateTimeData[0].toString(), style: style);
+        text = Text(
+            dateTimeData[0].toString().substring(0, 5) +
+                "\n" +
+                dateTimeData[0].toString().substring(6, 11),
+            style: style);
         break;
       case 2:
-        text = Text(dateTimeData[1].toString(), style: style);
+        text = Text(
+            dateTimeData[1].toString().substring(0, 5) +
+                "\n" +
+                dateTimeData[1].toString().substring(6, 11),
+            style: style);
         break;
       case 3:
-        text = Text(dateTimeData[2].toString(), style: style);
+        text = Text(
+            dateTimeData[2].toString().substring(0, 5) +
+                "\n" +
+                dateTimeData[2].toString().substring(6, 11),
+            style: style);
         break;
       case 4:
-        text = Text(dateTimeData[3].toString(), style: style);
+        text = Text(
+            dateTimeData[3].toString().substring(0, 5) +
+                "\n" +
+                dateTimeData[3].toString().substring(6, 11),
+            style: style);
         break;
       case 5:
-        text = Text(dateTimeData[4].toString(), style: style);
+        text = Text(
+            dateTimeData[4].toString().substring(0, 5) +
+                "\n" +
+                dateTimeData[4].toString().substring(6, 11),
+            style: style);
         break;
       case 6:
-        text = Text(dateTimeData[5].toString(), style: style);
+        text = Text(
+            dateTimeData[5].toString().substring(0, 5) +
+                "\n" +
+                dateTimeData[5].toString().substring(6, 11),
+            style: style);
         break;
       case 7:
-        text = Text(dateTimeData[6].toString(), style: style);
+        text = Text(
+            dateTimeData[6].toString().substring(0, 5) +
+                "\n" +
+                dateTimeData[6].toString().substring(6, 11),
+            style: style);
         break;
       default:
         text = const Text('', style: style);
@@ -530,7 +560,7 @@ class _MoodLineChartState extends State<MoodLineChart> {
         bottomTitles: AxisTitles(
           sideTitles: SideTitles(
             showTitles: true,
-            reservedSize: 30,
+            reservedSize: 60,
             interval: 1,
             getTitlesWidget: bottomTitleWidgets,
           ),
