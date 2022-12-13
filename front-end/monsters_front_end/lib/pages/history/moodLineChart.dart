@@ -65,8 +65,6 @@ class _MoodLineChartState extends State<MoodLineChart> {
     });
 
     return finalMap;
-    // 在futureBuilder中用snapshot.data["indexList"]可以獲得分數List
-    // 在futureBuilder中用snapshot.data["timeList"]可以獲得時間List
   }
 
   void countDay() {
