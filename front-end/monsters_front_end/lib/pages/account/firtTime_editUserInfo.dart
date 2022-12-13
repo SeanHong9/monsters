@@ -1,8 +1,12 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:date_format/date_format.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:monsters_front_end/main.dart';
 import 'package:monsters_front_end/model/memberModel.dart';
+import 'package:monsters_front_end/pages/account/login_selfacount.dart';
 import 'package:monsters_front_end/pages/home.dart';
 import 'package:monsters_front_end/pages/settings/style.dart';
 import 'package:monsters_front_end/repository/memberRepo.dart';
@@ -219,7 +223,10 @@ class _FirstTime_editUserInfoState extends State<FirstTime_editUserInfo> {
                                 _formKey.currentState!.validate();
                             if (isValidForm) {
                               if (read) {
-                                memberRepository.createMember(
+                                signUp();
+                                /*
+                                var result =
+                                    await memberRepository.createMember(
                                   Member(
                                     account: user.email,
                                     birthday: formatDate(
@@ -230,11 +237,52 @@ class _FirstTime_editUserInfoState extends State<FirstTime_editUserInfo> {
                                     password: "",
                                   ),
                                 );
-                                saveGoogleLogin(user.email);
-                                Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => MainPage()));
+                                log(result);
+                                if (result.contains("ture")) {
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(const SnackBar(
+                                          duration: Duration(seconds: 1),
+                                          backgroundColor: BackgroundColorWarm,
+                                          content: Text(
+                                            "註冊成功",
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 30),
+                                          )));
+                                  saveGoogleLogin(user.email);
+                                  Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) => MainPage()));
+                                } else {
+                                  ScaffoldMessenger.of(context)
+                                      .showSnackBar(const SnackBar(
+                                          duration: Duration(seconds: 3),
+                                          backgroundColor: BackgroundColorWarm,
+                                          content: Text(
+                                            "此帳號已被註冊過，請改為以APP登入",
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 30),
+                                          )));
+                                  Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              Login_selfacount()));
+                                }
+                                */
+                              } else {
+                                ScaffoldMessenger.of(context)
+                                    .showSnackBar(const SnackBar(
+                                        duration: Duration(seconds: 1),
+                                        backgroundColor: BackgroundColorWarm,
+                                        content: Text(
+                                          "請詳細閱讀使用條款，並勾選同意。",
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 30),
+                                        )));
                               }
                             }
                           },
@@ -252,5 +300,59 @@ class _FirstTime_editUserInfoState extends State<FirstTime_editUserInfo> {
     SharedPreferences pref = await SharedPreferences.getInstance();
     await pref.setString("googleLogin", account);
     userAccount = account;
+  }
+
+  void signUp() async {
+    //註冊功能
+    Future<Map> request = memberRepository
+        .createMember(
+          Member(
+            account: user.email,
+            birthday: formatDate(date, [yyyy, '-', mm, '-', dd]).toString(),
+            mail: user.email,
+            nickName: _nicknameController.text,
+            password: "",
+          ),
+        )
+        .then((value) => json.decode(value));
+
+    await request.then((value) {
+      log(value.toString());
+      if (value.toString().contains("402")) {
+        //信箱已被使用
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            duration: Duration(seconds: 3),
+            backgroundColor: BackgroundColorWarm,
+            content: Text(
+              "此帳號已被註冊過，請改為以APP登入",
+              style: TextStyle(color: Colors.white, fontSize: 30),
+            )));
+        Navigator.pushReplacement(context,
+            MaterialPageRoute(builder: (context) => Login_selfacount()));
+      }
+      if (value.toString().contains("403")) {
+        //暱稱已被使用
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            duration: Duration(seconds: 3),
+            backgroundColor: BackgroundColorWarm,
+            content: Text(
+              "暱稱已被使用，請重新輸入",
+              style: TextStyle(color: Colors.white, fontSize: 30),
+            )));
+      }
+      if (value.toString().contains("200")) {
+        //註冊成功
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            duration: Duration(seconds: 1),
+            backgroundColor: BackgroundColorWarm,
+            content: Text(
+              "註冊成功",
+              style: TextStyle(color: Colors.white, fontSize: 30),
+            )));
+        saveGoogleLogin(user.email);
+        Navigator.pushReplacement(
+            context, MaterialPageRoute(builder: (context) => MainPage()));
+      }
+    });
   }
 }
