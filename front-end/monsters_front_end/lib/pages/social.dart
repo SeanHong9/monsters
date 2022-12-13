@@ -1189,7 +1189,7 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
                                     itemCount: commentCounter,
                                     itemBuilder: (context, int index) {
                                       return Card(
-                                        child: SizedBox(
+                                        child: Container(
                                           height: 80,
                                           child: ListTile(
                                             leading: Container(
@@ -1208,29 +1208,42 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
                                                             photoList[index]])),
                                               ),
                                             ),
-                                            title: Text(
-                                              userNameList[index],
-                                              textAlign: TextAlign.justify,
-                                              style: const TextStyle(
-                                                letterSpacing: -1,
-                                                fontSize: 20,
-                                              ),
-                                            ),
-                                            subtitle: SizedBox(
-                                              height: 50,
-                                              child: SingleChildScrollView(
-                                                scrollDirection: Axis.vertical,
-                                                child: Text(
-                                                  commentList[index],
-                                                  style:
-                                                      TextStyle(fontSize: 16),
+                                            title: Container(
+                                              margin: const EdgeInsets.only(
+                                                  top: 10),
+                                              child: Text(
+                                                userNameList[index],
+                                                textAlign: TextAlign.justify,
+                                                style: const TextStyle(
+                                                  letterSpacing: -1,
+                                                  fontSize: 20,
                                                 ),
                                               ),
                                             ),
-                                            trailing: Text(
-                                              timesList[index],
-                                              style: TextStyle(
-                                                  color: BackgroundColorWarm),
+                                            subtitle: Container(
+                                              margin: const EdgeInsets.only(
+                                                  top: 10),
+                                              child: SizedBox(
+                                                height: 50,
+                                                child: SingleChildScrollView(
+                                                  scrollDirection:
+                                                      Axis.vertical,
+                                                  child: Text(
+                                                    commentList[index],
+                                                    style:
+                                                        TextStyle(fontSize: 16),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            trailing: Container(
+                                              margin: const EdgeInsets.only(
+                                                  top: 10),
+                                              child: Text(
+                                                timesList[index],
+                                                style: TextStyle(
+                                                    color: BackgroundColorWarm),
+                                              ),
                                             ),
                                           ),
                                         ),
