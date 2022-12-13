@@ -116,6 +116,7 @@ class _historyAnnoyanceChat extends State<historyAnnoyanceChat> {
                                     Annoyance(
                                       id: data["id"],
                                       solve: 1,
+                                      share: data["share"],
                                       index: data["moodIndex"],
                                     ),
                                   );
@@ -177,6 +178,7 @@ class _historyAnnoyanceChat extends State<historyAnnoyanceChat> {
                                         Annoyance(
                                           id: data["id"],
                                           share: _share,
+                                          solve: data["solve"],
                                           index: data["moodIndex"],
                                         ),
                                       );
@@ -228,6 +230,7 @@ class _historyAnnoyanceChat extends State<historyAnnoyanceChat> {
                                     Annoyance(
                                       id: data["id"],
                                       share: _share,
+                                      solve: data["solve"],
                                       index: data["moodIndex"],
                                     ),
                                   );
@@ -526,10 +529,10 @@ class _historyAnnoyanceChat extends State<historyAnnoyanceChat> {
                           width: 3.0,
                         ),
                         Flexible(
-                            child: Container(
-                                child: Image.memory(base64Decode(message),
-                                    width: 200,
-                                    height: 200,
+                          child: Container(
+                            child: Image.memory(base64Decode(message),
+                                width: 200,
+                                height: 200,
                                 filterQuality: FilterQuality.high),
                           ),
                         ),

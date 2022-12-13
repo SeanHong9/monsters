@@ -96,6 +96,7 @@ class _MainPageState extends State<MainPage>
       visited = true;
       _scaffoldKEy = GlobalKey<ScaffoldState>();
     }
+    // _future = getPhoto();
     return Scaffold(
       key: _scaffoldKEy,
       backgroundColor: const Color(0xfffffed4),

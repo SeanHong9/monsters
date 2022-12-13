@@ -38,22 +38,23 @@ class _MoodLineChartState extends State<MoodLineChart> {
     await indexMap.then((value) {
       var indexList = [];
       var timeList = [];
-      if (value.data.length < 7) {
-        for (int i = 0; i < min(7, value.data.length); i++) {
-          indexList.add(0);
-          timeList.add("_");
-        }
-      }
+      // if (value.data.length < 7) {
+      //   for (int i = 0; i < min(7, value.data.length); i++) {
+      //     indexList.add(0);
+      //     timeList.add("_");
+      //   }
+      // }
 
       for (int i = 0; i < min(7, value.data.length); i++) {
         indexList.add(value.data.elementAt(i).index);
         timeList.add(value.data.elementAt(i).time);
       }
-      // for (int j = indexList.length; j < 7; j++) {
-      //   // indexList.add(indexList.last);
-      //   indexList.add(0);
-      //   timeList.add("_");
-      // }
+      for (int j = indexList.length; j < 7; j++) {
+        indexList.add(0);
+        timeList.add("_");
+      }
+      timeList = timeList.reversed.toList();
+      indexList = indexList.reversed.toList();
       indexMapResult.putIfAbsent("indexList", () => indexList);
       indexMapResult.putIfAbsent("timeList", () => timeList);
       dateTimeData = indexMapResult["timeList"];
@@ -257,7 +258,7 @@ class _MoodLineChartState extends State<MoodLineChart> {
                                               decoration: const BoxDecoration(
                                                 image: DecorationImage(
                                                   image: AssetImage(
-                                                      'assets/image/mood/moodPoint_1.png'),
+                                                      'assets/image/mood/moodPoint_5.png'),
                                                   fit: BoxFit.cover,
                                                 ),
                                               ),
@@ -289,7 +290,7 @@ class _MoodLineChartState extends State<MoodLineChart> {
                                               decoration: const BoxDecoration(
                                                 image: DecorationImage(
                                                   image: AssetImage(
-                                                      'assets/image/mood/moodPoint_2.png'),
+                                                      'assets/image/mood/moodPoint_4.png'),
                                                   fit: BoxFit.cover,
                                                 ),
                                               ),
@@ -353,7 +354,7 @@ class _MoodLineChartState extends State<MoodLineChart> {
                                               decoration: const BoxDecoration(
                                                 image: DecorationImage(
                                                   image: AssetImage(
-                                                      'assets/image/mood/moodPoint_4.png'),
+                                                      'assets/image/mood/moodPoint_2.png'),
                                                   fit: BoxFit.cover,
                                                 ),
                                               ),
@@ -385,7 +386,7 @@ class _MoodLineChartState extends State<MoodLineChart> {
                                               decoration: const BoxDecoration(
                                                 image: DecorationImage(
                                                   image: AssetImage(
-                                                      'assets/image/mood/moodPoint_5.png'),
+                                                      'assets/image/mood/moodPoint_1.png'),
                                                   fit: BoxFit.cover,
                                                 ),
                                               ),
@@ -467,12 +468,12 @@ class _MoodLineChartState extends State<MoodLineChart> {
     switch (value.toInt()) {
       case 1:
         mood = const Image(
-          image: AssetImage('assets/image/mood/moodPoint_5.png'),
+          image: AssetImage('assets/image/mood/moodPoint_1.png'),
         );
         break;
       case 2:
         mood = const Image(
-          image: AssetImage('assets/image/mood/moodPoint_4.png'),
+          image: AssetImage('assets/image/mood/moodPoint_2.png'),
         );
         break;
       case 3:
@@ -482,12 +483,12 @@ class _MoodLineChartState extends State<MoodLineChart> {
         break;
       case 4:
         mood = const Image(
-          image: AssetImage('assets/image/mood/moodPoint_2.png'),
+          image: AssetImage('assets/image/mood/moodPoint_4.png'),
         );
         break;
       case 5:
         mood = const Image(
-          image: AssetImage('assets/image/mood/moodPoint_1.png'),
+          image: AssetImage('assets/image/mood/moodPoint_5.png'),
         );
         break;
       default:
