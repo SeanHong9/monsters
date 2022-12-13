@@ -14,10 +14,10 @@ class SocialRepository implements SocialApiDataSource {
   final client = http.Client();
   @override
   Future<Map<String, dynamic>?> searchSocialByType(int type) {
-    String searchType = "3";
-    if (type == 1) {
-      searchType = "3";
-    }
+    String searchType = "2";
+    // if (type == 1) {
+    //   searchType = "3";
+    // }
     if (type == 2) {
       searchType = "1";
     }

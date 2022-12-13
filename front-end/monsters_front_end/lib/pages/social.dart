@@ -45,7 +45,7 @@ class _SocialPageState extends State<SocialPage>
   //異步處理
   late Future _future;
   //控制標籤
-  int selectionTab_type = 1;
+  int selectionTab_type = 2;
 
   double getRadiansFromDegree(double degree) {
     double unitRadian = 57.295779513;
@@ -175,6 +175,7 @@ class _SocialPageState extends State<SocialPage>
                       child: Wrap(
                         spacing: 20,
                         children: [
+/*
                           //全部標籤
                           InkWell(
                               child: Container(
@@ -203,6 +204,7 @@ class _SocialPageState extends State<SocialPage>
                                   setState(() {});
                                 }
                               }),
+                          */
                           //煩惱標籤
                           InkWell(
                               child: Container(

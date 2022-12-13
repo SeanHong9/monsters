@@ -40,10 +40,11 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
   //控制標籤
   //1:全部 2:煩惱 3:日記
   int selectionTab_type = 2;
+  
   //當selectedSolve開啟已解決標籤
-  int selectionTab_solve = 0;
+  int selectionTab_solve = 1;
   //當selectionTab_solve_enabled解鎖後兩個標籤
-  bool selectionTab_solve_enabled = false;
+  bool selectionTab_solve_enabled = true;
 
   late Future _future;
   @override
