@@ -81,6 +81,7 @@ public class SocialController {
                             diaryNode.put("id", diaryBean.getId());
                             diaryNode.put("nickName", nickName);
                             diaryNode.put("content", diaryBean.getContent());
+                            diaryNode.put("mood", diaryBean.getMood());
                             diaryNode.put("monsterId", diaryBean.getMonsterId() / 4);
                             diaryNode.put("index", diaryBean.getIndex());
                             diaryNode.put("time", diaryBean.getTime().format(DateTimeFormatter.ofPattern("MM/dd")));
@@ -114,6 +115,7 @@ public class SocialController {
                             diaryNode.put("content", diaryBean.getContent());
                             diaryNode.put("imageContent", diaryBean.getImageContent());
                             diaryNode.put("audioContent", diaryBean.getAudioContent());
+                            diaryNode.put("mood", diaryBean.getMood());
                             diaryNode.put("monsterId", diaryBean.getMonsterId() / 4);
                             diaryNode.put("index", diaryBean.getIndex());
                             diaryNode.put("time", diaryBean.getTime().format(DateTimeFormatter.ofPattern("MM/dd")));
