@@ -31,24 +31,52 @@ public class MemberController {
     @ResponseBody
     @PostMapping(value = "/create")
     public ResponseEntity register(@RequestBody PersonalInfoBean personalInfoBean) {
+        boolean isCreate = false;
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode result = mapper.createObjectNode();
         result.putObject("data");
+        Optional<PersonalInfoBean> personalInfoBeanOptional = personalInfoService.getByPK(personalInfoBean.getAccount());
+        List<PersonalInfoBean> personalInfoBeanList = personalInfoService.searchAll();
         try {
-            personalInfoService.createAndReturnBean(personalInfoBean);
-            PersonalMonsterBean personalMonsterBean = new PersonalMonsterBean();
-            PersonalMonsterUseBean personalMonsterUseBean = new PersonalMonsterUseBean();
-            personalMonsterBean.setAccount(personalInfoBean.getAccount());
-            personalMonsterBean.setMonsterId(0);
-            personalMonsterBean.setMonsterGroup(0);
-            personalMonsterUseBean.setAccount(personalInfoBean.getAccount());
-            personalMonsterUseBean.setMonsterGroup(0);
-            personalMonsterUseBean.setUse(0);
-            personalMonsterService.createAndReturnBean(personalMonsterBean);
-            personalMonsterUseService.createAndReturnBean(personalMonsterUseBean);
-            result.put("result", true);
-            result.put("errorCode", "200");
-            result.put("message", "註冊成功");
+            if (personalInfoBeanOptional.isPresent()) {
+                result.put("result", false);
+                result.put("errorCode", "");
+                result.put("message", "帳號已被註冊");
+            } else {
+                for(PersonalInfoBean userBean : personalInfoBeanList){
+                    if(userBean.getMail().equals(personalInfoBean.getMail())){
+                        result.put("result", false);
+                        result.put("errorCode", "");
+                        result.put("message", "信箱已被使用");
+                        isCreate = false;
+                        break;
+                    }else if(userBean.getNickName().equals(personalInfoBean.getNickName())){
+                        result.put("result", false);
+                        result.put("errorCode", "");
+                        result.put("message", "暱稱已被使用");
+                        isCreate = false;
+                        break;
+                    }else {
+                        isCreate = true;
+                    }
+                }
+                if(isCreate) {
+                    personalInfoService.createAndReturnBean(personalInfoBean);
+                    PersonalMonsterBean personalMonsterBean = new PersonalMonsterBean();
+                    PersonalMonsterUseBean personalMonsterUseBean = new PersonalMonsterUseBean();
+                    personalMonsterBean.setAccount(personalInfoBean.getAccount());
+                    personalMonsterBean.setMonsterId(0);
+                    personalMonsterBean.setMonsterGroup(0);
+                    personalMonsterUseBean.setAccount(personalInfoBean.getAccount());
+                    personalMonsterUseBean.setMonsterGroup(0);
+                    personalMonsterUseBean.setUse(0);
+                    personalMonsterService.createAndReturnBean(personalMonsterBean);
+                    personalMonsterUseService.createAndReturnBean(personalMonsterUseBean);
+                    result.put("result", true);
+                    result.put("errorCode", "200");
+                    result.put("message", "註冊成功");
+                }
+            }
         } catch (Exception e) {
             result.put("result", false);
             result.put("errorCode", "");
