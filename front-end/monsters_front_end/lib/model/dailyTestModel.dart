@@ -13,14 +13,14 @@ class DailyTest {
   final String learn;
   final String web;
 
-  DailyTest(
-      {required this.id,
-      required this.question,
-      required this.optionOne,
-      required this.optionTwo,
-      required this.optionThree,
-      required this.optionFour,
-      required this.answer,
+  DailyTest({
+    required this.id,
+    required this.question,
+    required this.optionOne,
+    required this.optionTwo,
+    required this.optionThree,
+    required this.optionFour,
+    required this.answer,
     required this.learn,
     required this.web,
   });
@@ -36,13 +36,13 @@ class DailyTest {
       String? learn,
       String? web}) {
     return DailyTest(
-        id: id ?? this.id,
-        question: question ?? this.question,
-        optionOne: optionOne ?? this.optionOne,
-        optionTwo: optionTwo ?? this.optionTwo,
-        optionThree: optionThree ?? this.optionThree,
-        optionFour: optionFour ?? this.optionFour,
-        answer: answer ?? this.answer,
+      id: id ?? this.id,
+      question: question ?? this.question,
+      optionOne: optionOne ?? this.optionOne,
+      optionTwo: optionTwo ?? this.optionTwo,
+      optionThree: optionThree ?? this.optionThree,
+      optionFour: optionFour ?? this.optionFour,
+      answer: answer ?? this.answer,
       learn: learn ?? this.learn,
       web: web ?? this.web,
     );
@@ -64,13 +64,13 @@ class DailyTest {
 
   factory DailyTest.fromMap(Map<String, dynamic> map) {
     return DailyTest(
-        id: map['id'],
-        question: map['question'],
-        optionOne: map['optionOne'],
-        optionTwo: map['optionTwo'],
-        optionThree: map['optionThree'],
-        optionFour: map['optionFour'],
-        answer: map['answer'],
+      id: map['id'],
+      question: map['question'],
+      optionOne: map['optionOne'],
+      optionTwo: map['optionTwo'],
+      optionThree: map['optionThree'],
+      optionFour: map['optionFour'],
+      answer: map['answer'],
       learn: map['learn'],
       web: map['web'],
     );

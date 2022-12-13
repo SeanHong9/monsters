@@ -130,16 +130,23 @@ class MemberRepository implements MemberApiDataSource {
     try {
       final request =
           await client.get(url, headers: {'Content-type': 'application/json'});
+          
+    var str = request.body.toString();
+    const start = "[";
+    const end = "]";
+    final startIndex = str.indexOf(start);
+    final endIndex = str.indexOf(end, startIndex + start.length);
+    var stringtoJson = str.substring(startIndex + start.length, endIndex);
       log("*" * 20);
       log("member status");
       log("status: " + request.statusCode.toString());
       log("body: " + request.body.toString());
       log("*" * 20);
       if (request.statusCode == 200) {
-        Map<String, dynamic> personalInfo = jsonDecode(request.body);
+        Map<String, dynamic> personalInfo = jsonDecode(stringtoJson);
         return Future.value(personalInfo);
       } else {
-        Map<String, dynamic> personalInfo = jsonDecode(request.body);
+        Map<String, dynamic> personalInfo = jsonDecode(stringtoJson);
         return Future.value(personalInfo);
       }
     } catch (e) {

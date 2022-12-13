@@ -56,7 +56,6 @@ class _Drawer_personalInfoState extends State<Drawer_personalInfo> {
         personalInfoResult["account"] = value.data.first.account;
         personalInfoResult["photo"] = value.data.first.photo;
         personalInfoResult["lock"] = value.data.first.lock;
-        personalInfoResult["dailyTest"] = value.data.first.dailyTest;
 
         Future<ms.Data> monsters = monsterRepository
             .searchMonsterByAccount()

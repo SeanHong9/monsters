@@ -3,22 +3,25 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:monsters_front_end/pages/manual/manual.dart';
 import 'package:monsters_front_end/pages/settings/monsters_information.dart';
 import 'package:monsters_front_end/pages/settings/style.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+// import 'package:shared_preferences/shared_preferences.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 
 class DailyTest_correct extends StatefulWidget {
   String learn, web;
-  DailyTest_correct(this.learn, this.web);
+  int monsterId, monsterGroup, progress;
+  DailyTest_correct(
+      this.learn, this.web, this.monsterId, this.monsterGroup, this.progress);
   @override
-  _DailyTest_correctState createState() =>
-      _DailyTest_correctState(this.learn, this.web);
+  _DailyTest_correctState createState() => _DailyTest_correctState(
+      this.learn, this.web, this.monsterId, this.monsterGroup, this.progress);
 }
 
 class _DailyTest_correctState extends State<DailyTest_correct> {
   late Future _future;
   var learn, web;
-  _DailyTest_correctState(this.learn, this.web);
-  int unlockProgress = 0;
+  int monsterId, monsterGroup, progress;
+  _DailyTest_correctState(
+      this.learn, this.web, this.monsterId, this.monsterGroup, this.progress);
 
   @override
   void initState() {
@@ -90,9 +93,9 @@ class _DailyTest_correctState extends State<DailyTest_correct> {
                               left: 30,
                             ),
                             alignment: Alignment.topLeft,
-                            child: unlockProgress < 7
+                            child: progress < 7
                                 ? Text(
-                                    "每天只有第一次能挑戰獎勵進度，\n再成功${7 - unlockProgress}次就可以解鎖隱藏獎勵！\n目前解鎖進度 ：",
+                                    "每天只有第一次能挑戰獎勵進度，\n再成功${7 - progress}次就可以解鎖隱藏獎勵！\n目前解鎖進度 ：",
                                     style: const TextStyle(
                                         fontSize: 20,
                                         color: BackgroundColorWarm),
@@ -187,7 +190,7 @@ class _DailyTest_correctState extends State<DailyTest_correct> {
     Container littleguy = Container();
     // Color boxColor = Colors.white;
     Color boxColor = Colors.white;
-    if (unlockProgress == value) {
+    if (progress == value) {
       littleguy = Container(
         child: SvgPicture.string(
           _svg_mu7hm4,
@@ -196,7 +199,7 @@ class _DailyTest_correctState extends State<DailyTest_correct> {
         ),
       );
     }
-    if (value <= unlockProgress) {
+    if (value <= progress) {
       boxColor = BackgroundColorSoft;
     }
     return Expanded(
@@ -232,44 +235,47 @@ class _DailyTest_correctState extends State<DailyTest_correct> {
     //要較晚跳出才能pop，不然會出錯
     Future.delayed(Duration(microseconds: 200), () {
       //進度到7，顯示獲得怪獸
-      if (unlockProgress == 7) {
-        popUp(context);
+      if (progress == 7) {
+        popUp(context, monsterGroup);
       }
     });
   }
 
   Future<bool> getUserDailyTestProgress() async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    unlockProgress = pref.getInt("unlockProgress")!;
+    // SharedPreferences pref = await SharedPreferences.getInstance();
+    // progress = pref.getInt("unlockProgress")!;
     //上面這行unlockProgress用sharepref替代
 
     // unlockProgress=SharedPreferences...
     return true;
   }
 
-  Future<dynamic> popUp(BuildContext context) {
+  Future<dynamic> popUp(BuildContext context, int monsterGroup) {
     return showDialog(
       context: context,
       builder: (BuildContext context) {
-        return const DailyPresentWidget();
+        return DailyPresentWidget(monsterGroup);
       },
     );
   }
 }
 
 class DailyPresentWidget extends StatefulWidget {
-  const DailyPresentWidget({Key? key}) : super(key: key);
+  int monsterGroup;
+  DailyPresentWidget(this.monsterGroup, {Key? key}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() {
-    return _DailyPresentWidget();
+    return _DailyPresentWidget(monsterGroup);
   }
 }
 
 class _DailyPresentWidget extends State<DailyPresentWidget> {
-  String present_name = getRandomMonsterName_CH();
+  int monsterGroup;
+  _DailyPresentWidget(this.monsterGroup);
   @override
   Widget build(BuildContext context) {
+    String present_name = monsterNamesList_CH[monsterGroup];
     return Material(
         type: MaterialType.transparency,
         child: Center(
@@ -308,8 +314,9 @@ class _DailyPresentWidget extends State<DailyPresentWidget> {
                   textAlign: TextAlign.center,
                   style: TextStyle(color: BackgroundColorWarm, fontSize: 20),
                 ),
+                
                 Text(
-                  "${present_name}",
+                  "$present_name",
                   style: TextStyle(
                       color: BackgroundColorWarm,
                       fontSize: 30,
