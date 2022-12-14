@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:adobe_xd/page_link.dart';
 import 'package:flutter/material.dart';
@@ -256,6 +257,8 @@ class _Login_selfacountState extends State<Login_selfacount> {
         account: _accountController.text, password: _pwdController.text));
     if (result.contains("true")) {
       saveSelfLogin(_accountController.text);
+      
+      sleep(Duration(seconds: 1));
       Navigator.of(context)
           .pushReplacement(MaterialPageRoute(builder: (context) => MainPage()));
     } else {
@@ -271,9 +274,10 @@ class _Login_selfacountState extends State<Login_selfacount> {
 
   void saveSelfLogin(String account) async {
     //儲存account shared preferences (後用來判斷此裝置是否登入過)
+    userAccount = account;
+
     SharedPreferences pref = await SharedPreferences.getInstance();
     await pref.setString("selfLogin", account);
-    userAccount = account;
   }
 }
 

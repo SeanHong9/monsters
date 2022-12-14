@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:adobe_xd/page_link.dart';
 import 'package:flutter/material.dart';
@@ -510,6 +511,8 @@ class _SignUpState extends State<SignUp> {
                 "註冊成功",
                 style: TextStyle(color: Colors.white, fontSize: 30),
               )));
+              
+          sleep(Duration(microseconds: 500));
           Navigator.pushReplacement(context,
               MaterialPageRoute(builder: (context) => Login_selfacount()));
         }
