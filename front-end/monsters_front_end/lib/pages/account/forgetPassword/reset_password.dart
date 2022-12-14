@@ -1,5 +1,8 @@
+import 'dart:developer';
+
 import 'package:adobe_xd/page_link.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:monsters_front_end/pages/account/login_selfacount.dart';
 
@@ -9,6 +12,7 @@ class Reset_Password extends StatefulWidget {
 }
 
 class _Reset_PasswordState extends State<Reset_Password> {
+  final TextEditingController _accountController = TextEditingController();
   final TextEditingController _pwdController = TextEditingController();
   final TextEditingController _checkpwdController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -20,6 +24,7 @@ class _Reset_PasswordState extends State<Reset_Password> {
       backgroundColor: const Color(0xfffffed4),
       body: SafeArea(
         child: SingleChildScrollView(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           child: Form(
             key: _formKey,
             child: Padding(
@@ -71,6 +76,48 @@ class _Reset_PasswordState extends State<Reset_Password> {
                   ),
 
                   SizedBox(height: 50.0),
+                  //帳號
+                  TextFormField(
+                    style: const TextStyle(color: Colors.black),
+                    autofocus: false,
+                    controller: _accountController,
+                    textInputAction: TextInputAction.next,
+                    decoration: const InputDecoration(
+                      labelText: "帳號",
+                      hintText: '請輸入帳號',
+                      prefixIcon: Icon(Icons.person),
+                      border: OutlineInputBorder(
+                        ///設定邊框四個角的弧度
+                        borderRadius: BorderRadius.all(Radius.circular(90)),
+
+                        ///用來配置邊框的樣式
+                        borderSide: BorderSide(
+                          ///設定邊框的顏色
+                          color: Color.fromRGBO(160, 82, 45, 1),
+                          width: 2.0,
+                        ),
+                      ),
+                      fillColor: Color.fromRGBO(255, 255, 255, 1),
+                      filled: true,
+                    ),
+                    autovalidateMode: AutovalidateMode.onUserInteraction,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.allow(
+                          RegExp("[a-zA-Z]|[0-9]")),
+                    ],
+                    validator: (value) {
+                      if (value!.isNotEmpty &&
+                          value.length > 5 &&
+                          value.length < 21) {
+                        return null;
+                      } else if (value.isNotEmpty) {
+                        return '帳號須為英數字混和6-20碼';
+                      } else {
+                        return '帳號不得空白';
+                      }
+                    },
+                  ),
+                  SizedBox(height: 20.0),
                   //密碼
                   TextFormField(
                     style: const TextStyle(color: Colors.black),
@@ -98,16 +145,18 @@ class _Reset_PasswordState extends State<Reset_Password> {
                     obscureText: true,
                     autovalidateMode: AutovalidateMode.onUserInteraction,
                     validator: (value) {
-                      if (value!.isNotEmpty && value.length > 5) {
+                      if (value!.isNotEmpty &&
+                          value.length > 7 &&
+                          value.length < 21) {
                         return null;
-                      } else if (value.isNotEmpty && value.length < 6) {
-                        return '密碼需至少6數';
-                      } else {
+                      } else if (value.isEmpty) {
                         return '密碼不得空白';
+                      } else {
+                        return '密碼須為英數字混和8-20碼';
                       }
                     },
                   ),
-                  SizedBox(height: 10.0),
+                  SizedBox(height: 20.0),
                   //確認密碼
                   TextFormField(
                       style: const TextStyle(color: Colors.black),
@@ -135,8 +184,6 @@ class _Reset_PasswordState extends State<Reset_Password> {
                       validator: (value) {
                         if (value!.isEmpty) {
                           return '確認密碼不得空白';
-                        } else if (value.isNotEmpty && value.length < 6) {
-                          return '確認密碼需至少6數';
                         } else if (value == _pwdController.text) {
                           return null;
                         } else {
@@ -164,10 +211,11 @@ class _Reset_PasswordState extends State<Reset_Password> {
                       onPressed: () {
                         final isValidForm = _formKey.currentState!.validate();
                         if (isValidForm) {
-                          Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => Login_selfacount()));
+                          log("確認");
+                          // Navigator.pushReplacement(
+                          //     context,
+                          //     MaterialPageRoute(
+                          //         builder: (context) => Login_selfacount()));
                         }
                       },
                     ),
