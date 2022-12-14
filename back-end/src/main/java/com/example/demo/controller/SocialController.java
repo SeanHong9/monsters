@@ -67,6 +67,7 @@ public class SocialController {
                             annoyanceNode.put("type", annoyanceBean.getType());
                             annoyanceNode.put("monsterId", annoyanceBean.getMonsterId() / 4);
                             annoyanceNode.put("mood", annoyanceBean.getMood());
+                            annoyanceNode.put("avatar", personalInfo.get().getPhoto());
                             annoyanceNode.put("index", annoyanceBean.getIndex());
                             annoyanceNode.put("time", annoyanceBean.getTime().format(DateTimeFormatter.ofPattern("MM/dd")));
                             annoyanceNode.put("solve", annoyanceBean.getSolve());
@@ -83,6 +84,7 @@ public class SocialController {
                             diaryNode.put("content", diaryBean.getContent());
                             diaryNode.put("mood", diaryBean.getMood());
                             diaryNode.put("monsterId", diaryBean.getMonsterId() / 4);
+                            diaryNode.put("avatar", personalInfo.get().getPhoto());
                             diaryNode.put("index", diaryBean.getIndex());
                             diaryNode.put("time", diaryBean.getTime().format(DateTimeFormatter.ofPattern("MM/dd")));
                             diaryNode.put("share", diaryBean.getShare());
@@ -100,6 +102,7 @@ public class SocialController {
                             annoyanceNode.put("audioContent", annoyanceBean.getAudioContent());
                             annoyanceNode.put("type", annoyanceBean.getType());
                             annoyanceNode.put("monsterId", annoyanceBean.getMonsterId() / 4);
+                            annoyanceNode.put("avatar", personalInfo.get().getPhoto());
                             annoyanceNode.put("mood", annoyanceBean.getMood());
                             annoyanceNode.put("index", annoyanceBean.getIndex());
                             annoyanceNode.put("time", annoyanceBean.getTime().format(DateTimeFormatter.ofPattern("MM/dd")));
@@ -117,6 +120,7 @@ public class SocialController {
                             diaryNode.put("audioContent", diaryBean.getAudioContent());
                             diaryNode.put("mood", diaryBean.getMood());
                             diaryNode.put("monsterId", diaryBean.getMonsterId() / 4);
+                            diaryNode.put("avatar", personalInfo.get().getPhoto());
                             diaryNode.put("index", diaryBean.getIndex());
                             diaryNode.put("time", diaryBean.getTime().format(DateTimeFormatter.ofPattern("MM/dd")));
                             diaryNode.put("share", diaryBean.getShare());
@@ -172,6 +176,7 @@ public class SocialController {
                     annoyanceNode.put("nickName", nickName);
                     annoyanceNode.put("type", annoyanceBean.getType());
                     annoyanceNode.put("monsterId", annoyanceBean.getMonsterId() / 4);
+                    annoyanceNode.put("avatar", personalInfo.get().getPhoto());
                     annoyanceNode.put("mood", annoyanceBean.getMood());
                     annoyanceNode.put("index", annoyanceBean.getIndex());
                     annoyanceNode.put("time", annoyanceBean.getTime().format(DateTimeFormatter.ofPattern("MM/dd")));
@@ -189,6 +194,7 @@ public class SocialController {
                     diaryNode.put("audioContent", diaryBean.getAudioContent());
                     diaryNode.put("mood", diaryBean.getMood());
                     diaryNode.put("monsterId", diaryBean.getMonsterId() / 4);
+                    diaryNode.put("avatar", personalInfo.get().getPhoto());
                     diaryNode.put("index", diaryBean.getIndex());
                     diaryNode.put("time", diaryBean.getTime().format(DateTimeFormatter.ofPattern("MM/dd")));
                     diaryNode.put("share", diaryBean.getShare());
