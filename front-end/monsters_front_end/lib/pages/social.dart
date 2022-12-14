@@ -461,7 +461,7 @@ class _SocialPageState extends State<SocialPage>
                                                                           .fitHeight,
                                                                       filterQuality:
                                                                           FilterQuality
-                                                                              .high),
+                                                                              .low),
                                                                 ),
                                                         ),
                                                       ],
@@ -495,7 +495,8 @@ class _SocialPageState extends State<SocialPage>
                                                           BorderRadius.all(
                                                               Radius.elliptical(
                                                                   9999.0,
-                                                                  9999.0)),
+                                                                  9999.0),
+                                                      ),
                                                     ),
                                                   ),
                                                 ),

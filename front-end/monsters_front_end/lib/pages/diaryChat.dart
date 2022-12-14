@@ -210,28 +210,28 @@ class _diaryChat extends State<diaryChat> with WidgetsBindingObserver {
                                             Navigator.pop(context)
                                           }),
                                 ),
-                                PopupMenuItem(
-                                  child: ListTile(
-                                      leading: Icon(
-                                          Icons.video_camera_front_rounded),
-                                      title: Text("錄影"),
-                                      onTap: () => {
-                                            //錄影選項
-                                            recordVideo(),
-                                            Navigator.pop(context)
-                                          }),
-                                ),
-                                PopupMenuItem(
-                                  child: ListTile(
-                                      leading:
-                                          Icon(Icons.keyboard_voice_rounded),
-                                      title: Text("錄音"),
-                                      onTap: () => {
-                                            //錄音選項
-                                            Navigator.pop(context),
-                                            recordAudio(context),
-                                          }),
-                                ),
+                                // PopupMenuItem(
+                                //   child: ListTile(
+                                //       leading: Icon(
+                                //           Icons.video_camera_front_rounded),
+                                //       title: Text("錄影"),
+                                //       onTap: () => {
+                                //             //錄影選項
+                                //             recordVideo(),
+                                //             Navigator.pop(context)
+                                //           }),
+                                // ),
+                                // PopupMenuItem(
+                                //   child: ListTile(
+                                //       leading:
+                                //           Icon(Icons.keyboard_voice_rounded),
+                                //       title: Text("錄音"),
+                                //       onTap: () => {
+                                //             //錄音選項
+                                //             Navigator.pop(context),
+                                //             recordAudio(context),
+                                //           }),
+                                // ),
                                 PopupMenuItem(
                                     child: ListTile(
                                         leading: Icon(Icons.image_rounded),
@@ -241,15 +241,15 @@ class _diaryChat extends State<diaryChat> with WidgetsBindingObserver {
                                               pickPhoto(),
                                               Navigator.pop(context)
                                             })),
-                                PopupMenuItem(
-                                    child: ListTile(
-                                        leading: Icon(Icons.video_collection),
-                                        title: Text("從相簿匯入影片"),
-                                        onTap: () => {
-                                              //匯入影片
-                                              pickVideo(),
-                                              Navigator.pop(context)
-                                            })),
+                                // PopupMenuItem(
+                                //     child: ListTile(
+                                //         leading: Icon(Icons.video_collection),
+                                //         title: Text("從相簿匯入影片"),
+                                //         onTap: () => {
+                                //               //匯入影片
+                                //               pickVideo(),
+                                //               Navigator.pop(context)
+                                //             })),
                               ],
                             )
                           : null,

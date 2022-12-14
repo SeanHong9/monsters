@@ -8,11 +8,10 @@ abstract class MemberApiDataSource {
   Future<String> login(Member member);
 
   Future<Map<String, dynamic>?> searchPersonalInfoByAccount();
-  
+
   Future<String> modifyPersonalInfo(Member member);
-
   
+  Future<String> modifyPersonalPassword(Member member);
+
   Future<Map<String, dynamic>?> updateDailyTest();
-
-
 }
