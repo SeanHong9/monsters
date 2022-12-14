@@ -208,7 +208,7 @@ public class SocialController {
     }
 
     @ResponseBody
-    @PostMapping(path = "/comment/annoyance")
+    @PostMapping(path = "/comment/annoyance", produces = "application/json; charset=UTF-8")
     public ResponseEntity createAnnoyanceComment(@RequestBody AnnoyanceSocialCommentBean annoyanceSocialCommentBean) {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode result = mapper.createObjectNode();
@@ -233,7 +233,7 @@ public class SocialController {
     }
 
     @ResponseBody
-    @PostMapping(path = "/comment/diary")
+    @PostMapping(path = "/comment/diary", produces = "application/json; charset=UTF-8")
     public ResponseEntity createDiaryComment(@RequestBody DiarySocialCommentBean diarySocialCommentBean) {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode result = mapper.createObjectNode();
@@ -259,7 +259,7 @@ public class SocialController {
 
 
     @ResponseBody
-    @GetMapping(path = "comment/{type}/{id}")
+    @GetMapping(path = "comment/{type}/{id}", produces = "application/json; charset=UTF-8")
     public ResponseEntity searchComment(@PathVariable(name = "type") int type,
                                         @PathVariable(name = "id") Integer id) {
         ObjectMapper mapper = new ObjectMapper();
@@ -295,7 +295,7 @@ public class SocialController {
                             commentNode.put("photo", photo);
                             commentNode.put("annoyanceId", annoyanceSocialCommentBean.getAnnoyanceId());
                             commentNode.put("commentContent", annoyanceSocialCommentBean.getCommentContent());
-                            commentNode.put("time", annoyanceSocialCommentBean.getDate().format(DateTimeFormatter.ofPattern("MM/dd")));
+                            commentNode.put("date", annoyanceSocialCommentBean.getDate().format(DateTimeFormatter.ofPattern("MM/dd")));
                         }
                         break;
                     case 2:
@@ -309,7 +309,7 @@ public class SocialController {
                             commentNode.put("photo", photo);
                             commentNode.put("diaryId", diarySocialCommentBean.getDiaryId());
                             commentNode.put("commentContent", diarySocialCommentBean.getCommentContent());
-                            commentNode.put("time", diarySocialCommentBean.getDate().format(DateTimeFormatter.ofPattern("MM/dd")));
+                            commentNode.put("date", diarySocialCommentBean.getDate().format(DateTimeFormatter.ofPattern("MM/dd")));
                         }
                         break;
                     default:
