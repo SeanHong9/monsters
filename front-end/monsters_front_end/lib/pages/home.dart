@@ -93,10 +93,11 @@ class _MainPageState extends State<MainPage>
   @override
   Widget build(BuildContext context) {
     if (!visited) {
+      getPhoto();
       visited = true;
       _scaffoldKEy = GlobalKey<ScaffoldState>();
+      setState(() {});
     }
-    // _future = getPhoto();
     return Scaffold(
       key: _scaffoldKEy,
       backgroundColor: const Color(0xfffffed4),

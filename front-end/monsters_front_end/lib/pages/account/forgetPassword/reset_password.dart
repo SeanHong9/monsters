@@ -1,14 +1,22 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:adobe_xd/page_link.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:monsters_front_end/main.dart';
 import 'package:monsters_front_end/pages/account/login_selfacount.dart';
 
+import '../../../model/memberModel.dart';
+import '../../../repository/memberRepo.dart';
+
 class Reset_Password extends StatefulWidget {
+  String _mailController;
+  Reset_Password(this._mailController);
+
   @override
-  _Reset_PasswordState createState() => _Reset_PasswordState();
+  _Reset_PasswordState createState() => _Reset_PasswordState(_mailController);
 }
 
 class _Reset_PasswordState extends State<Reset_Password> {
@@ -16,6 +24,8 @@ class _Reset_PasswordState extends State<Reset_Password> {
   final TextEditingController _pwdController = TextEditingController();
   final TextEditingController _checkpwdController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  String mailController;
+  _Reset_PasswordState(this.mailController);
 
   @override
   Widget build(BuildContext context) {
@@ -210,6 +220,8 @@ class _Reset_PasswordState extends State<Reset_Password> {
                       ),
                       onPressed: () {
                         final isValidForm = _formKey.currentState!.validate();
+                        //reset password
+                        resetPassword(mailController, _pwdController.text);
                         if (isValidForm) {
                           log("確認");
                           // Navigator.pushReplacement(
@@ -227,6 +239,16 @@ class _Reset_PasswordState extends State<Reset_Password> {
         ),
       ),
     );
+  }
+
+  Future<void> resetPassword(String mail, String password) async {
+    MemberRepository memberRepository = MemberRepository();
+    Future<Data> request = await memberRepository
+        .modifyPersonalPassword(Member(mail: mail, password: password))
+        .then((value) => json.decode(value));
+    await request.then((value) {
+      log(value.toString());
+    });
   }
 }
 

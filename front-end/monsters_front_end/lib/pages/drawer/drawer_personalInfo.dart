@@ -81,7 +81,7 @@ class _Drawer_personalInfoState extends State<Drawer_personalInfo> {
   @override
   Widget build(BuildContext context) {
     _future = getPersonalInfo();
-    
+
     sleep(Duration(microseconds: 500));
 
     setState(() {});
@@ -120,12 +120,15 @@ class _Drawer_personalInfoState extends State<Drawer_personalInfo> {
                                   border: Border.all(
                                       width: 3, color: const Color(0xffa0522d)),
                                 ),
-                                child: CircleAvatar(
-                                  minRadius: 40,
-                                  backgroundImage: AssetImage(
-                                      getMonsterAvatarPath(monsterNamesList[
-                                          snapshot.data["photo"]])),
-                                ),
+                                child: snapshot.data["photo"] != null
+                                    ? CircleAvatar(
+                                        minRadius: 40,
+                                        backgroundImage: AssetImage(
+                                            getMonsterAvatarPath(
+                                                monsterNamesList[
+                                                    snapshot.data["photo"]])),
+                                      )
+                                    : Container(),
                               ),
                             ),
                           ),
@@ -260,6 +263,7 @@ class _Drawer_personalInfoState extends State<Drawer_personalInfo> {
                                   MaterialPageRoute(
                                       builder: (context) => Edit_personalInfo(
                                           data: snapshot.data)));
+                              setState(() {});
                             },
                           ),
                         ),
@@ -395,7 +399,7 @@ class _AvatarWidget extends State<AvatarWidget> {
         ),
       ),
       onTap: () async {
-        if (save == false) {
+        if (save == false || !monsterNamesList.contains(choosenAvatar)) {
           Navigator.pop(context);
         } else {
           choosenAvatar = selected;

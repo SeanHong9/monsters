@@ -32,6 +32,36 @@ class MemberRepository implements MemberApiDataSource {
     return _modifyPersonalInfo(
         Uri.parse('$domain/member/modify/$userAccount'), member);
   }
+  
+
+  @override
+  Future<String> modifyPersonalPassword(Member member) {
+    return _modifyPersonalPassword(
+        Uri.parse('$domain/member/modify/$userAccount'), member);
+  }
+
+  Future<String> _modifyPersonalPassword(
+    Uri url,
+    Member member,
+  ) async {
+    log("_modifyPersonalInfo");
+    try {
+      final request = await client.patch(
+        url,
+        headers: {'Content-type': 'application/json'},
+        body: json.encode(member),
+      );
+      log("statusCode: " + request.statusCode.toString());
+      log("body: " + request.body.toString());
+      if (request.statusCode == 200) {
+        return request.body;
+      } else {
+        return Future.value(request.body);
+      }
+    } catch (e) {
+      return e.toString();
+    }
+  }
 
   Future<String> _createMember(
     Uri url,
