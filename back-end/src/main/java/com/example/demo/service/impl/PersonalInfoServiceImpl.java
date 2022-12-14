@@ -64,34 +64,63 @@ public class PersonalInfoServiceImpl extends BaseServiceImplement<PersonalInfoDA
     public List<PersonalMonsterBean> updateDailyTest(String account) {
         Optional<PersonalInfo> personalInfoOptional = personalInfoDAO.getByPK(account);
         List<PersonalMonsterBean> personalMonsterBean = new ArrayList<>();
+        List<PersonalMonster> monsterList = personalMonsterDAO.findByAccount(account);
+        int stash = 0;
+        if (monsterList.size() % 4 == 0) {
+            stash = (monsterList.size() / 4);
+        } else {
+            stash = (monsterList.size() / 4) + 1;
+        }
+        boolean isCreate = false;
         if (personalInfoOptional.isPresent()) {
             PersonalInfo personalInfo = personalInfoOptional.get();
             personalInfo.setDailyTest(personalInfoOptional.get().getDailyTest() + 1);
             if (personalInfo.getDailyTest() == 7) {
                 personalInfo.setDailyTest(0);
-                List<AllMonster> allMonsterList = allMonsterDAO.searchAll();
-                int index = (int) (Math.random() * allMonsterList.size());
-                while (allMonsterList.get(index).getMain() == 0) {
-                    index = (int) (Math.random() * allMonsterList.size());
+                int group = (int) (Math.random() * 20);
+                List<PersonalMonster> personalMonsterList = personalMonsterDAO.findMonsterIdByMonsterGroupByAccount(account, group);
+                while (personalMonsterList.size() == 0 || personalMonsterList.size() == 4) {
+                    group = (int) (Math.random() * 20);
+                    personalMonsterList = personalMonsterDAO.findMonsterIdByMonsterGroupByAccount(account, group);
                 }
-                List<PersonalMonster> personalInfoList = personalMonsterDAO.
-                        findMonsterIdByMonsterGroupByAccount(account, allMonsterList.get(index).getGroup());
-                while (personalInfoList.isEmpty()) {
-                    index = (int) (Math.random() * allMonsterList.size());
-                    personalInfoList = personalMonsterDAO.
-                            findMonsterIdByMonsterGroupByAccount(account, allMonsterList.get(index).getGroup());
-                }
-                for (PersonalMonster personalMonster : personalInfoList) {
-                    if (personalMonster.getMonsterId().equals(allMonsterList.get(index).getId())) {
-                        index = (int) (Math.random() * allMonsterList.size());
+                if (personalMonsterList.size() == 4) {
+                    PersonalMonster personalMonster = new PersonalMonster();
+                    personalMonster.setAccount(account);
+                    personalMonster.setMonsterId(0);
+                    personalMonster.setMonsterGroup(0);
+                    personalMonsterBean.add(personalMonsterService.createBean(personalMonster));
+                } else {
+                    int use = (int) (Math.random() * 4);
+                    Optional<AllMonster> allMonster = allMonsterDAO.findByGroupAndMain(group, use);
+                    do {
+                        for (PersonalMonster personalMonster : personalMonsterList) {
+                            if (!personalMonster.getMonsterId().equals(allMonster.get().getId())) {
+                                isCreate = true;
+                            } else {
+                                isCreate = false;
+                                break;
+                            }
+                        }
+                        if (!isCreate) {
+                            use = (int) (Math.random() * 4);
+                            allMonster = allMonsterDAO.findByGroupAndMain(group, use);
+                        }
+                    } while (!isCreate);
+                    if (isCreate) {
+                        PersonalMonster personalMonster = new PersonalMonster();
+                        personalMonster.setAccount(account);
+                        personalMonster.setMonsterId(allMonster.get().getId());
+                        personalMonster.setMonsterGroup(allMonster.get().getGroup());
+                        personalMonsterDAO.insert(personalMonster);
+                        personalMonsterBean.add(personalMonsterService.createBean(personalMonster));
+                    } else {
+                        PersonalMonster personalMonster = new PersonalMonster();
+                        personalMonster.setAccount(account);
+                        personalMonster.setMonsterId(0);
+                        personalMonster.setMonsterGroup(0);
+                        personalMonsterBean.add(personalMonsterService.createBean(personalMonster));
                     }
                 }
-                PersonalMonster personalMonster = new PersonalMonster();
-                personalMonster.setAccount(account);
-                personalMonster.setMonsterId(allMonsterList.get(index).getId());
-                personalMonster.setMonsterGroup(allMonsterList.get(index).getGroup());
-                personalMonsterDAO.insert(personalMonster);
-                personalMonsterBean.add(personalMonsterService.createBean(personalMonster));
             }
             personalInfoDAO.update(personalInfo);
             createBean(personalInfo);
