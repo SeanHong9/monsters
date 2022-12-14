@@ -118,6 +118,7 @@ class _Edit_personalInfoState extends State<Edit_personalInfo> {
                                               MemberRepository();
 
                                           int _photo = 0;
+                                          int _dailyTest = 0;
                                           Future<Data> personalInfo =
                                               memberRepository
                                                   .searchPersonalInfoByAccount()
@@ -127,6 +128,8 @@ class _Edit_personalInfoState extends State<Edit_personalInfo> {
                                           await personalInfo
                                               .then((value) async {
                                             _photo = value.data.first.photo!;
+                                            _dailyTest =
+                                                value.data.first.dailyTest!;
                                           });
 
                                           memberRepository.modifyPersonalInfo(
@@ -135,6 +138,7 @@ class _Edit_personalInfoState extends State<Edit_personalInfo> {
                                               nickName: _nicknameController.text
                                                   .toString(),
                                               photo: _photo,
+                                              dailyTest: _dailyTest,
                                             ),
                                           );
 

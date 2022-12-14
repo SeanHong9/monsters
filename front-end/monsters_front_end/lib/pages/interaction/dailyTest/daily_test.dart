@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:monsters_front_end/model/memberModel.dart';
 import 'package:monsters_front_end/pages/interaction/dailyTest/dailyTest_correct.dart';
 import 'package:monsters_front_end/pages/interaction/dailyTest/dailyTest_wrong.dart';
 import 'package:monsters_front_end/pages/settings/style.dart';
@@ -19,6 +20,8 @@ class Daily_test extends StatefulWidget {
 }
 
 class _Daily_testState extends State<Daily_test> {
+  final DailyTestRepository dailyTestRepository = DailyTestRepository();
+  final MemberRepository memberRepository = MemberRepository();
   late Future _future;
   var dailyQuesion_ID = 0;
   var daily_question = "question";
@@ -32,23 +35,54 @@ class _Daily_testState extends State<Daily_test> {
   final MemberRepository memberRepository = MemberRepository();
   int unlockProgress = 0;
 
-  checkAnswer(int userChoice, String userAnswer) async {
-    SharedPreferences pref = await SharedPreferences.getInstance();
-    var lastTryDay = pref.getString("LastTryDate").toString();
-    print("上次作答日期 :" + lastTryDay.toString());
-    if (correctChoice == userChoice) {
-      if (lastTryDay != DateTime.now().day.toString()) {
-        unlockProgress++;
-        await pref.setInt("dailyTest", unlockProgress);
-      }
-      await pref.setString("LastTryDate", DateTime.now().day.toString());
-      print("上次作答日期 :" + lastTryDay.toString());
-      print("解鎖進度 :" + unlockProgress.toString());
+  updatedailyTest() async {
+    Map dailyTestResult = {};
+    var request = memberRepository.updateDailyTest();
+    // .then((value) => Data.fromJson(value!));
+
+    await request.then((value) {
+      var ans = value.toString().split(",");
+      var tempmonsterId = ans[0].toString().split(": ")[1];
+      var tempmonsterGroup = ans[1].toString().split(": ")[1];
+      var tempdailyTest = ans[2].toString().split(": ")[1].split("}")[0];
+      int monsterId = int.parse(tempmonsterId);
+      // progressResult["monsterGroup"] = monsterGroup.toString();
+      int monsterGroup = int.parse(tempmonsterGroup);
+      int dailyTest = int.parse(tempdailyTest);
+
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-              builder: (context) => DailyTest_correct(learn, web)));
+              builder: (context) => DailyTest_correct(
+                  learn, web, monsterId, monsterGroup, dailyTest)));
+    });
+  }
+
+  checkAnswer(int userChoice, String userAnswer) async {
+    // SharedPreferences pref = await SharedPreferences.getInstance();
+    // var unlockProgress = pref.getInt("unlockProgress")?.toInt();
+    // var lastTryDay = pref.getString("LastTryDate");
+    if (correctChoice == userChoice) {
+      updatedailyTest();
+      //if等於7 or null，重新計算
+      // if (unlockProgress == 7 || unlockProgress == null) {
+      //   unlockProgress = 0;
+      // }
+      // //判斷是否跟上次作答正確同一天
+      // if (lastTryDay != DateTime.now().day.toString()) {
+      //   //if不同，增加解鎖進度條
+      //   unlockProgress++;
+      // }
+      // await pref.setInt("unlockProgress", unlockProgress);
+      // await pref.setString("LastTryDate", DateTime.now().day.toString());
+      // print(lastTryDay);
+      // print("解鎖進度 :" + unlockProgress.toString());
+      // Navigator.pushReplacement(
+      //     context,
+      //     MaterialPageRoute(
+      //         builder: (context) => DailyTest_correct(learn, web)));
     } else {
+
       var showChoice;
       var showAnswer;
       if (correctChoice == 1) {
@@ -67,14 +101,12 @@ class _Daily_testState extends State<Daily_test> {
         showChoice = "D";
         showAnswer = daily_D;
       }
-      await pref.setString("LastTryDate", DateTime.now().day.toString());
-      print("上次作答日期 :" + lastTryDay.toString());
-      print("解鎖進度 :" + unlockProgress.toString());
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(
               builder: (context) =>
                   DailyTest_wrong(showChoice, showAnswer, learn, web)));
+                  
     }
   }
 
@@ -216,7 +248,6 @@ class _Daily_testState extends State<Daily_test> {
   }
 
   getRandomDailyTest() async {
-    final DailyTestRepository dailyTestRepository = DailyTestRepository();
     Future<DailyTest> dailyTest = dailyTestRepository.searchDailyTest().then(
           (value) => DailyTest.fromMap(value),
         );

@@ -507,7 +507,7 @@ class _InteractionPageState extends State<InteractionPage>
                   transition: LinkTransition.Fade,
                   ease: Curves.easeOut,
                   duration: 0.3,
-                  pageBuilder: () => Social(),
+                  pageBuilder: () => SocialPage(),
                 ),
               ],
               child: Stack(

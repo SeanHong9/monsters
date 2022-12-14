@@ -40,10 +40,11 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
   //控制標籤
   //1:全部 2:煩惱 3:日記
   int selectionTab_type = 2;
+  
   //當selectedSolve開啟已解決標籤
-  int selectionTab_solve = 0;
+  int selectionTab_solve = 1;
   //當selectionTab_solve_enabled解鎖後兩個標籤
-  bool selectionTab_solve_enabled = false;
+  bool selectionTab_solve_enabled = true;
 
   late Future _future;
   @override
@@ -130,7 +131,7 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                       child: Container(
                     padding: EdgeInsets.only(bottom: 10),
                     child: Wrap(
-                      spacing: 7,
+                      spacing: 20,
                       //標籤設定
                       children: [
                         //全部標籤  selectionTab_type == 1
@@ -169,7 +170,7 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                         //煩惱標籤 selectionTab_type == 2
                         InkWell(
                             child: Container(
-                              width: 50,
+                              width: 60,
                               decoration: BoxDecoration(
                                 color: selectionTab_type == 2
                                     ? const Color(0xffa0522d)
@@ -199,7 +200,7 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                         //日記標籤 selectionTab_type == 3
                         InkWell(
                             child: Container(
-                              width: 50,
+                              width: 60,
                               decoration: BoxDecoration(
                                 color: selectionTab_type == 3
                                     ? const Color(0xffa0522d)
@@ -663,7 +664,7 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                   transition: LinkTransition.Fade,
                   ease: Curves.easeOut,
                   duration: 0.3,
-                  pageBuilder: () => Social(),
+                  pageBuilder: () => SocialPage(),
                 ),
               ],
               child: Stack(

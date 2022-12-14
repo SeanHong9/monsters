@@ -299,7 +299,7 @@ class _MainPageState extends State<MainPage>
                     transition: LinkTransition.Fade,
                     ease: Curves.easeOut,
                     duration: 0.3,
-                    pageBuilder: () => Social()),
+                    pageBuilder: () => SocialPage()),
               ],
               child: Stack(
                 children: <Widget>[

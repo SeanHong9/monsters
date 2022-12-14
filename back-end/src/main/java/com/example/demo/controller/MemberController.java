@@ -152,7 +152,7 @@ public class MemberController {
     }
 
     @ResponseBody
-    @PatchMapping(value = "/modify/{account}")
+    @PatchMapping(value = "/modify/{account}", produces = "application/json; charset=UTF-8")
     public ResponseEntity modifyMemberByAccount(@PathVariable(name = "account") String account, @RequestBody PersonalInfoBean personalInfoBean) {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode result = mapper.createObjectNode();
@@ -164,22 +164,28 @@ public class MemberController {
     }
 
     @ResponseBody
-    @PatchMapping(value = "/dailyTest/{account}")
+    @GetMapping(value = "/dailyTest/{account}")
     public ResponseEntity dailyTest(@PathVariable(name = "account") String account) {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode result = mapper.createObjectNode();
         ArrayNode dataNode = result.putArray("data");
+
         Optional<PersonalInfoBean> personalInfoBeanOptional = personalInfoService.getByPK(account);
-        System.out.println(personalInfoBeanOptional.get().getDailyTest());
         List<PersonalMonsterBean> personalMonsterBeanList = personalInfoService.updateDailyTest(
                 personalInfoBeanOptional.get().getAccount());
+
+        ObjectNode personalInfoNode = dataNode.addObject();
+        boolean checker=true;
         for (PersonalMonsterBean personalMonsterBean : personalMonsterBeanList) {
-            ObjectNode personalMonsterNode = dataNode.addObject();
-            personalMonsterNode.put("monsterId", personalMonsterBean.getMonsterId());
-            personalMonsterNode.put("monsterGroup", personalMonsterBean.getMonsterGroup());
+            personalInfoNode.put("monsterId", personalMonsterBean.getMonsterId());
+            personalInfoNode.put("monsterGroup", personalMonsterBean.getMonsterGroup());
+            checker=false;
         }
-        System.out.println(personalInfoBeanOptional.get().getDailyTest());
-        result.put("dailyTest", personalInfoBeanOptional.get().getDailyTest() + 1);
+        if(checker){
+            personalInfoNode.put("monsterId", -1);
+            personalInfoNode.put("monsterGroup", -1);
+        }
+        personalInfoNode.put("dailyTest", personalInfoBeanOptional.get().getDailyTest() + 1);
         result.put("result", true);
         result.put("errorCode", "200");
         result.put("message", "修改成功");

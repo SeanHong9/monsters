@@ -3,6 +3,7 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
+import 'package:date_format/date_format.dart';
 import 'package:http/http.dart' as http;
 import 'dart:developer' as dv;
 import 'package:flutter/material.dart';
@@ -23,14 +24,15 @@ import '../model/socialModel.dart';
 import '../repository/socialRepo.dart';
 import 'annoyanceChat.dart';
 
-class Social extends StatefulWidget {
-  const Social({Key? key}) : super(key: key);
+class SocialPage extends StatefulWidget {
+  const SocialPage({Key? key}) : super(key: key);
 
   @override
-  _SocialState createState() => _SocialState();
+  _SocialPageState createState() => _SocialPageState();
 }
 
-class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
+class _SocialPageState extends State<SocialPage>
+    with SingleTickerProviderStateMixin {
   //新增的浮出按鈕動畫用
   late AnimationController animationController;
   late Animation degOneTranslationAnimation, degTwoTranslationAnimation;
@@ -43,7 +45,7 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
   //異步處理
   late Future _future;
   //控制標籤
-  int selectionTab_type = 1;
+  int selectionTab_type = 2;
 
   double getRadiansFromDegree(double degree) {
     double unitRadian = 57.295779513;
@@ -53,7 +55,6 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
   @override
   void dispose() {
     animationController.dispose();
-    _messageController.dispose();
     super.dispose();
   }
 
@@ -174,6 +175,7 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
                       child: Wrap(
                         spacing: 20,
                         children: [
+/*
                           //全部標籤
                           InkWell(
                               child: Container(
@@ -202,6 +204,7 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
                                   setState(() {});
                                 }
                               }),
+                          */
                           //煩惱標籤
                           InkWell(
                               child: Container(
@@ -964,8 +967,10 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
   }
 
   showComment(var data) async {
+    //annoyacne
     int _type = 1;
     if (data["solve"] == null) {
+      //diary
       _type = 2;
     }
     int _id = data["id"];
@@ -1015,11 +1020,17 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
   ) {
     double _containerSize = 300;
     double _maxHeight = 0;
+    int _type = 0;
     if (data["mood"] != "否") {
       _containerSize += 150;
     }
     if ((data["imageContent"] != null)) {
       _containerSize += 150;
+    }
+    if (data["solve"] != null) {
+      _type = 1;
+    } else {
+      _type = 2;
     }
     if (commentCounter > 0) {
       if (commentCounter > 3) {
@@ -1189,7 +1200,7 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
                                     itemCount: commentCounter,
                                     itemBuilder: (context, int index) {
                                       return Card(
-                                        child: SizedBox(
+                                        child: Container(
                                           height: 80,
                                           child: ListTile(
                                             leading: Container(
@@ -1208,29 +1219,42 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
                                                             photoList[index]])),
                                               ),
                                             ),
-                                            title: Text(
-                                              userNameList[index],
-                                              textAlign: TextAlign.justify,
-                                              style: const TextStyle(
-                                                letterSpacing: -1,
-                                                fontSize: 20,
-                                              ),
-                                            ),
-                                            subtitle: SizedBox(
-                                              height: 50,
-                                              child: SingleChildScrollView(
-                                                scrollDirection: Axis.vertical,
-                                                child: Text(
-                                                  commentList[index],
-                                                  style:
-                                                      TextStyle(fontSize: 16),
+                                            title: Container(
+                                              margin: const EdgeInsets.only(
+                                                  top: 10),
+                                              child: Text(
+                                                userNameList[index],
+                                                textAlign: TextAlign.justify,
+                                                style: const TextStyle(
+                                                  letterSpacing: -1,
+                                                  fontSize: 20,
                                                 ),
                                               ),
                                             ),
-                                            trailing: Text(
-                                              timesList[index],
-                                              style: TextStyle(
-                                                  color: BackgroundColorWarm),
+                                            subtitle: Container(
+                                              margin: const EdgeInsets.only(
+                                                  top: 10),
+                                              child: SizedBox(
+                                                height: 50,
+                                                child: SingleChildScrollView(
+                                                  scrollDirection:
+                                                      Axis.vertical,
+                                                  child: Text(
+                                                    commentList[index],
+                                                    style:
+                                                        TextStyle(fontSize: 16),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                            trailing: Container(
+                                              margin: const EdgeInsets.only(
+                                                  top: 10),
+                                              child: Text(
+                                                timesList[index],
+                                                style: TextStyle(
+                                                    color: BackgroundColorWarm),
+                                              ),
                                             ),
                                           ),
                                         ),
@@ -1288,14 +1312,14 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
                                         color: Color.fromARGB(255, 164, 78, 38),
                                       ),
                                       onPressed: () {
-                                        //TODO:新增一筆留言 接API
-                                        _messageController.clear();
+                                        createComment(data["id"], _type,
+                                            _messageController.text);
                                         FocusScopeNode currentFocus =
                                             FocusScope.of(context);
                                         if (!currentFocus.hasPrimaryFocus) {
                                           currentFocus.unfocus();
                                         }
-                                        setState(() {});
+                                        _messageController.clear();
                                       }),
                                 ),
                               ],
@@ -1359,6 +1383,36 @@ class _SocialState extends State<Social> with SingleTickerProviderStateMixin {
             "檢舉失敗",
             style: TextStyle(color: Colors.white, fontSize: 30),
           )));
+    }
+  }
+
+  void createComment(int annoyanceId, int type, String comment) {
+    dv.log("id: 0");
+    dv.log("commentUser: " + userAccount);
+    dv.log("annoyanceId: " + annoyanceId.toString());
+    dv.log("commentContent: " + comment.toString());
+    dv.log("date: ");
+    //annoyance
+    if (type == 1) {
+      socialRepository.createSocialAnnoyanceComment(
+        Social(
+          id: 0,
+          commentUser: userAccount,
+          annoyanceId: annoyanceId,
+          commentContent: comment,
+          date: DateTime.now().toString(),
+        ),
+      );
+    } else {
+      socialRepository.createSocialDiaryComment(
+        Social(
+          id: 0,
+          commentUser: userAccount,
+          diaryId: annoyanceId,
+          commentContent: comment,
+          date: DateTime.now().toString(),
+        ),
+      );
     }
   }
 }

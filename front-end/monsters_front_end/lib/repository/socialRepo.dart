@@ -14,10 +14,10 @@ class SocialRepository implements SocialApiDataSource {
   final client = http.Client();
   @override
   Future<Map<String, dynamic>?> searchSocialByType(int type) {
-    String searchType = "3";
-    if (type == 1) {
-      searchType = "3";
-    }
+    String searchType = "2";
+    // if (type == 1) {
+    //   searchType = "3";
+    // }
     if (type == 2) {
       searchType = "1";
     }
@@ -64,8 +64,13 @@ class SocialRepository implements SocialApiDataSource {
     Social comment,
   ) async {
     try {
-      final request =
-          await client.post(url, headers: {'Content-type': 'application/json'});
+      final request = await client.post(url,
+          headers: {'Content-type': 'application/json'},
+          body: json.encode(comment));
+
+      log("_createSocialAnnoyanceComment");
+      log("body: " + request.body.toString());
+      log("status: " + request.statusCode.toString());
       if (request.statusCode == 200) {
         Map<String, dynamic> social = jsonDecode(request.body);
         return Future.value(social);
@@ -90,8 +95,9 @@ class SocialRepository implements SocialApiDataSource {
     Social comment,
   ) async {
     try {
-      final request =
-          await client.post(url, headers: {'Content-type': 'application/json'});
+      final request = await client.post(url,
+          headers: {'Content-type': 'application/json'},
+          body: json.encode(comment));
       if (request.statusCode == 200) {
         Map<String, dynamic> social = jsonDecode(request.body);
         return Future.value(social);

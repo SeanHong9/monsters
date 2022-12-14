@@ -53,6 +53,7 @@ class Social {
   int? annoyanceId;
   int? diaryId;
   String? photo;
+  String? date;
 
   Social({
     this.id,
@@ -72,6 +73,7 @@ class Social {
     this.annoyanceId,
     this.diaryId,
     this.photo,
+    this.date,
   });
 
   factory Social.fromJson(Map<String, dynamic> json) => Social(
@@ -92,6 +94,7 @@ class Social {
         annoyanceId: json['annoyanceId'],
         diaryId: json['diaryId'],
         photo: json['photo'],
+        date: json['date'],
       );
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{};
@@ -111,7 +114,8 @@ class Social {
     data['commentContent'] = commentContent;
     data['annoyanceId'] = annoyanceId;
     data['diaryId'] = diaryId;
-    data['photo'];
+    data['photo'] = photo;
+    data['date'] = date;
     return data;
   }
 }

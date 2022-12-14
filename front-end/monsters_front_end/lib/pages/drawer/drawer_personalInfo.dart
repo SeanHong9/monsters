@@ -2,6 +2,7 @@
 
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:monsters_front_end/main.dart';
@@ -80,6 +81,8 @@ class _Drawer_personalInfoState extends State<Drawer_personalInfo> {
   @override
   Widget build(BuildContext context) {
     _future = getPersonalInfo();
+    
+    sleep(Duration(microseconds: 500));
 
     setState(() {});
     return Scaffold(
@@ -407,20 +410,25 @@ class _AvatarWidget extends State<AvatarWidget> {
               .then((value) => Data.fromJson(value!));
 
           String _nickName = "";
+          int _dailyTest = 0;
 
           await personalInfo.then((value) async {
             _nickName = value.data.first.nickName!;
+            _dailyTest = value.data.first.dailyTest!;
+            log("_dailyTest: " + _dailyTest.toString());
+          }).then((value) {
+            memberRepository.modifyPersonalInfo(
+              Member(
+                account: userAccount,
+                photo: modifyAvatar,
+                nickName: _nickName,
+                dailyTest: _dailyTest,
+              ),
+            );
+            Navigator.pop(context);
+          }).then((value) {
+            setState(() {});
           });
-
-          memberRepository.modifyPersonalInfo(
-            Member(
-              account: userAccount,
-              photo: modifyAvatar,
-              nickName: _nickName,
-            ),
-          );
-          Navigator.pop(context);
-          setState(() {});
         }
       },
     );
