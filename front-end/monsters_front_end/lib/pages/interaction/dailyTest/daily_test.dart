@@ -32,7 +32,6 @@ class _Daily_testState extends State<Daily_test> {
   var correctChoice = 0;
   var learn = "";
   String web = "";
-  final MemberRepository memberRepository = MemberRepository();
   int unlockProgress = 0;
 
   updatedailyTest() async {
