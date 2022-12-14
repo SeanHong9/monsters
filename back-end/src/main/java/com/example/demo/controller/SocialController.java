@@ -213,6 +213,7 @@ public class SocialController {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode result = mapper.createObjectNode();
         ObjectNode dataNode = result.putObject("data");
+        System.out.println(annoyanceSocialCommentBean);
         try {
             if (!annoyanceService.getByPK(annoyanceSocialCommentBean.getAnnoyanceId()).isPresent()) {
                 result.put("result", false);
@@ -238,11 +239,12 @@ public class SocialController {
         ObjectMapper mapper = new ObjectMapper();
         ObjectNode result = mapper.createObjectNode();
         ObjectNode dataNode = result.putObject("data");
+        System.out.println(diarySocialCommentBean);
         try {
             if (!diaryService.getByPK(diarySocialCommentBean.getDiaryId()).isPresent()) {
                 result.put("result", false);
                 result.put("errorCode", "");
-                result.put("message", "找不到此煩惱");
+                result.put("message", "找不到此日記");
             }
             diarySocialCommentService.createAndReturnBean(diarySocialCommentBean);
             result.put("result", true);
