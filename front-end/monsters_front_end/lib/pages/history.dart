@@ -2,6 +2,7 @@
 
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
 import 'dart:developer' as dv;
 import 'package:flutter/material.dart';
@@ -40,7 +41,7 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
   //控制標籤
   //1:全部 2:煩惱 3:日記
   int selectionTab_type = 2;
-  
+
   //當selectedSolve開啟已解決標籤
   int selectionTab_solve = 1;
   //當selectionTab_solve_enabled解鎖後兩個標籤
@@ -50,21 +51,10 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
   @override
   Widget build(BuildContext context) {
     GlobalKey<ScaffoldState> _scaffoldKEy = GlobalKey<ScaffoldState>();
-    _future = getHistoryMapByAccount();
-    setState(() {});
-    //TODO: Level 1
-    //計算不同歷史類別的數量
-    /*
-    int itemCounter 
-    int annoyanceCounter 
-    int diaryCounter 
-
-    iterate the History and doing so =>
-    itemCounter:
-      在搜尋到一個History時加一，計算總數
-    annoyanceCounter & diaryCounter:
-      在搜尋到一個History後annoyance時++，否則diaryCounter++
-    */
+    setState(() {
+      _future = getHistoryMapByAccount();
+      sleep(Duration(milliseconds: 500));
+    });
 
     //畫面呈現
     return Scaffold(
@@ -166,7 +156,7 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                               }
                             }),
                         */
-                        
+
                         //煩惱標籤 selectionTab_type == 2
                         InkWell(
                             child: Container(
@@ -373,7 +363,7 @@ class _HistoryState extends State<History> with SingleTickerProviderStateMixin {
                                                       ["imageContent"]),
                                                   height: 120,
                                                   filterQuality:
-                                                      FilterQuality.high),
+                                                      FilterQuality.low),
                                             ),
                                     ),
                                   ),

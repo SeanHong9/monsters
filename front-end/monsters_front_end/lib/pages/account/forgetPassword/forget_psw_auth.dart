@@ -27,10 +27,6 @@ class _Forget_password_AuthState extends State<Forget_password_Auth> {
   void initState() {
     super.initState();
     VerifyCode = 0;
-    // Initialize the package
-    // emailAuth = EmailAuth(
-    //   sessionName: "貘nsters",
-    // );
   }
 
   void verifyCode(String input) {
@@ -44,7 +40,7 @@ class _Forget_password_AuthState extends State<Forget_password_Auth> {
             style: TextStyle(color: Colors.white, fontSize: 30),
           )));
       Navigator.pushReplacement(
-          context, MaterialPageRoute(builder: (context) => Reset_Password()));
+          context, MaterialPageRoute(builder: (context) => Reset_Password(_mailController.text)));
     } else {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           duration: Duration(seconds: 1),
