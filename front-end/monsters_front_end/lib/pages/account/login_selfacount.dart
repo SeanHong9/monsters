@@ -37,6 +37,7 @@ class _Login_selfacountState extends State<Login_selfacount> {
       backgroundColor: const Color(0xfffffed4),
       body: SafeArea(
         child: SingleChildScrollView(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
           child: Form(
             key: _formKey,
             child: Padding(
@@ -97,6 +98,7 @@ class _Login_selfacountState extends State<Login_selfacount> {
                     style: const TextStyle(color: Colors.black),
                     autofocus: false,
                     controller: _accountController,
+                    textInputAction: TextInputAction.next,
                     decoration: const InputDecoration(
                       labelText: "帳號",
                       hintText: '請輸入帳號',
