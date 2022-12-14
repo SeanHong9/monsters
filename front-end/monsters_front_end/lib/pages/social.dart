@@ -983,7 +983,7 @@ class _SocialPageState extends State<SocialPage>
 
     var commentList = [];
     var userNameList = [];
-    var timesList = [];
+    var datesList = [];
     var photoList = [];
     int commentCounter = 1;
     await comments.then((value) async {
@@ -992,7 +992,7 @@ class _SocialPageState extends State<SocialPage>
         dv.log("commentCounter: " + commentCounter.toString());
         commentList.add(value.data.elementAt(i).commentContent);
         userNameList.add(value.data.elementAt(i).commentUser);
-        timesList.add(value.data.elementAt(i).time);
+        datesList.add(value.data.elementAt(i).date);
         int _photo = int.parse(value.data.elementAt(i).photo.toString());
         photoList.add(_photo);
       }
@@ -1004,7 +1004,7 @@ class _SocialPageState extends State<SocialPage>
           photoList,
           userNameList,
           commentList,
-          timesList,
+          datesList,
         );
       },
     );
@@ -1386,31 +1386,36 @@ class _SocialPageState extends State<SocialPage>
     }
   }
 
-  void createComment(int annoyanceId, int type, String comment) {
-    dv.log("id: 0");
-    dv.log("commentUser: " + userAccount);
-    dv.log("annoyanceId: " + annoyanceId.toString());
-    dv.log("commentContent: " + comment.toString());
-    dv.log("date: ");
+  void createComment(int id, int type, String comment) {
     //annoyance
     if (type == 1) {
+      dv.log("id: 0");
+      dv.log("commentUser: " + userAccount);
+      dv.log("annoyanceId: " + id.toString());
+      dv.log("commentContent: " + comment.toString());
+      dv.log("date: 0");
       socialRepository.createSocialAnnoyanceComment(
         Social(
           id: 0,
           commentUser: userAccount,
-          annoyanceId: annoyanceId,
+          annoyanceId: id,
           commentContent: comment,
-          date: DateTime.now().toString(),
+          date: '',
         ),
       );
     } else {
+      dv.log("id: 0");
+      dv.log("commentUser: " + userAccount);
+      dv.log("diaryId: " + id.toString());
+      dv.log("commentContent: " + comment.toString());
+      dv.log("time: 0");
       socialRepository.createSocialDiaryComment(
         Social(
           id: 0,
           commentUser: userAccount,
-          diaryId: annoyanceId,
+          diaryId: id,
           commentContent: comment,
-          date: DateTime.now().toString(),
+          date: '1',
         ),
       );
     }
