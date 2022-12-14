@@ -7,7 +7,6 @@ import com.example.demo.service.DiarySocialCommentService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +24,6 @@ public class DiarySocialCommentServiceImpl extends BaseServiceImplement<DiarySoc
     @Override
     public DiarySocialCommentBean createAndReturnBean(DiarySocialCommentBean bean) {
         DiarySocialComment diarySocialComment = createVO(bean);
-        diarySocialComment.setDate(LocalDateTime.now());
         diarySocialCommentDAO.insert(diarySocialComment);
         return createBean(diarySocialComment);
     }

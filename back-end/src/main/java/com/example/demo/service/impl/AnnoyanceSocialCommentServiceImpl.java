@@ -7,7 +7,6 @@ import com.example.demo.service.AnnoyanceSocialCommentService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +24,6 @@ public class AnnoyanceSocialCommentServiceImpl extends BaseServiceImplement<Anno
     @Override
     public AnnoyanceSocialCommentBean createAndReturnBean(AnnoyanceSocialCommentBean bean) {
         AnnoyanceSocialComment annoyanceSocialComment = createVO(bean);
-        annoyanceSocialComment.setDate(LocalDateTime.now());
         annoyanceSocialCommentDAO.insert(annoyanceSocialComment);
         return createBean(annoyanceSocialComment);
     }
