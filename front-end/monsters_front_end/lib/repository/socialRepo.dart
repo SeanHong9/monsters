@@ -87,7 +87,7 @@ class SocialRepository implements SocialApiDataSource {
   @override
   Future<Map<String, dynamic>?> createSocialDiaryComment(Social comment) {
     return _createSocialDiaryComment(
-        Uri.parse('$domain/social/comment/annoyance'), comment);
+        Uri.parse('$domain/social/comment/diary'), comment);
   }
 
   Future<Map<String, dynamic>?> _createSocialDiaryComment(

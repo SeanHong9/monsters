@@ -2,6 +2,7 @@
 
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io';
 import 'dart:math';
 import 'package:date_format/date_format.dart';
 import 'package:http/http.dart' as http;
@@ -90,10 +91,10 @@ class _SocialPageState extends State<SocialPage>
     await socials.then((value) async {
       await socialResult.putIfAbsent(
         "itemCounter",
-        () => min(value.data.length, 32),
+        () => min(value.data.length, 20),
       );
 
-      for (int index = 0; index < min(value.data.length, 32); index++) {
+      for (int index = 0; index < min(value.data.length, 20); index++) {
         String type = "";
         switch (value.data.elementAt(index).type) {
           case 1:
@@ -1070,7 +1071,7 @@ class _SocialPageState extends State<SocialPage>
                                   width: 1, color: const Color(0xffa0522d)),
                             ),
                             child: CircleAvatar(
-                              radius: 30,
+                              radius: 40,
                               backgroundImage: AssetImage(getMonsterAvatarPath(
                                   monsterNamesList[data["avatar"]])),
                             ),
@@ -1212,7 +1213,7 @@ class _SocialPageState extends State<SocialPage>
                                                         0xffa0522d)),
                                               ),
                                               child: CircleAvatar(
-                                                radius: 30,
+                                                radius: 40,
                                                 backgroundImage: AssetImage(
                                                     getMonsterAvatarPath(
                                                         monsterNamesList[
@@ -1320,6 +1321,19 @@ class _SocialPageState extends State<SocialPage>
                                           currentFocus.unfocus();
                                         }
                                         _messageController.clear();
+                                        Navigator.pop(context);
+
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(const SnackBar(
+                                                duration: Duration(seconds: 1),
+                                                backgroundColor:
+                                                    BackgroundColorWarm,
+                                                content: Text(
+                                                  "新增留言成功",
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontSize: 30),
+                                                )));
                                       }),
                                 ),
                               ],
@@ -1387,6 +1401,7 @@ class _SocialPageState extends State<SocialPage>
   }
 
   void createComment(int id, int type, String comment) {
+    dv.log("type: " + type.toString() + " comment: " + comment);
     //annoyance
     if (type == 1) {
       dv.log("id: 0");
@@ -1399,7 +1414,7 @@ class _SocialPageState extends State<SocialPage>
           id: 0,
           commentUser: userAccount,
           annoyanceId: id,
-          commentContent: comment,
+          commentContent: comment.toString(),
           date: '',
         ),
       );
@@ -1408,14 +1423,14 @@ class _SocialPageState extends State<SocialPage>
       dv.log("commentUser: " + userAccount);
       dv.log("diaryId: " + id.toString());
       dv.log("commentContent: " + comment.toString());
-      dv.log("time: 0");
+      dv.log("time: ");
       socialRepository.createSocialDiaryComment(
         Social(
           id: 0,
           commentUser: userAccount,
           diaryId: id,
-          commentContent: comment,
-          date: '1',
+          commentContent: comment.toString(),
+          date: '',
         ),
       );
     }
