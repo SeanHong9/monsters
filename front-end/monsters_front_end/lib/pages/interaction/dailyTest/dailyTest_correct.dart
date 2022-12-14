@@ -1,5 +1,9 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:monsters_front_end/main.dart';
+import 'package:monsters_front_end/model/memberModel.dart';
 import 'package:monsters_front_end/pages/manual/manual.dart';
 import 'package:monsters_front_end/pages/settings/monsters_information.dart';
 import 'package:monsters_front_end/pages/settings/style.dart';

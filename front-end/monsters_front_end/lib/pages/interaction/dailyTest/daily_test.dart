@@ -12,6 +12,8 @@ import 'package:monsters_front_end/model/dailyTestModel.dart';
 import 'package:monsters_front_end/repository/memberRepo.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../model/memberModel.dart';
+
 class Daily_test extends StatefulWidget {
   @override
   _Daily_testState createState() => _Daily_testState();
@@ -30,6 +32,8 @@ class _Daily_testState extends State<Daily_test> {
   var correctChoice = 0;
   var learn = "";
   String web = "";
+  final MemberRepository memberRepository = MemberRepository();
+  int unlockProgress = 0;
 
   updatedailyTest() async {
     Map dailyTestResult = {};
@@ -97,17 +101,6 @@ class _Daily_testState extends State<Daily_test> {
         showChoice = "D";
         showAnswer = daily_D;
       }
-      
-      /*
-      //if等於7 or null，重新計算
-      if (unlockProgress == 7 || unlockProgress == null) {
-        unlockProgress = 0;
-        await pref.setInt("unlockProgress", unlockProgress);
-      }
-      await pref.setString("LastTryDate", DateTime.now().day.toString());
-      print(lastTryDay);
-      print("解鎖進度 :" + unlockProgress.toString());
-      */
       Navigator.pushReplacement(
           context,
           MaterialPageRoute(
@@ -250,6 +243,7 @@ class _Daily_testState extends State<Daily_test> {
   @override
   void initState() {
     _future = getRandomDailyTest();
+    getPersonalInfo();
     super.initState();
   }
 
@@ -271,6 +265,32 @@ class _Daily_testState extends State<Daily_test> {
         web = value.web;
       },
     ).then((value) => setState(() {}));
+  }
+
+  Future<Map> getPersonalInfo() async {
+    Map personalInfoResult = {};
+    print("doing...getPersonalInfo()");
+    Future<Data> personalInfo = memberRepository
+        .searchPersonalInfoByAccount()
+        .then((value) => Data.fromJson(value!));
+
+    await personalInfo.then((value) async {
+      personalInfoResult["nickName"] = value.data.first.nickName;
+      personalInfoResult["birthday"] = value.data.first.birthday;
+      personalInfoResult["mail"] = value.data.first.mail;
+      personalInfoResult["dailyTest"] = value.data.first.dailyTest;
+      personalInfoResult["photo"] = value.data.first.photo!;
+    });
+    print(personalInfoResult);
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    await pref.setString("birthday", personalInfoResult["birthday"]);
+    await pref.setString("mail", personalInfoResult["mail"]);
+    await pref.setString("nickName", personalInfoResult["nickName"]);
+    await pref.setInt("dailyTest", personalInfoResult["dailyTest"]);
+    await pref.setInt("photo", personalInfoResult["photo"]);
+    unlockProgress = pref.getInt("dailyTest")!;
+    print("解鎖進度 :" + unlockProgress.toString());
+    return personalInfoResult;
   }
 }
 
