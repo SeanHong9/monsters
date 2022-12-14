@@ -56,7 +56,7 @@ class _Drawer_personalInfoState extends State<Drawer_personalInfo> {
         personalInfoResult["mail"] = value.data.first.mail;
         personalInfoResult["account"] = value.data.first.account;
         personalInfoResult["photo"] = value.data.first.photo;
-        personalInfoResult["lock"] = value.data.first.lock;
+        // personalInfoResult["lock"] = value.data.first.lock;
         personalInfoResult["dailyTest"] = value.data.first.dailyTest;
 
         Future<ms.Data> monsters = monsterRepository

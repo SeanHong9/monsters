@@ -40,7 +40,7 @@ class Member {
   String? birthday;
   String? nickName;
   String? mail;
-  String? lock;
+  // String? lock;
   int? photo;
   int? monsterId;
   int? monsterGroup;
@@ -52,7 +52,7 @@ class Member {
     this.birthday,
     this.mail,
     this.nickName,
-    this.lock,
+    // this.lock,
     this.photo,
     this.monsterId,
     this.monsterGroup,
@@ -65,7 +65,7 @@ class Member {
         mail: json['mail'],
         nickName: json['nickName'],
         password: json['password'],
-        lock: json['lock'],
+        // lock: json['lock'],
         photo: int.parse(json['photo']),
         monsterId: json['monsterId'],
         monsterGroup: json['monsterGroup'],
@@ -79,7 +79,7 @@ class Member {
     data['mail'] = mail;
     data['nickName'] = nickName;
     data['password'] = password;
-    data['lock'] = lock;
+    // data['lock'] = lock;
     data['photo'] = photo.toString();
     data['monsterId'] = monsterId;
     data['monsterGroup'] = monsterGroup;
