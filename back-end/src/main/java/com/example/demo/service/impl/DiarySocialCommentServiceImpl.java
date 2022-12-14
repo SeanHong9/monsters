@@ -44,7 +44,7 @@ public class DiarySocialCommentServiceImpl extends BaseServiceImplement<DiarySoc
         entity.setId(bean.getId());
         entity.setCommentUser(bean.getCommentUser());
         entity.setDiaryId(bean.getDiaryId());
-        entity.setContent(bean.getContent());
+        entity.setContent(bean.getCommentContent());
         entity.setDate(bean.getDate());
         return entity;
     }
@@ -55,7 +55,7 @@ public class DiarySocialCommentServiceImpl extends BaseServiceImplement<DiarySoc
         bean.setId(entity.getId());
         bean.setCommentUser(entity.getCommentUser());
         bean.setDiaryId(entity.getDiaryId());
-        bean.setContent(entity.getContent());
+        bean.setCommentContent(entity.getContent());
         bean.setDate(entity.getDate());
         return bean;
     }
