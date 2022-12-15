@@ -71,53 +71,65 @@ public class PersonalInfoServiceImpl extends BaseServiceImplement<PersonalInfoDA
         } else {
             stash = (monsterList.size() / 4) + 1;
         }
+        int count = 0;
         boolean isCreate = false;
         if (personalInfoOptional.isPresent()) {
             PersonalInfo personalInfo = personalInfoOptional.get();
             personalInfo.setDailyTest(personalInfoOptional.get().getDailyTest() + 1);
-            if (personalInfo.getDailyTest() == 7) {
+            if (personalInfo.getDailyTest() >= 7) {
                 personalInfo.setDailyTest(0);
                 int group = (int) (Math.random() * 20);
-                List<PersonalMonster> personalMonsterList = personalMonsterDAO.findMonsterIdByMonsterGroupByAccount(account, group);
-                while (personalMonsterList.size() == 0 || personalMonsterList.size() == 4) {
-                    group = (int) (Math.random() * 20);
-                    personalMonsterList = personalMonsterDAO.findMonsterIdByMonsterGroupByAccount(account, group);
-                }
-                if (personalMonsterList.size() == 4) {
-                    PersonalMonster personalMonster = new PersonalMonster();
-                    personalMonster.setAccount(account);
-                    personalMonster.setMonsterId(0);
-                    personalMonster.setMonsterGroup(0);
-                    personalMonsterBean.add(personalMonsterService.createBean(personalMonster));
-                } else {
-                    int use = (int) (Math.random() * 4);
-                    Optional<AllMonster> allMonster = allMonsterDAO.findByGroupAndMain(group, use);
-                    do {
-                        for (PersonalMonster personalMonster : personalMonsterList) {
-                            if (!personalMonster.getMonsterId().equals(allMonster.get().getId())) {
-                                isCreate = true;
-                            } else {
-                                isCreate = false;
-                                break;
-                            }
+                if (stash != count) {
+                    List useArray = new ArrayList();
+                    List<PersonalMonster> personalMonsterList = personalMonsterDAO.findMonsterIdByMonsterGroupByAccount(account, group);
+                    while (personalMonsterList.size() == 0 || personalMonsterList.size() == 4) {
+                        group = (int) (Math.random() * 20);
+                        personalMonsterList = personalMonsterDAO.findMonsterIdByMonsterGroupByAccount(account, group);
+                        if (personalMonsterList.size() == 4 && !(useArray.contains(group))) {
+                            useArray.add(group);
+                            count++;
                         }
-                        if (!isCreate) {
-                            use = (int) (Math.random() * 4);
-                            allMonster = allMonsterDAO.findByGroupAndMain(group, use);
+                        if (count == stash) {
+                            break;
                         }
-                    } while (!isCreate);
-                    if (isCreate) {
-                        PersonalMonster personalMonster = new PersonalMonster();
-                        personalMonster.setAccount(account);
-                        personalMonster.setMonsterId(allMonster.get().getId());
-                        personalMonster.setMonsterGroup(allMonster.get().getGroup());
-                        personalMonsterDAO.insert(personalMonster);
-                        personalMonsterBean.add(personalMonsterService.createBean(personalMonster));
-                    } else {
+                    }
+                    if (!useArray.contains(group)) {
+                        useArray.add(group);
+                        count++;
+                    }
+                    if (count == stash) {
                         PersonalMonster personalMonster = new PersonalMonster();
                         personalMonster.setAccount(account);
                         personalMonster.setMonsterId(0);
                         personalMonster.setMonsterGroup(0);
+                        personalMonsterBean.add(personalMonsterService.createBean(personalMonster));
+                    } else {
+                        int use = (int) (Math.random() * 4);
+                        Optional<AllMonster> allMonster = allMonsterDAO.findByGroupAndMain(group, use);
+                        do {
+                            for (PersonalMonster personalMonster : personalMonsterList) {
+                                if (!personalMonster.getMonsterId().equals(allMonster.get().getId())) {
+                                    isCreate = true;
+                                } else {
+                                    isCreate = false;
+                                    break;
+                                }
+                            }
+                            if (!isCreate) {
+                                use = (int) (Math.random() * 4);
+                                allMonster = allMonsterDAO.findByGroupAndMain(group, use);
+                            }
+                        } while (!isCreate);
+                        PersonalMonster personalMonster = new PersonalMonster();
+                        personalMonster.setAccount(account);
+                        if (isCreate) {
+                            personalMonster.setMonsterId(allMonster.get().getId());
+                            personalMonster.setMonsterGroup(allMonster.get().getGroup());
+                            personalMonsterDAO.insert(personalMonster);
+                        } else {
+                            personalMonster.setMonsterId(0);
+                            personalMonster.setMonsterGroup(0);
+                        }
                         personalMonsterBean.add(personalMonsterService.createBean(personalMonster));
                     }
                 }
