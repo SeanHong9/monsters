@@ -221,7 +221,7 @@ class _Reset_PasswordState extends State<Reset_Password> {
                       onPressed: () {
                         final isValidForm = _formKey.currentState!.validate();
                         //reset password
-                        resetPassword(mailController, _pwdController.text);
+                        // resetPassword(mailController, _pwdController.text);
                         if (isValidForm) {
                           log("確認");
                           // Navigator.pushReplacement(
@@ -241,15 +241,16 @@ class _Reset_PasswordState extends State<Reset_Password> {
     );
   }
 
-  Future<void> resetPassword(String mail, String password) async {
-    MemberRepository memberRepository = MemberRepository();
-    Future<Data> request = await memberRepository
-        .modifyPersonalPassword(Member(mail: mail, password: password))
-        .then((value) => json.decode(value));
-    await request.then((value) {
-      log(value.toString());
-    });
-  }
+//   Future<void> resetPassword(String mail, String password) async {
+//     MemberRepository memberRepository = MemberRepository();
+//     Future<Data> request = await memberRepository
+//         .modifyPersonalPassword(Member(mail: mail, password: password))
+//         .then((value) => json.decode(value));
+//     await request.then((value) {
+//       log(value.toString());
+//     });
+//   }
+// }
 }
 
 const String _svg_ryq30 =

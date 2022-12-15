@@ -18,6 +18,7 @@ import 'package:monsters_front_end/state/drawer.dart';
 
 import '../main.dart';
 import '../model/memberModel.dart';
+import 'drawer/drawer_personalInfo.dart';
 
 class MainPage extends StatefulWidget {
   @override
@@ -96,6 +97,11 @@ class _MainPageState extends State<MainPage>
       getPhoto();
       visited = true;
       _scaffoldKEy = GlobalKey<ScaffoldState>();
+      setState(() {});
+    }
+    if (statechecker) {
+      _future = getPhoto();
+      statechecker = false;
       setState(() {});
     }
     return Scaffold(

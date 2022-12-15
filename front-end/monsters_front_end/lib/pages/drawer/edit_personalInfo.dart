@@ -122,18 +122,22 @@ class _Edit_personalInfoState extends State<Edit_personalInfo> {
                                   _dailyTest = value.data.first.dailyTest!;
                                 });
 
-                                memberRepository.modifyPersonalInfo(
-                                  Member(
-                                    account: userAccount,
-                                    nickName:
-                                        _nicknameController.text.toString(),
-                                    photo: _photo,
-                                    dailyTest: _dailyTest,
-                                  ),
-                                );
-
-                                ScaffoldMessenger.of(context)
-                                    .showSnackBar(const SnackBar(
+                                memberRepository
+                                    .modifyPersonalInfo(
+                                      Member(
+                                        account: userAccount,
+                                        nickName:
+                                            _nicknameController.text.toString(),
+                                        photo: _photo,
+                                        dailyTest: _dailyTest,
+                                      ),
+                                    )
+                                    .then((value) =>
+                                        sleep(Duration(milliseconds: 800)))
+                                    .then(
+                                  (value) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
                                         duration: Duration(seconds: 1),
                                         backgroundColor: BackgroundColorWarm,
                                         content: Text(
@@ -141,13 +145,17 @@ class _Edit_personalInfoState extends State<Edit_personalInfo> {
                                           style: TextStyle(
                                               color: Colors.white,
                                               fontSize: 30),
-                                        )));
-
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => Drawer_personalInfo(),
-                                  ),
+                                        ),
+                                      ),
+                                    );
+                                    Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            Drawer_personalInfo(),
+                                      ),
+                                    );
+                                  },
                                 );
                               }
                             },

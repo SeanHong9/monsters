@@ -47,7 +47,7 @@ class _user_FeedbackState extends State<user_Feedback> {
                           style: TextStyle(
                             fontFamily: FontNameDefault,
                             fontWeight: FontWeight.w300,
-                            fontSize: BodyTextSize,
+                            fontSize: 22,
                             color: Color.fromRGBO(160, 82, 45, 1),
                           )),
                     )
@@ -115,8 +115,8 @@ class _user_FeedbackState extends State<user_Feedback> {
                       color: Color.fromRGBO(255, 237, 151, 1),
                       shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(9999.0)),
-                      onPressed: () {
-                        sendEmail(message: _messageController.text);
+                      onPressed: () async {
+                        await sendEmail(message: _messageController.text);
                         setState(() {});
                       },
                       // onPressed: () => print(_messageController.text),
@@ -184,7 +184,6 @@ class _user_FeedbackState extends State<user_Feedback> {
             'user_message': message
           }
         }));
-    setState(() {});
     print(response.body);
   }
 }

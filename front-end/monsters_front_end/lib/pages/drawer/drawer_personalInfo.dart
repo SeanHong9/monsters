@@ -3,17 +3,18 @@
 import 'dart:convert';
 import 'dart:developer';
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:monsters_front_end/main.dart';
 import 'package:monsters_front_end/model/memberModel.dart';
 import 'package:monsters_front_end/model/monsterModel.dart' as ms;
+import 'package:monsters_front_end/pages/home.dart';
 import 'package:monsters_front_end/pages/settings/monsters_information.dart';
 import 'package:monsters_front_end/pages/drawer/edit_personalInfo.dart';
 import 'package:monsters_front_end/pages/settings/style.dart';
 import 'package:monsters_front_end/repository/memberRepo.dart';
 
 import '../../repository/monsterRepo.dart';
+
 
 class Drawer_personalInfo extends StatefulWidget {
   Drawer_personalInfo({
@@ -33,12 +34,19 @@ class _Drawer_personalInfoState extends State<Drawer_personalInfo> {
   @override
   void initState() {
     _future = getPersonalInfo();
+    statechecker = false;
     super.initState();
   }
 
   //關閉
   @override
   void dispose() {
+    try {
+      statechecker = true;
+    } catch (e) {
+      print(e);
+    }
+
     super.dispose();
   }
 
@@ -80,10 +88,9 @@ class _Drawer_personalInfoState extends State<Drawer_personalInfo> {
 
   @override
   Widget build(BuildContext context) {
+    statechecker = true;
+    sleep(Duration(microseconds: 800));
     _future = getPersonalInfo();
-
-    sleep(Duration(microseconds: 500));
-
     setState(() {});
     return Scaffold(
         backgroundColor: Colors.white,
@@ -399,7 +406,7 @@ class _AvatarWidget extends State<AvatarWidget> {
         ),
       ),
       onTap: () async {
-        if (save == false || !monsterNamesList.contains(choosenAvatar)) {
+        if (save == false) {
           Navigator.pop(context);
         } else {
           choosenAvatar = selected;
@@ -408,31 +415,38 @@ class _AvatarWidget extends State<AvatarWidget> {
           final MemberRepository memberRepository = MemberRepository();
           int modifyAvatar = monsterNamesList.indexOf(choosenAvatar);
           log("modifyAvatar :" + modifyAvatar.toString());
-
-          Future<Data> personalInfo = memberRepository
-              .searchPersonalInfoByAccount()
-              .then((value) => Data.fromJson(value!));
-
-          String _nickName = "";
-          int _dailyTest = 0;
-
-          await personalInfo.then((value) async {
-            _nickName = value.data.first.nickName!;
-            _dailyTest = value.data.first.dailyTest!;
-            log("_dailyTest: " + _dailyTest.toString());
-          }).then((value) {
-            memberRepository.modifyPersonalInfo(
-              Member(
-                account: userAccount,
-                photo: modifyAvatar,
-                nickName: _nickName,
-                dailyTest: _dailyTest,
-              ),
-            );
+          if (modifyAvatar < 0) {
             Navigator.pop(context);
-          }).then((value) {
-            setState(() {});
-          });
+          } else {
+            Future<Data> personalInfo = memberRepository
+                .searchPersonalInfoByAccount()
+                .then((value) => Data.fromJson(value!));
+
+            String _nickName = "";
+            int _dailyTest = 0;
+
+            await personalInfo.then((value) async {
+              _nickName = value.data.first.nickName!;
+              _dailyTest = value.data.first.dailyTest!;
+              log("_dailyTest: " + _dailyTest.toString());
+            }).then(
+              (value) {
+                memberRepository.modifyPersonalInfo(
+                  Member(
+                    account: userAccount,
+                    photo: modifyAvatar,
+                    nickName: _nickName,
+                    dailyTest: _dailyTest,
+                  ),
+                );
+                Navigator.pop(context);
+              },
+            ).then(
+              (value) {
+                setState(() {});
+              },
+            );
+          }
         }
       },
     );

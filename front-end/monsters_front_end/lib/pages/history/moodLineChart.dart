@@ -112,7 +112,7 @@ class _MoodLineChartState extends State<MoodLineChart> {
                 if (snapshot.data == null || moodData.length < 7) {
                   return const Center(
                       child: Text(
-                    "還沒有記錄嗎？\n先去新增煩惱或日記吧！",
+                    "Loading...",
                     style: TextStyle(fontSize: 30),
                   ));
                 }

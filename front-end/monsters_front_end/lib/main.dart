@@ -2,16 +2,13 @@
 import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:monsters_front_end/pages/drawer_personalInfo.dart';
-import 'package:monsters_front_end/pages/history.dart';
-import 'package:monsters_front_end/pages/home.dart';
-import 'package:monsters_front_end/pages/login.dart';
-import 'package:monsters_front_end/pages/manual.dart';
+import 'package:monsters_front_end/pages/account/login.dart';
 import 'package:monsters_front_end/routes.dart';
-import 'pages/style.dart';
+import 'pages/settings/style.dart';
 
-var tempPage = History();
-var userAccount = 'WeiChun';
+bool statechecker = false;
+var tempPage = LoginPage();
+var userAccount = '';
 void main() async {
   runApp(Monsters());
 }
@@ -47,14 +44,14 @@ class Monsters extends StatelessWidget with WidgetsBindingObserver {
         SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
         break;
       case AppLifecycleState.paused:
-        log(state.toString());
+        // log(state.toString());
         break;
       case AppLifecycleState.resumed:
         SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
-        log(state.toString());
+        // log(state.toString());
         break;
       case AppLifecycleState.detached:
-        log(state.toString());
+        // log(state.toString());
         break;
     }
   }
@@ -62,6 +59,7 @@ class Monsters extends StatelessWidget with WidgetsBindingObserver {
 
 ThemeData _theme() {
   return ThemeData(
+    
     appBarTheme: const AppBarTheme(
         iconTheme: IconThemeData(color: Colors.white),
         titleTextStyle: AppBarTextStyle,
