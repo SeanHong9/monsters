@@ -11,7 +11,7 @@ https://drive.google.com/drive/folders/1EnFrgswgLTo8oYu-dqTAHeJjBsYdNWhj?usp=sha
 
 組長:
 
-10846028 洪靖翔 負責前端開發及團隊管理
+10846028 洪靖翔 負責前後端開發及團隊管理
 
 組員:
 
